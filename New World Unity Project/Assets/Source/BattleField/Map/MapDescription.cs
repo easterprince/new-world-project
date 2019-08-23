@@ -7,13 +7,13 @@ namespace NewWorld.BattleField.Map {
 
         // Constants.
 
-        private static readonly float safeHeightDifference = 1.1f * (CoordinatesTransformation.HidingDifference / 2);
+        private static readonly float safeHeightDifference = 1.1f * (Composition.TileHidingHeightDifference / 2);
 
 
         // Fields.
 
         private readonly Vector2Int size;
-        private float heightLimit;
+        private readonly float heightLimit;
         private readonly NodeDescription[,] surface;
 
 

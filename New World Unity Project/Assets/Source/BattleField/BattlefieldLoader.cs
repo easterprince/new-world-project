@@ -9,7 +9,7 @@ using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.BattleField {
 
-    public class BattleLoader : SceneSingleton<BattleLoader> {
+    public class BattlefieldLoader : SceneSingleton<BattlefieldLoader> {
 
         // Fields.
 

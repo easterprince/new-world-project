@@ -44,17 +44,17 @@ namespace NewWorld.BattleField.Map {
         // Public methods.
 
         public void Place(Vector3 surfaceRealPosition) {
-            Vector3 sidesRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -CoordinatesTransformation.HidingDifference);
-            transform.position = CoordinatesTransformation.RealToVisible(sidesRealPosition);
-            surface.transform.position = CoordinatesTransformation.RealToVisible(surfaceRealPosition, out int spriteOrder);
-            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
+            Vector3 sidesRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -Composition.TileHidingHeightDifference);
+            transform.position = Composition.RealToVisible(sidesRealPosition, 0);
+            surface.transform.position = Composition.RealToVisible(surfaceRealPosition, 0, out int spriteOrder);
+            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) Composition.Sublayers.TilesForeground;
             float surfaceBrightness = ZeroHeightSurfaceBrightness + (1 - ZeroHeightSurfaceBrightness) * (surfaceRealPosition.z / MapController.Instance.HeightLimit);
             surface.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0, 0, surfaceBrightness);
             int index = 0;
             bool lastSides = false;
             do {
-                if (sidesRealPosition.z >= surfaceRealPosition.z - CoordinatesTransformation.HidingDifference) {
-                    sidesRealPosition.z = surfaceRealPosition.z - CoordinatesTransformation.HidingDifference;
+                if (sidesRealPosition.z >= surfaceRealPosition.z - Composition.TileHidingHeightDifference) {
+                    sidesRealPosition.z = surfaceRealPosition.z - Composition.TileHidingHeightDifference;
                     lastSides = true;
                 }
                 GameObject sides;
@@ -66,11 +66,11 @@ namespace NewWorld.BattleField.Map {
                 } else {
                     sides = allSides[index];
                 }
-                sides.transform.position = CoordinatesTransformation.RealToVisible(sidesRealPosition);
+                sides.transform.position = Composition.RealToVisible(sidesRealPosition, 0);
                 sides.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder +
-                    (int) (lastSides ? SpriteLayers.Sublayers.TilesBackground : SpriteLayers.Sublayers.TilesForeground);
+                    (int) (lastSides ? Composition.Sublayers.TilesBackground : Composition.Sublayers.TilesForeground);
                 ++index;
-                sidesRealPosition.z += CoordinatesTransformation.HidingDifference;
+                sidesRealPosition.z += Composition.TileHidingHeightDifference;
             } while (!lastSides);
             for (int i = index; i < allSides.Count; ++i) {
                 Destroy(allSides[i]);

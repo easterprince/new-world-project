@@ -17,7 +17,7 @@ namespace NewWorld.BattleField.Map {
         /// Use in constructor to initialize fields for heights control.
         /// </summary>
         private void InitializeHeightsControl() {
-            isVisible = new bool[size.x, size.y, VisionDirections.Count];
+            isVisible = new bool[size.x, size.y, Composition.VisionDirectionsCount];
             visibleDirectionsCount = new int[size.x, size.y];
         }
 
@@ -32,8 +32,8 @@ namespace NewWorld.BattleField.Map {
             upperLimit = heightLimit;
             lowerLimit = upperLimit;
 
-            for (int direction = 0; direction < VisionDirections.Count; ++direction) {
-                Vector2Int delta = VisionDirections.GetDelta(direction);
+            for (int direction = 0; direction < Composition.VisionDirectionsCount; ++direction) {
+                Vector2Int delta = Composition.GetDirectionDelta(direction);
 
                 // Adjust height of targeted node to save its own visibility.
                 float minHeight = 0;
@@ -81,8 +81,8 @@ namespace NewWorld.BattleField.Map {
             NodeDescription updatedNode = surface[updatedPosition.x, updatedPosition.y];
             visibleDirectionsCount[updatedPosition.x, updatedPosition.y] = 0;
 
-            for (int direction = 0; direction < VisionDirections.Count; ++direction) {
-                Vector2Int delta = VisionDirections.GetDelta(direction);
+            for (int direction = 0; direction < Composition.VisionDirectionsCount; ++direction) {
+                Vector2Int delta = Composition.GetDirectionDelta(direction);
 
                 isVisible[updatedPosition.x, updatedPosition.y, direction] = false;
 

@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 824869411}
   - component: {fileID: 824869412}
   m_Layer: 0
-  m_Name: Battle Loader
+  m_Name: Battlefield Loader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -26,7 +26,7 @@ namespace NewWorld.BattleField.Map {
         override protected void Awake() {
             base.Awake();
             Instance = this;
-            description = BattleLoader.Instance.MapDescription;
+            description = BattlefieldLoader.Instance.MapDescription;
             tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
             tiles = new TileController[tilesCount.x, tilesCount.y];
             for (int i = 0; i < tilesCount.x; ++i) {
