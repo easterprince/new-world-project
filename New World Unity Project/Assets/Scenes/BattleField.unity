@@ -281,7 +281,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 824869410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fe7965ba11b92041a420d79ad2dfdc8, type: 3}
+  m_Script: {fileID: 11500000, guid: 77cf9c17c298d3f479f5f08f6767945f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   loadingScreen: {fileID: 1547847121}
@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   motionSpeedModifier: 1
-  scrollingSpeedModifier: 1
+  scrollingSpeedModifier: 5
   minCameraSize: 3
   maxCameraSize: 10
 --- !u!1 &1280587661
@@ -699,7 +699,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1547847116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9c87550ed0bb7a4a8d5b04d0a674924, type: 3}
+  m_Script: {fileID: 11500000, guid: 854bf3fde3c362940b1b3335aaed003e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   readyTextPanel: {fileID: 518500406}

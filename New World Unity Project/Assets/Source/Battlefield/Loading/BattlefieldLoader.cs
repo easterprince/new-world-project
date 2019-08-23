@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using NewWorld.Utilities;
-using NewWorld.BattleField.Map;
+using NewWorld.Battlefield.Map;
 using NewWorld.Utilities.Singletones;
 
-namespace NewWorld.BattleField {
+namespace NewWorld.Battlefield.Loading {
 
     public class BattlefieldLoader : SceneSingleton<BattlefieldLoader> {
 
@@ -16,10 +16,10 @@ namespace NewWorld.BattleField {
 #pragma warning disable IDE0044, CS0414
 
         [SerializeField]
-        private LoadingScreenController loadingScreen = null;
+        private BattlefieldLoadingScreenController loadingScreen = null;
 
         [SerializeField]
-        private BattleCameraController battleCamera = null;
+        private BattlefieldCameraController battleCamera = null;
 
         [SerializeField]
         private MapController map = null;

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletones;
+using NewWorld.Battlefield.Loading;
 
-namespace NewWorld.BattleField.Map {
+namespace NewWorld.Battlefield.Map {
 
     public class MapController : SceneSingleton<MapController> {
 

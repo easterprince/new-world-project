@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.BattleField.Map {
+namespace NewWorld.Battlefield.Map {
 
     public class TileController : MonoBehaviour {
 
@@ -44,17 +44,17 @@ namespace NewWorld.BattleField.Map {
         // Public methods.
 
         public void Place(Vector3 surfaceRealPosition) {
-            Vector3 sidesRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -Composition.TileHidingHeightDifference);
-            transform.position = Composition.RealToVisible(sidesRealPosition, 0);
-            surface.transform.position = Composition.RealToVisible(surfaceRealPosition, 0, out int spriteOrder);
-            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) Composition.Sublayers.TilesForeground;
+            Vector3 sidesRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -BattlefieldComposition.TileHidingHeightDifference);
+            transform.position = BattlefieldComposition.RealToVisible(sidesRealPosition, 0);
+            surface.transform.position = BattlefieldComposition.RealToVisible(surfaceRealPosition, 0, out int spriteOrder);
+            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
             float surfaceBrightness = ZeroHeightSurfaceBrightness + (1 - ZeroHeightSurfaceBrightness) * (surfaceRealPosition.z / MapController.Instance.HeightLimit);
             surface.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0, 0, surfaceBrightness);
             int index = 0;
             bool lastSides = false;
             do {
-                if (sidesRealPosition.z >= surfaceRealPosition.z - Composition.TileHidingHeightDifference) {
-                    sidesRealPosition.z = surfaceRealPosition.z - Composition.TileHidingHeightDifference;
+                if (sidesRealPosition.z >= surfaceRealPosition.z - BattlefieldComposition.TileHidingHeightDifference) {
+                    sidesRealPosition.z = surfaceRealPosition.z - BattlefieldComposition.TileHidingHeightDifference;
                     lastSides = true;
                 }
                 GameObject sides;
@@ -66,11 +66,11 @@ namespace NewWorld.BattleField.Map {
                 } else {
                     sides = allSides[index];
                 }
-                sides.transform.position = Composition.RealToVisible(sidesRealPosition, 0);
+                sides.transform.position = BattlefieldComposition.RealToVisible(sidesRealPosition, 0);
                 sides.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder +
-                    (int) (lastSides ? Composition.Sublayers.TilesBackground : Composition.Sublayers.TilesForeground);
+                    (int) (lastSides ? BattlefieldComposition.Sublayers.TilesBackground : BattlefieldComposition.Sublayers.TilesForeground);
                 ++index;
-                sidesRealPosition.z += Composition.TileHidingHeightDifference;
+                sidesRealPosition.z += BattlefieldComposition.TileHidingHeightDifference;
             } while (!lastSides);
             for (int i = index; i < allSides.Count; ++i) {
                 Destroy(allSides[i]);

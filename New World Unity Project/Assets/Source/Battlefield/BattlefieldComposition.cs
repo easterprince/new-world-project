@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.BattleField {
+namespace NewWorld.Battlefield {
 
-    public static class Composition {
+    public static class BattlefieldComposition {
 
         // Enumerator.
 

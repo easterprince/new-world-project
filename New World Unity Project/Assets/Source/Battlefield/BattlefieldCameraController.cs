@@ -5,9 +5,9 @@ using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletones;
 
-namespace NewWorld.BattleField {
+namespace NewWorld.Battlefield {
 
-    public class BattleCameraController : SceneSingleton<BattleCameraController> {
+    public class BattlefieldCameraController : SceneSingleton<BattlefieldCameraController> {
 
         // Fields.
 

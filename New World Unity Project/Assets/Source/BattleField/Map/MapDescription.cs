@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.BattleField.Map {
+namespace NewWorld.Battlefield.Map {
 
     public partial class MapDescription {
 
         // Constants.
 
-        private static readonly float safeHeightDifference = 1.1f * (Composition.TileHidingHeightDifference / 2);
+        private static readonly float safeHeightDifference = 1.1f * (BattlefieldComposition.TileHidingHeightDifference / 2);
 
 
         // Fields.

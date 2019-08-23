@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NewWorld.BattleField {
+namespace NewWorld.Battlefield.Loading {
 
-    public class LoadingScreenController : MonoBehaviour {
+    public class BattlefieldLoadingScreenController : MonoBehaviour {
 
         [SerializeField]
         public GameObject readyTextPanel;
