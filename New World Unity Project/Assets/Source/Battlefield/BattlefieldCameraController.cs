@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletones;
 
@@ -44,6 +43,7 @@ namespace NewWorld.Battlefield {
             minCameraSize = Mathf.Min(minCameraSize, maxCameraSize);
         }
 
+
         // Life cycle.
 
         protected override void Awake() {
@@ -70,7 +70,16 @@ namespace NewWorld.Battlefield {
             cameraComponent.orthographicSize = currentSize;
         }
 
-        // TODO: Implement rotation.
+
+        // Methods.
+
+        public void Place(Vector3 realPosition) {
+            Vector2 newPosition = BattlefieldComposition.RealToVisible(realPosition, 0);
+            currentPosition.x = newPosition.x;
+            currentPosition.y = newPosition.y;
+            transform.position = currentPosition;
+        }
+
 
     }
 

@@ -14,6 +14,8 @@ namespace NewWorld.Battlefield.Map {
         private MapDescription description;
         private Vector2Int tilesCount;
         private TileController[,] tiles;
+        private int currentDirection;
+        private int lastTurnInput;
 
 
         // Properties.
@@ -34,6 +36,21 @@ namespace NewWorld.Battlefield.Map {
                 for (int j = 0; j < tilesCount.y; ++j) {
                     PlaceTile(i, j);
                 }
+            }
+            currentDirection = 0;
+            lastTurnInput = 0;
+        }
+
+        private void Update() {
+            int newTurnInput = System.Math.Sign(Input.GetAxis("Turn"));
+            if (newTurnInput != lastTurnInput) {
+                lastTurnInput = newTurnInput;
+                if (newTurnInput > 0) {
+                    currentDirection = BattlefieldComposition.GetNextClockwiseDirection(currentDirection);
+                } else if (newTurnInput < 0) {
+                    currentDirection = BattlefieldComposition.GetNextCounterclockwiseDirection(currentDirection);
+                }
+                // TODO: Finish rotation.
             }
         }
 

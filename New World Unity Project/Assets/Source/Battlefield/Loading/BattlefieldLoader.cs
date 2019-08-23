@@ -13,13 +13,12 @@ namespace NewWorld.Battlefield.Loading {
 
         // Fields.
 
+        private bool loaded;
+
 #pragma warning disable IDE0044, CS0414
 
         [SerializeField]
         private BattlefieldLoadingScreenController loadingScreen = null;
-
-        [SerializeField]
-        private BattlefieldCameraController battleCamera = null;
 
         [SerializeField]
         private MapController map = null;
@@ -39,6 +38,7 @@ namespace NewWorld.Battlefield.Loading {
         override protected void Awake() {
             base.Awake();
             Instance = this;
+            loaded = false;
         }
 
         private void Start() {
@@ -46,27 +46,21 @@ namespace NewWorld.Battlefield.Loading {
         }
 
         private void Update() {
-            if (loadingScreen.LoadingAnimation) {
+            if (!loaded) {
                 if (mapDescriptionLoading.IsCompleted) {
                     mapDescription = mapDescriptionLoading.Result;
                     loadingScreen.LoadingAnimation = false;
+                    loaded = true;
                 }
-            } else {
+            }
+            if (loaded) {
                 if (Input.anyKey) {
-                    FinishLoading();
+                    loadingScreen.gameObject.SetActive(false);
+                    map.gameObject.SetActive(true);
+                    BattlefieldCameraController.Instance.Place(Vector3.zero);
+                    Destroy(this.gameObject);
                 }
             }
-        }
-
-
-        // Support.
-
-        private void FinishLoading() {
-            if (!mapDescriptionLoading.IsCompleted) {
-                return;
-            }
-            loadingScreen.gameObject.SetActive(false);
-            map.gameObject.SetActive(true);
         }
 
 
