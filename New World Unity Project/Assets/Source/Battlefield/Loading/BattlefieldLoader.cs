@@ -74,7 +74,7 @@ namespace NewWorld.Battlefield.Loading {
                 Vector2Int position = new Vector2Int(random.Next(0, mapDescription.Size.x), random.Next(0, mapDescription.Size.y));
                 mapDescription.SetSurfaceNode(position, new NodeDescription(8 * (float) random.NextDouble()));
             }
-            for (int i = 0; i < 10000; ++i) {
+            for (int i = 0; i < 20000; ++i) {
                 Vector2Int position = new Vector2Int(random.Next(0, mapDescription.Size.x), random.Next(0, mapDescription.Size.y));
                 float height = 0;
                 for (int dx = -1; dx <= 1; ++dx) {

@@ -24,7 +24,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Constants.
 
-        private const float ZeroHeightSurfaceBrightness = 0.8f;
+        private const float ZeroHeightSurfaceBrightness = 0.7f;
 
 
         // Fields.
