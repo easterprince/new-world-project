@@ -29,29 +29,43 @@ namespace NewWorld.Battlefield.Map {
         // Fields.
 
         public GameObject surface;
+
         public GameObject baseSides;
 
-        private readonly List<GameObject> allSides = new List<GameObject>();
+        private Vector3 basementRealPosition;
+        private int currentDirection;
+        private List<GameObject> allSides;
 
 
         // Life cycle.
 
         private void Awake() {
-            allSides.Add(baseSides);
+            basementRealPosition = Vector3.zero;
+            currentDirection = 0;
+            allSides = new List<GameObject> {
+                baseSides
+            };
         }
 
 
         // Public methods.
 
         public void Place(Vector3 surfaceRealPosition) {
-            Vector3 sidesRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -BattlefieldComposition.TileHidingHeightDifference);
-            transform.position = BattlefieldComposition.RealToVisible(sidesRealPosition, 0);
-            surface.transform.position = BattlefieldComposition.RealToVisible(surfaceRealPosition, 0, out int spriteOrder);
+
+            // Updating object itself.
+            basementRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -BattlefieldComposition.TileHidingHeightDifference);
+            transform.position = BattlefieldComposition.RealToVisible(basementRealPosition, currentDirection);
+
+            // Updating surface.
+            surface.transform.position = BattlefieldComposition.RealToVisible(surfaceRealPosition, currentDirection, out int spriteOrder);
             surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
             float surfaceBrightness = ZeroHeightSurfaceBrightness + (1 - ZeroHeightSurfaceBrightness) * (surfaceRealPosition.z / MapController.Instance.HeightLimit);
             surface.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0, 0, surfaceBrightness);
+
+            // Updating sides.
             int index = 0;
             bool lastSides = false;
+            Vector3 sidesRealPosition = basementRealPosition;
             do {
                 if (sidesRealPosition.z >= surfaceRealPosition.z - BattlefieldComposition.TileHidingHeightDifference) {
                     sidesRealPosition.z = surfaceRealPosition.z - BattlefieldComposition.TileHidingHeightDifference;
@@ -66,19 +80,41 @@ namespace NewWorld.Battlefield.Map {
                 } else {
                     sides = allSides[index];
                 }
-                sides.transform.position = BattlefieldComposition.RealToVisible(sidesRealPosition, 0);
+                sides.transform.position = BattlefieldComposition.RealToVisible(sidesRealPosition, currentDirection);
                 sides.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder +
                     (int) (lastSides ? BattlefieldComposition.Sublayers.TilesBackground : BattlefieldComposition.Sublayers.TilesForeground);
                 ++index;
                 sidesRealPosition.z += BattlefieldComposition.TileHidingHeightDifference;
             } while (!lastSides);
-            for (int i = index; i < allSides.Count; ++i) {
-                Destroy(allSides[i]);
+
+            // Removing unnecessary sides.
+            while (allSides.Count > index) {
+                int last = allSides.Count - 1;
+                Destroy(allSides[last]);
+                allSides.RemoveAt(last);
             }
-            if (index < allSides.Count) {
-                allSides.RemoveRange(index, allSides.Count - index);
-            }
+
         }
+
+        public void Rotate(int newDirection) {
+
+            // Updating object itself.
+            currentDirection = newDirection;
+            transform.position = BattlefieldComposition.RealToVisible(basementRealPosition, newDirection, out int spriteOrder);
+
+            // Update parts of rile.
+            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
+            for (int i = 0; i < allSides.Count; ++i) {
+                SpriteRenderer spriteRenderer = allSides[i].GetComponent<SpriteRenderer>();
+                if (i == allSides.Count - 1) {
+                    spriteRenderer.sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesBackground;
+                } else {
+                    spriteRenderer.sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
+                }
+            }
+
+        }
+
     }
 
 }
