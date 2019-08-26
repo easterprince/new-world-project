@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -17,7 +18,7 @@ namespace NewWorld.Battlefield.Map {
         /// Use in constructor to initialize fields for heights control.
         /// </summary>
         private void InitializeHeightsControl() {
-            isVisible = new bool[size.x, size.y, BattlefieldComposition.VisionDirectionsCount];
+            isVisible = new bool[size.x, size.y, VisionDirections.Count];
             visibleDirectionsCount = new int[size.x, size.y];
         }
 
@@ -32,8 +33,8 @@ namespace NewWorld.Battlefield.Map {
             upperLimit = heightLimit;
             lowerLimit = upperLimit;
 
-            for (int direction = 0; direction < BattlefieldComposition.VisionDirectionsCount; ++direction) {
-                Vector2Int delta = BattlefieldComposition.GetDirectionDelta(direction);
+            for (int direction = 0; direction < VisionDirections.Count; ++direction) {
+                Vector2Int delta = VisionDirections.GetDirectionDelta(direction);
 
                 // Adjust height of targeted node to save its own visibility.
                 float minHeight = 0;
@@ -75,14 +76,18 @@ namespace NewWorld.Battlefield.Map {
         }
 
         private void RecalculateVisibility(Vector2Int updatedPosition) {
+            if (!IsPositionValid(updatedPosition)) {
+                throw BuildInvalidPositionException("updatedPosition", updatedPosition);
+            }
+
             int bestVisibleDirection = -1;
             float lowerLimit = float.PositiveInfinity;
 
             NodeDescription updatedNode = surface[updatedPosition.x, updatedPosition.y];
             visibleDirectionsCount[updatedPosition.x, updatedPosition.y] = 0;
 
-            for (int direction = 0; direction < BattlefieldComposition.VisionDirectionsCount; ++direction) {
-                Vector2Int delta = BattlefieldComposition.GetDirectionDelta(direction);
+            for (int direction = 0; direction < VisionDirections.Count; ++direction) {
+                Vector2Int delta = VisionDirections.GetDirectionDelta(direction);
 
                 isVisible[updatedPosition.x, updatedPosition.y, direction] = false;
 

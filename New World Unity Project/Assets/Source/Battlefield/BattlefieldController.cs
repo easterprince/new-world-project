@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities.Singletones;
+using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield {
 
@@ -26,9 +27,9 @@ namespace NewWorld.Battlefield {
             if (newTurnInput != lastTurnInput) {
                 lastTurnInput = newTurnInput;
                 if (newTurnInput > 0) {
-                    currentDirection = BattlefieldComposition.GetNextClockwiseDirection(currentDirection);
+                    currentDirection = VisionDirections.GetNextClockwiseDirection(currentDirection);
                 } else if (newTurnInput < 0) {
-                    currentDirection = BattlefieldComposition.GetNextCounterclockwiseDirection(currentDirection);
+                    currentDirection = VisionDirections.GetNextCounterclockwiseDirection(currentDirection);
                 }
                 Map.MapController.Instance?.Rotate(currentDirection);
                 BattlefieldCameraController.Instance.Rotate(currentDirection);

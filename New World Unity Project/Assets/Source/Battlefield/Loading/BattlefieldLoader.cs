@@ -68,11 +68,22 @@ namespace NewWorld.Battlefield.Loading {
 
         private MapDescription LoadMapDescription() {
             System.Random random = new System.Random(123);
-            int size = 10;
-            MapDescription mapDescription = new MapDescription(new Vector2Int(size, size), 2f);
-            for (int i = 0; i < 100000; ++i) {
+            int size = 60;
+            MapDescription mapDescription = new MapDescription(new Vector2Int(size, size), 10f);
+            for (int i = 0; i < 1000; ++i) {
                 Vector2Int position = new Vector2Int(random.Next(0, mapDescription.Size.x), random.Next(0, mapDescription.Size.y));
-                mapDescription.SetSurfaceNode(position, new NodeDescription(3 * (float) random.NextDouble()));
+                mapDescription.SetSurfaceNode(position, new NodeDescription(8 * (float) random.NextDouble()));
+            }
+            for (int i = 0; i < 10000; ++i) {
+                Vector2Int position = new Vector2Int(random.Next(0, mapDescription.Size.x), random.Next(0, mapDescription.Size.y));
+                float height = 0;
+                for (int dx = -1; dx <= 1; ++dx) {
+                    for (int dy = -1; dy <= 1; ++dy) {
+                        height += mapDescription.GetSurfaceNode(new Vector2Int(position.x + dx, position.y + dy))?.Height ?? 0;
+                    }
+                }
+                height /= 9;
+                mapDescription.SetSurfaceNode(position, new NodeDescription(height));
             }
             return mapDescription;
         }

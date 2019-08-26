@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletones;
+using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield {
 
@@ -15,7 +16,7 @@ namespace NewWorld.Battlefield {
         private float zOffset;
         private Vector2 defaultRealPosition;
         private Vector2 currentRealPosition;
-        private int currentDirection;
+        private int currentVisionDirection;
         private float defaultSize;
         private float currentSize;
 
@@ -55,7 +56,7 @@ namespace NewWorld.Battlefield {
             zOffset = transform.position.z;
             defaultRealPosition = Vector2.zero;
             currentRealPosition = defaultRealPosition;
-            currentDirection = 0;
+            currentVisionDirection = 0;
             defaultSize = cameraComponent.orthographicSize;
             currentSize = defaultSize;
         }
@@ -64,11 +65,11 @@ namespace NewWorld.Battlefield {
 
             // Input processing.
             if (Input.GetAxis("Cancel") == 0) {
-                int xDirection = BattlefieldComposition.GetNextClockwiseDirection(currentDirection);
-                int yDirection = currentDirection;
+                int xDirection = VisionDirections.GetNextClockwiseDirection(currentVisionDirection);
+                int yDirection = currentVisionDirection;
                 Vector2 realPositionAddition = Vector2.zero;
-                realPositionAddition += ((Vector2) BattlefieldComposition.GetDirectionDelta(xDirection)).normalized * Input.GetAxis("Common X");
-                realPositionAddition += ((Vector2) BattlefieldComposition.GetDirectionDelta(yDirection)).normalized * Input.GetAxis("Common Y");
+                realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(xDirection)).normalized * Input.GetAxis("Common X");
+                realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(yDirection)).normalized * Input.GetAxis("Common Y");
                 realPositionAddition *= motionSpeedModifier;
                 currentRealPosition += realPositionAddition;
                 currentSize += scrollingSpeedModifier * -Input.GetAxis("Common Z");
@@ -90,8 +91,11 @@ namespace NewWorld.Battlefield {
             UpdateCameraLocation();
         }
 
-        public void Rotate(int newDirection) {
-            currentDirection = newDirection;
+        public void Rotate(int newVisionDirection) {
+            if (!VisionDirections.IsValidDirection(newVisionDirection)) {
+                throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
+            }
+            currentVisionDirection = newVisionDirection;
             UpdateCameraLocation();
         }
 
@@ -99,7 +103,7 @@ namespace NewWorld.Battlefield {
         // Support.
 
         private void UpdateCameraLocation() {
-            Vector3 updatedPosition = BattlefieldComposition.RealToVisible(currentRealPosition, currentDirection);
+            Vector3 updatedPosition = CoordinatesTransformations.RealToVisible(currentRealPosition, currentVisionDirection);
             updatedPosition.z = zOffset;
             transform.position = updatedPosition;
             cameraComponent.orthographicSize = currentSize;
