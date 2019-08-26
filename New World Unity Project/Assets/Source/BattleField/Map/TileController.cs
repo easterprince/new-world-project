@@ -58,7 +58,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Public methods.
 
-        public void Place(Vector3 surfaceRealPosition) {
+        public void Place(Vector3 surfaceRealPosition, float hidingHeight = float.NegativeInfinity) {
             surfaceRealPosition.z = Mathf.Max(surfaceRealPosition.z, 0);
 
             // Updating object itself.
@@ -104,9 +104,12 @@ namespace NewWorld.Battlefield.Map {
                 allSides.RemoveAt(last);
             }
 
+            // Hide invisible sides.
+            Hide(hidingHeight);
+
         }
 
-        public void Rotate(int newDirection) {
+        public void Rotate(int newDirection, float hidingHeight = float.NegativeInfinity) {
             if (!VisionDirections.IsValidDirection(newDirection)) {
                 throw VisionDirections.BuildInvalidDirectionException("newDirection", newDirection);
             }
@@ -115,7 +118,7 @@ namespace NewWorld.Battlefield.Map {
             currentDirection = newDirection;
             transform.position = CoordinatesTransformations.RealToVisible(basementRealPosition, newDirection, out int spriteOrder);
 
-            // Update parts of rile.
+            // Update parts of tile.
             surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
             for (int i = 0; i < allSides.Count; ++i) {
                 SpriteRenderer spriteRenderer = allSides[i].GetComponent<SpriteRenderer>();
@@ -126,7 +129,29 @@ namespace NewWorld.Battlefield.Map {
                 }
             }
 
+            // Hide invisible sides.
+            Hide(hidingHeight);
+
         }
+
+
+        // Support.
+
+        private void Hide(float hidingHeight) {
+            bool hide = true;
+            for (int i = 0; i < allSides.Count; ++i) {
+                float sideSurfaceHeight = i * CoordinatesTransformations.TileHidingHeightDifference;
+                if (hidingHeight < sideSurfaceHeight) {
+                    hide = false;
+                }
+                if (hide) {
+                    allSides[i].SetActive(false);
+                } else if (allSides[i].activeSelf == true) {
+                    break;
+                }
+            }
+        }
+
 
     }
 

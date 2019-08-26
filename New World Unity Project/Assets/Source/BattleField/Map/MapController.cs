@@ -1,19 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using NewWorld.Utilities;
+﻿using UnityEngine;
 using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Loading;
 using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
-    public class MapController : SceneSingleton<MapController> {
+    public partial class MapController : SceneSingleton<MapController> {
 
         // Fields.
 
         private MapDescription description;
         private Vector2Int tilesCount;
+        private float[,] tileHeights;
         private TileController[,] tiles;
         private int currentVisionDirection;
 
@@ -31,9 +29,12 @@ namespace NewWorld.Battlefield.Map {
             Instance = this;
             description = BattlefieldLoader.Instance.MapDescription;
             tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
+            tileHeights = new float[tilesCount.x, tilesCount.y];
             tiles = new TileController[tilesCount.x, tilesCount.y];
-            DoForAllTiles(UpdateTileAtPosition);
             currentVisionDirection = 0;
+            ReinitializeHidingsObservation();
+            DoForAllTiles(UpdateTileHeight);
+            DoForAllTiles(UpdateTileAtPosition);
         }
 
 
@@ -44,10 +45,11 @@ namespace NewWorld.Battlefield.Map {
                 throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
             }
             currentVisionDirection = newVisionDirection;
+            ReinitializeHidingsObservation();
             DoForAllTiles((Vector2Int tileArrayPosition) => {
                 TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
                 if (tile != null) {
-                    tile.Rotate(currentVisionDirection);
+                    tile.Rotate(currentVisionDirection, CalculateHidingHeight(tileArrayPosition));
                 }
             });
         }
@@ -86,12 +88,11 @@ namespace NewWorld.Battlefield.Map {
 
         // Tiles management.
 
-        private void UpdateTileAtPosition(Vector2Int tileArrayPosition) {
+        private void UpdateTileHeight(Vector2Int tileArrayPosition) {
             if (!IsValidTileArrayPosition(tileArrayPosition)) {
                 throw BuildInvalidTileArrayPositionException("tileArrayPosition", tileArrayPosition);
             }
 
-            // Calculating height of the tile.
             Vector2Int mainNodePosition = new Vector2Int((tileArrayPosition.x + 1) / 2 - 1, (tileArrayPosition.y + 1) / 2 - 1);
             float tileHeight = float.PositiveInfinity;
             for (int dx = 0; dx <= 1; ++dx) {
@@ -106,10 +107,20 @@ namespace NewWorld.Battlefield.Map {
                     tileHeight = Mathf.Min(tileHeight, node.Height);
                 }
             }
-
-            // Updating the tile.
-            TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
             if (tileHeight == float.PositiveInfinity) {
+                tileHeight = float.NegativeInfinity;
+            }
+            tileHeights[tileArrayPosition.x, tileArrayPosition.y] = tileHeight;
+        }
+
+        private void UpdateTileAtPosition(Vector2Int tileArrayPosition) {
+            if (!IsValidTileArrayPosition(tileArrayPosition)) {
+                throw BuildInvalidTileArrayPositionException("tileArrayPosition", tileArrayPosition);
+            }
+
+            float tileHeight = tileHeights[tileArrayPosition.x, tileArrayPosition.y];
+            TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
+            if (tileHeight == float.NegativeInfinity) {
                 if (tile != null) {
                     Destroy(tile.gameObject);
                 }
@@ -120,9 +131,8 @@ namespace NewWorld.Battlefield.Map {
                     tiles[tileArrayPosition.x, tileArrayPosition.y] = tile;
                 }
                 Vector2 tileRealPosition = new Vector2(0.5f * tileArrayPosition.x - 1, 0.5f * tileArrayPosition.y - 1);
-                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight));
+                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight), CalculateHidingHeight(tileArrayPosition));
             }
-
         }
 
 
