@@ -31,6 +31,7 @@ namespace NewWorld.Battlefield {
                     currentDirection = BattlefieldComposition.GetNextCounterclockwiseDirection(currentDirection);
                 }
                 Map.MapController.Instance?.Rotate(currentDirection);
+                BattlefieldCameraController.Instance.Rotate(currentDirection);
             }
         }
 

@@ -12,8 +12,10 @@ namespace NewWorld.Battlefield {
 
         private Camera cameraComponent;
 
-        private Vector3 defaultPosition;
-        private Vector3 currentPosition;
+        private float zOffset;
+        private Vector2 defaultRealPosition;
+        private Vector2 currentRealPosition;
+        private int currentDirection;
         private float defaultSize;
         private float currentSize;
 
@@ -50,34 +52,57 @@ namespace NewWorld.Battlefield {
             base.Awake();
             Instance = this;
             cameraComponent = GetComponent<Camera>();
-            defaultPosition = transform.position;
-            currentPosition = defaultPosition;
+            zOffset = transform.position.z;
+            defaultRealPosition = Vector2.zero;
+            currentRealPosition = defaultRealPosition;
+            currentDirection = 0;
             defaultSize = cameraComponent.orthographicSize;
             currentSize = defaultSize;
         }
 
         private void Update() {
+
+            // Input processing.
             if (Input.GetAxis("Cancel") == 0) {
-                currentPosition.x += motionSpeedModifier * Input.GetAxis("Common X");
-                currentPosition.y += motionSpeedModifier * Input.GetAxis("Common Y");
+                int xDirection = BattlefieldComposition.GetNextClockwiseDirection(currentDirection);
+                int yDirection = currentDirection;
+                Vector2 realPositionAddition = Vector2.zero;
+                realPositionAddition += ((Vector2) BattlefieldComposition.GetDirectionDelta(xDirection)).normalized * Input.GetAxis("Common X");
+                realPositionAddition += ((Vector2) BattlefieldComposition.GetDirectionDelta(yDirection)).normalized * Input.GetAxis("Common Y");
+                realPositionAddition *= motionSpeedModifier;
+                currentRealPosition += realPositionAddition;
                 currentSize += scrollingSpeedModifier * -Input.GetAxis("Common Z");
                 currentSize = Mathf.Clamp(currentSize, minCameraSize, maxCameraSize);
             } else {
-                currentPosition = defaultPosition;
+                currentRealPosition = defaultRealPosition;
                 currentSize = defaultSize;
             }
-            transform.position = currentPosition;
-            cameraComponent.orthographicSize = currentSize;
+
+            // Properties updating.
+            UpdateCameraLocation();
         }
 
 
         // Methods.
 
-        public void Place(Vector3 realPosition) {
-            Vector2 newPosition = BattlefieldComposition.RealToVisible(realPosition, 0);
-            currentPosition.x = newPosition.x;
-            currentPosition.y = newPosition.y;
-            transform.position = currentPosition;
+        public void Place(Vector2 newRealPosition) {
+            currentRealPosition = newRealPosition;
+            UpdateCameraLocation();
+        }
+
+        public void Rotate(int newDirection) {
+            currentDirection = newDirection;
+            UpdateCameraLocation();
+        }
+
+
+        // Support.
+
+        private void UpdateCameraLocation() {
+            Vector3 updatedPosition = BattlefieldComposition.RealToVisible(currentRealPosition, currentDirection);
+            updatedPosition.z = zOffset;
+            transform.position = updatedPosition;
+            cameraComponent.orthographicSize = currentSize;
         }
 
 
