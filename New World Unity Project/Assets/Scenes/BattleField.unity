@@ -120,6 +120,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &164957701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 164957702}
+  - component: {fileID: 164957703}
+  m_Layer: 0
+  m_Name: Battlefield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &164957702
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164957701}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1081232765}
+  - {fileID: 1122689473}
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &164957703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164957701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12302e6a2e03dcc41b0cae2170ca3933, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &518500406
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,7 +297,7 @@ GameObject:
   - component: {fileID: 824869411}
   - component: {fileID: 824869412}
   m_Layer: 0
-  m_Name: Battle Loader
+  m_Name: Battlefield Loader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,11 +326,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 824869410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fe7965ba11b92041a420d79ad2dfdc8, type: 3}
+  m_Script: {fileID: 11500000, guid: 77cf9c17c298d3f479f5f08f6767945f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   loadingScreen: {fileID: 1547847121}
-  battleCamera: {fileID: 1122689474}
   map: {fileID: 1081232764}
 --- !u!1 &1081232763
 GameObject:
@@ -327,8 +371,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_Father: {fileID: 164957702}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1084804791
 GameObject:
@@ -486,12 +530,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122689470}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_Father: {fileID: 164957702}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1122689474
 MonoBehaviour:
@@ -505,6 +549,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d759f5ea3d90f346a69409fa881bd7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  motionSpeedModifier: 0.2
+  scrollingSpeedModifier: 5
+  minCameraSize: 3
+  maxCameraSize: 10
 --- !u!1 &1280587661
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,7 +743,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1547847116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9c87550ed0bb7a4a8d5b04d0a674924, type: 3}
+  m_Script: {fileID: 11500000, guid: 854bf3fde3c362940b1b3335aaed003e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   readyTextPanel: {fileID: 518500406}
@@ -906,7 +954,7 @@ Transform:
   - {fileID: 1547847120}
   - {fileID: 1730747706}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1874448012
 GameObject:
@@ -938,8 +986,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
+  m_HorizontalAxis: Common X
+  m_VerticalAxis: Common Y
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
@@ -972,7 +1020,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2110655218
 GameObject:

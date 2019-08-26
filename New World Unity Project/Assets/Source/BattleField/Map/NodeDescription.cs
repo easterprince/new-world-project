@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.BattleField.Map {
+namespace NewWorld.Battlefield.Map {
 
     public class NodeDescription {
 

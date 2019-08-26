@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.BattleField.Map {
+namespace NewWorld.Battlefield.Map {
 
     public partial class MapDescription {
 
         // Constants.
 
-        private static readonly float safeHeightDifference = 1.1f * (CoordinatesTransformation.HidingDifference / 2);
+        private static readonly float safeHeightDifference = 1.1f * (BattlefieldComposition.TileHidingHeightDifference / 2);
 
 
         // Fields.
 
         private readonly Vector2Int size;
-        private float heightLimit;
+        private readonly float heightLimit;
         private readonly NodeDescription[,] surface;
 
 

@@ -4,22 +4,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using NewWorld.Utilities;
-using NewWorld.BattleField.Map;
+using NewWorld.Battlefield.Map;
 using NewWorld.Utilities.Singletones;
 
-namespace NewWorld.BattleField {
+namespace NewWorld.Battlefield.Loading {
 
-    public class BattleLoader : SceneSingleton<BattleLoader> {
+    public class BattlefieldLoader : SceneSingleton<BattlefieldLoader> {
 
         // Fields.
+
+        private bool loaded;
 
 #pragma warning disable IDE0044, CS0414
 
         [SerializeField]
-        private LoadingScreenController loadingScreen = null;
-
-        [SerializeField]
-        private BattleCameraController battleCamera = null;
+        private BattlefieldLoadingScreenController loadingScreen = null;
 
         [SerializeField]
         private MapController map = null;
@@ -39,6 +38,7 @@ namespace NewWorld.BattleField {
         override protected void Awake() {
             base.Awake();
             Instance = this;
+            loaded = false;
         }
 
         private void Start() {
@@ -46,27 +46,21 @@ namespace NewWorld.BattleField {
         }
 
         private void Update() {
-            if (loadingScreen.LoadingAnimation) {
+            if (!loaded) {
                 if (mapDescriptionLoading.IsCompleted) {
                     mapDescription = mapDescriptionLoading.Result;
                     loadingScreen.LoadingAnimation = false;
+                    loaded = true;
                 }
-            } else {
+            }
+            if (loaded) {
                 if (Input.anyKey) {
-                    FinishLoading();
+                    loadingScreen.gameObject.SetActive(false);
+                    map.gameObject.SetActive(true);
+                    BattlefieldCameraController.Instance.Place(Vector3.zero);
+                    Destroy(this.gameObject);
                 }
             }
-        }
-
-
-        // Support.
-
-        private void FinishLoading() {
-            if (!mapDescriptionLoading.IsCompleted) {
-                return;
-            }
-            loadingScreen.gameObject.SetActive(false);
-            map.gameObject.SetActive(true);
         }
 
 
