@@ -65,7 +65,7 @@ namespace NewWorld.Battlefield.Loading {
         private MapDescription LoadMapDescription() {
             ExperimentalMapGenerator mapGenerator = new ExperimentalMapGenerator {
                 Seed = 123,
-                Size = new Vector2Int(60, 60),
+                Size = new Vector2Int(100, 100),
                 HeightLimit = 5
             };
             return mapGenerator.Generate();
