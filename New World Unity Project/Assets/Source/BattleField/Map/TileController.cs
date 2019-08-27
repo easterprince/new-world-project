@@ -144,7 +144,7 @@ namespace NewWorld.Battlefield.Map {
                 if (hidingHeight < sideSurfaceHeight) {
                     hide = false;
                 }
-                if (allSides[i].activeSelf == true) {
+                if (!hide && allSides[i].activeSelf == true) {
                     break;
                 }
                 allSides[i].SetActive(!hide);
