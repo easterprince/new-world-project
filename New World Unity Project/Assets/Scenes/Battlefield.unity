@@ -551,8 +551,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   motionSpeedModifier: 0.4
   scrollingSpeedModifier: 5
-  minCameraSize: 3
-  maxCameraSize: 10
+  minCameraSize: 5
+  maxCameraSize: 20
 --- !u!1 &1280587661
 GameObject:
   m_ObjectHideFlags: 0
