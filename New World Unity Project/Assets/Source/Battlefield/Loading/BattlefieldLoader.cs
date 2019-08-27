@@ -15,12 +15,12 @@ namespace NewWorld.Battlefield.Loading {
 
         private bool loaded;
 
-#pragma warning disable IDE0044, CS0414
+#pragma warning disable IDE0044, CS0414, CS0649
 
         [SerializeField]
         private BattlefieldLoadingScreenController loadingScreen;
 
-#pragma warning restore IDE0044, CS0414
+#pragma warning restore IDE0044, CS0414, CS0649
 
         private MapDescription mapDescription;
         private Task<MapDescription> mapDescriptionLoading;

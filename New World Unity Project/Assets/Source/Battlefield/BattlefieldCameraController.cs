@@ -20,7 +20,7 @@ namespace NewWorld.Battlefield {
         private float defaultSize;
         private float currentSize;
 
-#pragma warning disable IDE0044, CS0414
+#pragma warning disable IDE0044, CS0414, CS0649
 
         [SerializeField]
         private float motionSpeedModifier = 1.0f;
@@ -34,7 +34,7 @@ namespace NewWorld.Battlefield {
         [SerializeField]
         private float maxCameraSize = 10.0f;
 
-#pragma warning restore IDE0044, CS0414
+#pragma warning restore IDE0044, CS0414, CS0649
 
         private void OnValidate() {
             const float sizeLowerLimit = 1;

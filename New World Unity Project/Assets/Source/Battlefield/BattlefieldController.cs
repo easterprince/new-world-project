@@ -9,12 +9,12 @@ namespace NewWorld.Battlefield {
 
         // Variables.
 
-#pragma warning disable IDE0044, CS0414
+#pragma warning disable IDE0044, CS0414, CS0649
 
         [SerializeField]
         private Map.MapController map = null;
 
-#pragma warning restore IDE0044, CS0414
+#pragma warning restore IDE0044, CS0414, CS0649
 
         private bool battleStarted;
         private int currentDirection;
