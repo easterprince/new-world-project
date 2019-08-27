@@ -18,10 +18,7 @@ namespace NewWorld.Battlefield.Loading {
 #pragma warning disable IDE0044, CS0414
 
         [SerializeField]
-        private BattlefieldLoadingScreenController loadingScreen = null;
-
-        [SerializeField]
-        private MapController map = null;
+        private BattlefieldLoadingScreenController loadingScreen;
 
 #pragma warning restore IDE0044, CS0414
 
@@ -49,6 +46,7 @@ namespace NewWorld.Battlefield.Loading {
             if (!loaded) {
                 if (mapDescriptionLoading.IsCompleted) {
                     mapDescription = mapDescriptionLoading.Result;
+                    BattlefieldController.Instance.LoadBattle();
                     loadingScreen.LoadingAnimation = false;
                     loaded = true;
                 }
@@ -56,8 +54,7 @@ namespace NewWorld.Battlefield.Loading {
             if (loaded) {
                 if (Input.anyKey) {
                     loadingScreen.gameObject.SetActive(false);
-                    map.gameObject.SetActive(true);
-                    BattlefieldCameraController.Instance.Place(Vector3.zero);
+                    BattlefieldController.Instance.StartBattle();
                     Destroy(this.gameObject);
                 }
             }

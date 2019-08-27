@@ -62,25 +62,28 @@ namespace NewWorld.Battlefield {
         }
 
         private void Update() {
+            if (BattlefieldController.Instance.BattleStarted) {
 
-            // Input processing.
-            if (Input.GetAxis("Cancel") == 0) {
-                int xDirection = VisionDirections.GetNextClockwiseDirection(currentVisionDirection);
-                int yDirection = currentVisionDirection;
-                Vector2 realPositionAddition = Vector2.zero;
-                realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(xDirection)).normalized * Input.GetAxis("Common X");
-                realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(yDirection)).normalized * Input.GetAxis("Common Y");
-                realPositionAddition *= motionSpeedModifier;
-                currentRealPosition += realPositionAddition;
-                currentSize += scrollingSpeedModifier * -Input.GetAxis("Common Z");
-                currentSize = Mathf.Clamp(currentSize, minCameraSize, maxCameraSize);
-            } else {
-                currentRealPosition = defaultRealPosition;
-                currentSize = defaultSize;
+                // Input processing.
+                if (Input.GetAxis("Cancel") == 0) {
+                    int xDirection = VisionDirections.GetNextClockwiseDirection(currentVisionDirection);
+                    int yDirection = currentVisionDirection;
+                    Vector2 realPositionAddition = Vector2.zero;
+                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(xDirection)).normalized * Input.GetAxis("Common X");
+                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(yDirection)).normalized * Input.GetAxis("Common Y");
+                    realPositionAddition *= motionSpeedModifier;
+                    currentRealPosition += realPositionAddition;
+                    currentSize += scrollingSpeedModifier * -Input.GetAxis("Common Z");
+                    currentSize = Mathf.Clamp(currentSize, minCameraSize, maxCameraSize);
+                } else {
+                    currentRealPosition = defaultRealPosition;
+                    currentSize = defaultSize;
+                }
+
+                // Properties updating.
+                UpdateCameraLocation();
+
             }
-
-            // Properties updating.
-            UpdateCameraLocation();
         }
 
 
