@@ -31,8 +31,10 @@ namespace NewWorld.Battlefield {
                 } else if (newTurnInput < 0) {
                     currentDirection = VisionDirections.GetNextCounterclockwiseDirection(currentDirection);
                 }
-                Map.MapController.Instance?.Rotate(currentDirection);
-                BattlefieldCameraController.Instance.Rotate(currentDirection);
+                if (newTurnInput != 0) {
+                    Map.MapController.Instance?.Rotate(currentDirection);
+                    BattlefieldCameraController.Instance.Rotate(currentDirection);
+                }
             }
         }
 
