@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/BattleLoading.unity
     guid: 403a5d796f3c0dd4c9bbe4d8dd594064
   - enabled: 1
-    path: Assets/Scenes/BattlefieldB.unity
+    path: Assets/Scenes/Battlefield.unity
     guid: defe6ec4b54ce1b43bd78da68c3f674c
   m_configObjects: {}
