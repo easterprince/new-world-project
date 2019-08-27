@@ -8,9 +8,9 @@ namespace NewWorld.Battlefield.Map.Generation {
 
         // Fields.
 
-        private int seed;
-        private float heightLimit;
-        private Vector2 size;
+        private int seed = 0;
+        private float heightLimit = 0;
+        private Vector2Int size = new Vector2Int(1, 1);
 
 
         // Constructor.
@@ -30,7 +30,7 @@ namespace NewWorld.Battlefield.Map.Generation {
             set => heightLimit = value;
         }
 
-        public Vector2 Size {
+        public Vector2Int Size {
             get => size;
             set => size = value;
         }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using NewWorld.Utilities;
 using NewWorld.Battlefield.Map;
+using NewWorld.Battlefield.Map.Generation;
 using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Loading {
@@ -64,25 +63,12 @@ namespace NewWorld.Battlefield.Loading {
         // Map loading.
 
         private MapDescription LoadMapDescription() {
-            System.Random random = new System.Random(123);
-            int size = 60;
-            MapDescription mapDescription = new MapDescription(new Vector2Int(size, size), 10f);
-            for (int i = 0; i < 1000; ++i) {
-                Vector2Int position = new Vector2Int(random.Next(0, mapDescription.Size.x), random.Next(0, mapDescription.Size.y));
-                mapDescription.SetSurfaceNode(position, new NodeDescription(8 * (float) random.NextDouble()));
-            }
-            for (int i = 0; i < 20000; ++i) {
-                Vector2Int position = new Vector2Int(random.Next(0, mapDescription.Size.x), random.Next(0, mapDescription.Size.y));
-                float height = 0;
-                for (int dx = -1; dx <= 1; ++dx) {
-                    for (int dy = -1; dy <= 1; ++dy) {
-                        height += mapDescription.GetSurfaceNode(new Vector2Int(position.x + dx, position.y + dy))?.Height ?? 0;
-                    }
-                }
-                height /= 9;
-                mapDescription.SetSurfaceNode(position, new NodeDescription(height));
-            }
-            return mapDescription;
+            ExperimentalMapGenerator mapGenerator = new ExperimentalMapGenerator {
+                Seed = 123,
+                Size = new Vector2Int(60, 60),
+                HeightLimit = 5
+            };
+            return mapGenerator.Generate();
         }
 
     }
