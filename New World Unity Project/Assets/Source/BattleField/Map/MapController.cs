@@ -1,20 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using NewWorld.Utilities;
+﻿using UnityEngine;
 using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Loading;
+using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
-    public class MapController : SceneSingleton<MapController> {
+    public partial class MapController : SceneSingleton<MapController> {
 
         // Fields.
 
         private MapDescription description;
         private Vector2Int tilesCount;
+        private float[,] tileHeights;
         private TileController[,] tiles;
-        private int currentDirection;
+        private int currentVisionDirection;
 
 
         // Properties.
@@ -30,30 +29,43 @@ namespace NewWorld.Battlefield.Map {
             Instance = this;
             description = BattlefieldLoader.Instance.MapDescription;
             tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
+            tileHeights = new float[tilesCount.x, tilesCount.y];
             tiles = new TileController[tilesCount.x, tilesCount.y];
+            currentVisionDirection = 0;
+            ReinitializeHidingsObservation();
+            DoForAllTiles(UpdateTileHeight);
             DoForAllTiles(UpdateTileAtPosition);
-            currentDirection = 0;
         }
 
 
         // Outer control.
 
-        public void Rotate(int newDirection) {
-            currentDirection = newDirection;
+        public void Rotate(int newVisionDirection) {
+            if (!VisionDirections.IsValidDirection(newVisionDirection)) {
+                throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
+            }
+            currentVisionDirection = newVisionDirection;
+            ReinitializeHidingsObservation();
             DoForAllTiles((Vector2Int tileArrayPosition) => {
                 TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
                 if (tile != null) {
-                    tile.Rotate(currentDirection);
+                    tile.Rotate(currentVisionDirection, CalculateHidingHeight(tileArrayPosition));
                 }
             });
         }
 
 
-        // Support.
+        // Foreach wannabes.
 
         delegate void TileAction(Vector2Int tileArrayPosition);
 
         private void DoForAdjacentTiles(Vector2Int nodePosition, TileAction action) {
+            if (!IsValidNodePosition(nodePosition)) {
+                throw BuildInvalidNodePositionException("nodePosition", nodePosition);
+            }
+            if (action == null) {
+                return;
+            }
             Vector2Int tileArrayPosition = new Vector2Int(2 * nodePosition.x + 1, 2 * nodePosition.y + 1);
             for (int dx = -1; dx <= 1; ++dx) {
                 for (int dy = -1; dy <= 1; ++dy) {
@@ -63,6 +75,9 @@ namespace NewWorld.Battlefield.Map {
         }
 
         private void DoForAllTiles(TileAction action) {
+            if (action == null) {
+                return;
+            }
             for (int x = 0; x < tilesCount.x; ++x) {
                 for (int y = 0; y < tilesCount.y; ++y) {
                     action.Invoke(new Vector2Int(x, y));
@@ -70,9 +85,14 @@ namespace NewWorld.Battlefield.Map {
             }
         }
 
-        private void UpdateTileAtPosition(Vector2Int tileArrayPosition) {
 
-            // Calculating height of the tile.
+        // Tiles management.
+
+        private void UpdateTileHeight(Vector2Int tileArrayPosition) {
+            if (!IsValidTileArrayPosition(tileArrayPosition)) {
+                throw BuildInvalidTileArrayPositionException("tileArrayPosition", tileArrayPosition);
+            }
+
             Vector2Int mainNodePosition = new Vector2Int((tileArrayPosition.x + 1) / 2 - 1, (tileArrayPosition.y + 1) / 2 - 1);
             float tileHeight = float.PositiveInfinity;
             for (int dx = 0; dx <= 1; ++dx) {
@@ -87,10 +107,20 @@ namespace NewWorld.Battlefield.Map {
                     tileHeight = Mathf.Min(tileHeight, node.Height);
                 }
             }
-
-            // Updating the tile.
-            TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
             if (tileHeight == float.PositiveInfinity) {
+                tileHeight = float.NegativeInfinity;
+            }
+            tileHeights[tileArrayPosition.x, tileArrayPosition.y] = tileHeight;
+        }
+
+        private void UpdateTileAtPosition(Vector2Int tileArrayPosition) {
+            if (!IsValidTileArrayPosition(tileArrayPosition)) {
+                throw BuildInvalidTileArrayPositionException("tileArrayPosition", tileArrayPosition);
+            }
+
+            float tileHeight = tileHeights[tileArrayPosition.x, tileArrayPosition.y];
+            TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
+            if (tileHeight == float.NegativeInfinity) {
                 if (tile != null) {
                     Destroy(tile.gameObject);
                 }
@@ -101,9 +131,35 @@ namespace NewWorld.Battlefield.Map {
                     tiles[tileArrayPosition.x, tileArrayPosition.y] = tile;
                 }
                 Vector2 tileRealPosition = new Vector2(0.5f * tileArrayPosition.x - 1, 0.5f * tileArrayPosition.y - 1);
-                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight));
+                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight), CalculateHidingHeight(tileArrayPosition));
             }
+        }
 
+
+        // Support.
+
+        private bool IsValidTileArrayPosition(Vector2Int parameterValue) {
+            return parameterValue.x >= 0 && parameterValue.x < tilesCount.x && parameterValue.y >= 0 && parameterValue.y < tilesCount.y;
+        }
+
+        private System.ArgumentOutOfRangeException BuildInvalidTileArrayPositionException(string parameterName, Vector2Int parameterValue) {
+            return new System.ArgumentOutOfRangeException(
+                parameterName,
+                parameterValue,
+                $"Position must be inside tile array, which size is {tilesCount}."
+            );
+        }
+
+        private bool IsValidNodePosition(Vector2Int parameterValue) {
+            return parameterValue.x >= 0 && parameterValue.x < description.Size.x && parameterValue.y >= 0 && parameterValue.y < description.Size.y;
+        }
+
+        private System.ArgumentOutOfRangeException BuildInvalidNodePositionException(string parameterName, Vector2Int parameterValue) {
+            return new System.ArgumentOutOfRangeException(
+                parameterName,
+                parameterValue,
+                $"Position must be inside node array, which size is {description.Size}."
+            );
         }
 
 

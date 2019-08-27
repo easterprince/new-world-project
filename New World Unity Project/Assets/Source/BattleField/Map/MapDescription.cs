@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -7,7 +8,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Constants.
 
-        private static readonly float safeHeightDifference = 1.1f * (BattlefieldComposition.TileHidingHeightDifference / 2);
+        private static readonly float safeHeightDifference = 1.1f * (CoordinatesTransformations.TileHidingHeightDifference / 2);
 
 
         // Fields.
@@ -78,7 +79,7 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
-        // Supportive methods.
+        // Supporting methods.
 
         private bool IsPositionValid(Vector2Int position) {
             return position.x >= 0 && position.x < size.x && position.y >= 0 && position.y < size.y;
@@ -87,6 +88,7 @@ namespace NewWorld.Battlefield.Map {
         private System.ArgumentOutOfRangeException BuildInvalidPositionException(string parameterName, Vector2Int position) {
             return new System.ArgumentOutOfRangeException(parameterName, position, $"Position must be inside map (size: {size})");
         }
+
 
     }
 

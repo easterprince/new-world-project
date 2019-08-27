@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -15,7 +16,7 @@ namespace NewWorld.Battlefield.Map {
                 prefab = Resources.Load<GameObject>(prefabPath);
             }
             GameObject tile = Instantiate(prefab);
-            tile.name = name;
+            tile.name = name ?? "Tile";
             TileController tileController = tile.GetComponent<TileController>();
             return tileController;
         }
@@ -23,7 +24,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Constants.
 
-        private const float ZeroHeightSurfaceBrightness = 0.8f;
+        private const float ZeroHeightSurfaceBrightness = 0.7f;
 
 
         // Fields.
@@ -33,8 +34,15 @@ namespace NewWorld.Battlefield.Map {
         public GameObject baseSides;
 
         private Vector3 basementRealPosition;
+        private float realHeight;
         private int currentDirection;
         private List<GameObject> allSides;
+
+
+        // Properties.
+
+        public Vector3 BasementRealPosition => basementRealPosition;
+        public float RealHeight => realHeight;
 
 
         // Life cycle.
@@ -50,16 +58,18 @@ namespace NewWorld.Battlefield.Map {
 
         // Public methods.
 
-        public void Place(Vector3 surfaceRealPosition) {
+        public void Place(Vector3 surfaceRealPosition, float hidingHeight = float.NegativeInfinity) {
+            surfaceRealPosition.z = Mathf.Max(surfaceRealPosition.z, 0);
 
             // Updating object itself.
-            basementRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -BattlefieldComposition.TileHidingHeightDifference);
-            transform.position = BattlefieldComposition.RealToVisible(basementRealPosition, currentDirection);
+            basementRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -CoordinatesTransformations.TileHidingHeightDifference);
+            realHeight = surfaceRealPosition.z;
+            transform.position = CoordinatesTransformations.RealToVisible(basementRealPosition, currentDirection);
 
             // Updating surface.
-            surface.transform.position = BattlefieldComposition.RealToVisible(surfaceRealPosition, currentDirection, out int spriteOrder);
-            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
-            float surfaceBrightness = ZeroHeightSurfaceBrightness + (1 - ZeroHeightSurfaceBrightness) * (surfaceRealPosition.z / MapController.Instance.HeightLimit);
+            surface.transform.position = CoordinatesTransformations.RealToVisible(surfaceRealPosition, currentDirection, out int spriteOrder);
+            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
+            float surfaceBrightness = ZeroHeightSurfaceBrightness + (1 - ZeroHeightSurfaceBrightness) * (realHeight / MapController.Instance.HeightLimit);
             surface.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0, 0, surfaceBrightness);
 
             // Updating sides.
@@ -67,8 +77,8 @@ namespace NewWorld.Battlefield.Map {
             bool lastSides = false;
             Vector3 sidesRealPosition = basementRealPosition;
             do {
-                if (sidesRealPosition.z >= surfaceRealPosition.z - BattlefieldComposition.TileHidingHeightDifference) {
-                    sidesRealPosition.z = surfaceRealPosition.z - BattlefieldComposition.TileHidingHeightDifference;
+                if (sidesRealPosition.z >= realHeight - CoordinatesTransformations.TileHidingHeightDifference) {
+                    sidesRealPosition.z = realHeight - CoordinatesTransformations.TileHidingHeightDifference;
                     lastSides = true;
                 }
                 GameObject sides;
@@ -80,11 +90,11 @@ namespace NewWorld.Battlefield.Map {
                 } else {
                     sides = allSides[index];
                 }
-                sides.transform.position = BattlefieldComposition.RealToVisible(sidesRealPosition, currentDirection);
+                sides.transform.position = CoordinatesTransformations.RealToVisible(sidesRealPosition, currentDirection);
                 sides.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder +
-                    (int) (lastSides ? BattlefieldComposition.Sublayers.TilesBackground : BattlefieldComposition.Sublayers.TilesForeground);
+                    (int) (lastSides ? SpriteLayers.Sublayers.TilesBackground : SpriteLayers.Sublayers.TilesForeground);
                 ++index;
-                sidesRealPosition.z += BattlefieldComposition.TileHidingHeightDifference;
+                sidesRealPosition.z = (index - 1) * CoordinatesTransformations.TileHidingHeightDifference;
             } while (!lastSides);
 
             // Removing unnecessary sides.
@@ -94,26 +104,53 @@ namespace NewWorld.Battlefield.Map {
                 allSides.RemoveAt(last);
             }
 
+            // Hide invisible sides.
+            Hide(hidingHeight);
+
         }
 
-        public void Rotate(int newDirection) {
+        public void Rotate(int newDirection, float hidingHeight = float.NegativeInfinity) {
+            if (!VisionDirections.IsValidDirection(newDirection)) {
+                throw VisionDirections.BuildInvalidDirectionException("newDirection", newDirection);
+            }
 
             // Updating object itself.
             currentDirection = newDirection;
-            transform.position = BattlefieldComposition.RealToVisible(basementRealPosition, newDirection, out int spriteOrder);
+            transform.position = CoordinatesTransformations.RealToVisible(basementRealPosition, newDirection, out int spriteOrder);
 
-            // Update parts of rile.
-            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
+            // Update parts of tile.
+            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
             for (int i = 0; i < allSides.Count; ++i) {
                 SpriteRenderer spriteRenderer = allSides[i].GetComponent<SpriteRenderer>();
                 if (i == allSides.Count - 1) {
-                    spriteRenderer.sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesBackground;
+                    spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesBackground;
                 } else {
-                    spriteRenderer.sortingOrder = spriteOrder + (int) BattlefieldComposition.Sublayers.TilesForeground;
+                    spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
                 }
             }
 
+            // Hide invisible sides.
+            Hide(hidingHeight);
+
         }
+
+
+        // Support.
+
+        private void Hide(float hidingHeight) {
+            bool hide = true;
+            for (int i = 0; i < allSides.Count; ++i) {
+                float sideSurfaceHeight = i * CoordinatesTransformations.TileHidingHeightDifference;
+                if (hidingHeight < sideSurfaceHeight) {
+                    hide = false;
+                }
+                if (!hide && allSides[i].activeSelf == true) {
+                    break;
+                }
+                allSides[i].SetActive(!hide);
+            }
+        }
+
 
     }
 
