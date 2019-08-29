@@ -69,7 +69,7 @@ namespace NewWorld.Battlefield.Units {
             float height = MapController.Instance.GetSurfaceHeight(description.CurrentNode);
             Vector3 realPosition = new Vector3(description.CurrentNode.x, description.CurrentNode.y, height);
             transform.position = CoordinatesTransformations.RealToVisible(realPosition, currentVisionDirection, out int spriteOrder);
-            spriteRenderer.sortingOrder = spriteOrder;
+            spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.Units;
         }
 
 
