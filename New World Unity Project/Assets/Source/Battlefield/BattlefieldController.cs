@@ -14,6 +14,9 @@ namespace NewWorld.Battlefield {
         [SerializeField]
         private Map.MapController map = null;
 
+        [SerializeField]
+        private Units.UnitSystemController unitSystem = null;
+
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private bool battleStarted;
@@ -62,6 +65,7 @@ namespace NewWorld.Battlefield {
 
         public void LoadBattle() {
             map.gameObject.SetActive(true);
+            unitSystem.gameObject.SetActive(true);
         }
 
         public void StartBattle() {
