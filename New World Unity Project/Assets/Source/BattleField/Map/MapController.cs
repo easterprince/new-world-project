@@ -38,6 +38,17 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
+        // Information.
+
+        public float GetSurfaceHeight(Vector2 position) {
+            Vector2Int tileArrayPosition = RealToTileArrayPosition(position);
+            if (!IsValidTileArrayPosition(tileArrayPosition)) {
+                return float.NegativeInfinity;
+            }
+            return tileHeights[tileArrayPosition.x, tileArrayPosition.y];
+        }
+
+
         // Outer control.
 
         public void Rotate(int newVisionDirection) {
@@ -130,7 +141,7 @@ namespace NewWorld.Battlefield.Map {
                     tile.transform.parent = this.transform;
                     tiles[tileArrayPosition.x, tileArrayPosition.y] = tile;
                 }
-                Vector2 tileRealPosition = new Vector2(0.5f * tileArrayPosition.x - 1, 0.5f * tileArrayPosition.y - 1);
+                Vector2 tileRealPosition = TileArrayToRealPosition(tileArrayPosition);
                 tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight), CalculateHidingHeight(tileArrayPosition));
             }
         }
@@ -160,6 +171,14 @@ namespace NewWorld.Battlefield.Map {
                 parameterValue,
                 $"Position must be inside node array, which size is {description.Size}."
             );
+        }
+
+        private Vector2Int RealToTileArrayPosition(Vector2 realPosition) {
+            return new Vector2Int(Mathf.RoundToInt(2 * realPosition.x + 1), Mathf.RoundToInt(2 * realPosition.y + 1));
+        }
+
+        private Vector2 TileArrayToRealPosition(Vector2Int tileArrayPosition) {
+            return new Vector2(0.5f * (tileArrayPosition.x - 1), 0.5f * (tileArrayPosition.y - 1));
         }
 
 

@@ -40,7 +40,7 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
-        // Modifying methods.
+        // Node processing.
 
         public NodeDescription GetSurfaceNode(Vector2Int position) {
             if (!IsPositionValid(position) || surface[position.x, position.y] == null) {
@@ -79,7 +79,7 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
-        // Supporting methods.
+        // Support.
 
         private bool IsPositionValid(Vector2Int position) {
             return position.x >= 0 && position.x < size.x && position.y >= 0 && position.y < size.y;
