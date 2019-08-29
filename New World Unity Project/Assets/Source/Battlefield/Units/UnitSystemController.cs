@@ -3,7 +3,7 @@ using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Units {
 
-    class UnitSystemController : SceneSingleton<UnitSystemController> {
+    public class UnitSystemController : SceneSingleton<UnitSystemController> {
 
         // Life cycle.
 
