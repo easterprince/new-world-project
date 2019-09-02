@@ -9,6 +9,8 @@ namespace NewWorld.Battlefield.Map {
 
         // Fields.
 
+        private NodeGridController nodeGridController;
+
         private MapDescription description;
         private Vector2Int tilesCount;
         private float[,] tileHeights;
@@ -27,6 +29,7 @@ namespace NewWorld.Battlefield.Map {
         override protected void Awake() {
             base.Awake();
             Instance = this;
+            nodeGridController = NodeGridController.Instance;
         }
 
 
@@ -41,6 +44,7 @@ namespace NewWorld.Battlefield.Map {
             ReinitializeHidingsObservation();
             DoForAllTiles(UpdateTileHeight);
             DoForAllTiles(UpdateTileAtPosition);
+            nodeGridController.Load(description);
         }
 
 
