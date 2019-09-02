@@ -9,7 +9,7 @@ using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Loading {
 
-    public class BattlefieldLoader : SceneSingleton<BattlefieldLoader> {
+    public class BattlefieldLoader : MonoBehaviour {
 
         // Fields.
 
@@ -29,9 +29,7 @@ namespace NewWorld.Battlefield.Loading {
 
         // Life cycle.
 
-        override protected void Awake() {
-            base.Awake();
-            Instance = this;
+        private void Awake() {
             loaded = false;
         }
 
