@@ -9,6 +9,7 @@ namespace NewWorld.Battlefield.Composition {
         public enum Sublayers {
             TilesBackground = 0,
             TilesForeground,
+            Nodes,
             Units
         }
 
