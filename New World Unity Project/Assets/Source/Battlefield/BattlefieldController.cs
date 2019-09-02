@@ -64,11 +64,6 @@ namespace NewWorld.Battlefield {
 
         // Controlling methods.
 
-        public void LoadBattle() {
-            map.gameObject.SetActive(true);
-            unitSystem.gameObject.SetActive(true);
-        }
-
         public void StartBattle() {
             battleStarted = true;
             BattlefieldCameraController.Instance.Place(Vector3.zero);

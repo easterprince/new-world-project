@@ -19,18 +19,21 @@ namespace NewWorld.Battlefield.Units {
         protected override void Awake() {
             base.Awake();
             Instance = this;
+        }
+
+
+        // External control.
+
+        public void Load(List<UnitDescription> unitDescriptions) {
             currentVisionDirection = 0;
             units = new List<UnitController>();
             int index = 0;
-            foreach (UnitDescription unitDescription in BattlefieldLoader.Instance.Units) {
+            foreach (UnitDescription unitDescription in unitDescriptions) {
                 UnitController unit = UnitController.BuildUnit(unitDescription, currentVisionDirection, $"Unit {index++}");
                 unit.transform.parent = transform;
                 units.Add(unit);
             }
         }
-
-
-        // External control.
 
         public void Rotate(int visionDirection) {
             if (!VisionDirections.IsValidDirection(visionDirection)) {

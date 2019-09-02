@@ -27,7 +27,13 @@ namespace NewWorld.Battlefield.Map {
         override protected void Awake() {
             base.Awake();
             Instance = this;
-            description = BattlefieldLoader.Instance.MapDescription;
+        }
+
+
+        // Initialization.
+
+        public void Load(MapDescription description) {
+            this.description = description ?? throw new System.ArgumentNullException("description");
             tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
             tileHeights = new float[tilesCount.x, tilesCount.y];
             tiles = new TileController[tilesCount.x, tilesCount.y];

@@ -23,13 +23,8 @@ namespace NewWorld.Battlefield.Loading {
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private MapDescription mapDescription;
-        private List<UnitDescription> units;
+        private List<UnitDescription> unitDescriptions;
         private Task battlefieldLoading;
-
-        // Properties.
-
-        public MapDescription MapDescription => (loaded ? mapDescription : null);
-        public List<UnitDescription> Units => (loaded ? units : null);
 
 
         // Life cycle.
@@ -48,7 +43,8 @@ namespace NewWorld.Battlefield.Loading {
             if (!loaded) {
                 if (battlefieldLoading.IsCompleted) {
                     loaded = true;
-                    BattlefieldController.Instance.LoadBattle();
+                    MapController.Instance.Load(mapDescription);
+                    UnitSystemController.Instance.Load(unitDescriptions);
                     loadingScreen.LoadingAnimation = false;
                 }
             }
@@ -73,14 +69,14 @@ namespace NewWorld.Battlefield.Loading {
                 HeightLimit = 5
             };
             mapDescription = mapGenerator.Generate();
-            units = new List<UnitDescription>();
+            unitDescriptions = new List<UnitDescription>();
             int unitsCount = 100;
             for (int i = 0; i < unitsCount; ++i) {
                 Vector2Int position;
                 do {
                     position = new Vector2Int(random.Next(mapDescription.Size.x), random.Next(mapDescription.Size.y));
                 } while (mapDescription.GetSurfaceNode(position) == null);
-                units.Add(new UnitDescription(position));
+                unitDescriptions.Add(new UnitDescription(position));
             }
         }
 
