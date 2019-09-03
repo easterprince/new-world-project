@@ -44,7 +44,7 @@ namespace NewWorld.Battlefield.Map {
             }
 
             foreach (NodeController node in nodes) {
-                node.Rotate(newVisionDirection);
+                node?.Rotate(newVisionDirection);
             }
         }
 
