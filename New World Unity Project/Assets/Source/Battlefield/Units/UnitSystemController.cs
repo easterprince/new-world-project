@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Battlefield.Composition;
-using NewWorld.Battlefield.Loading;
 using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Units {
 
-    public class UnitSystemController : SceneSingleton<UnitSystemController> {
+    public partial class UnitSystemController : SceneSingleton<UnitSystemController> {
 
         // Fields.
 
         private int currentVisionDirection;
-        private List<UnitController> units;
+        private HashSet<UnitController> units;
 
 
         // Life cycle.
@@ -19,14 +18,19 @@ namespace NewWorld.Battlefield.Units {
         protected override void Awake() {
             base.Awake();
             Instance = this;
+            InitializeIntentionProcessing();
+            currentVisionDirection = 0;
+            units = new HashSet<UnitController>();
         }
+
+        private void Update() {
+            ProcessIntentions();
+        } 
 
 
         // External control.
 
         public void Load(List<UnitDescription> unitDescriptions) {
-            currentVisionDirection = 0;
-            units = new List<UnitController>();
             int index = 0;
             foreach (UnitDescription unitDescription in unitDescriptions) {
                 UnitController unit = UnitController.BuildUnit(unitDescription, currentVisionDirection, $"Unit {index++}");

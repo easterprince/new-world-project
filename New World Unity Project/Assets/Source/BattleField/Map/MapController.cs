@@ -55,6 +55,10 @@ namespace NewWorld.Battlefield.Map {
             return tileHeights[tileArrayPosition.x, tileArrayPosition.y];
         }
 
+        public NodeDescription GetSurfaceNode(Vector2Int position) {
+            return description.GetSurfaceNode(position);
+        }
+
 
         // Outer control.
 

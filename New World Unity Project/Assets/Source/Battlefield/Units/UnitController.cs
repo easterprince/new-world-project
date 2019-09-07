@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Composition;
+using NewWorld.Battlefield.Units.Intentions;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -52,7 +53,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
-        // Controlling methods.
+        // Outer control.
 
         public void Rotate(int visionDirection) {
             if (!VisionDirections.IsValidDirection(visionDirection)) {
@@ -60,6 +61,14 @@ namespace NewWorld.Battlefield.Units {
             }
             currentVisionDirection = visionDirection;
             UpdateVisiblePosition();
+        }
+
+        public MovingIntention ReceiveMovingIntention() {
+            return null;
+        }
+
+        public void ChangeCurrentNode(Vector2Int newNode) {
+            throw new System.NotImplementedException();
         }
 
 
