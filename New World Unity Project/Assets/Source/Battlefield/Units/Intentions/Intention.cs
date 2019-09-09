@@ -1,25 +1,30 @@
-﻿using UnityEngine;
-using NewWorld.Battlefield.Units;
+﻿using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Units.Abilities;
 
 namespace NewWorld.Battlefield.Units.Intentions {
 
-    public class Intention {
+    public abstract class Intention<IntentionType>
+        where IntentionType : Intention<IntentionType> {
 
         // Fields.
 
-        private UnitController source;
-
-
-        // Properties.
-
-        public UnitController Source => source;
+        private readonly Ability<IntentionType> source;
 
 
         // Constructor.
 
-        public Intention(UnitController source) {
+        public Intention(Ability<IntentionType> source) {
             this.source = source;
         }
+
+
+        // Satisfaction.
+        
+        public void Satisfy() {
+            source.SatisfyIntention(this as IntentionType);
+        }
+
+
 
     }
 

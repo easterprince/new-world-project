@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using NewWorld.Battlefield.Units.Abilities;
 
 namespace NewWorld.Battlefield.Units.Intentions {
 
-    public class MovingIntention : Intention {
+    public class MovingIntention : Intention<MovingIntention> {
 
         // Fields.
 
@@ -16,7 +17,7 @@ namespace NewWorld.Battlefield.Units.Intentions {
 
         // Constructors.
 
-        public MovingIntention(UnitController source, Vector2Int destination) : base(source) {
+        public MovingIntention(Ability<MovingIntention> source, Vector2Int destination) : base(source) {
             this.destination = destination;
         }
 
