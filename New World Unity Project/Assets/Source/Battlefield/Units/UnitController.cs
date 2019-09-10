@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Composition;
 using NewWorld.Battlefield.Units.Intentions;
@@ -63,11 +64,11 @@ namespace NewWorld.Battlefield.Units {
             UpdateVisiblePosition();
         }
 
-        public MovingIntention ReceiveMovingIntention() {
+        public List<Intention> ReceiveIntentions() {
             return null;
         }
 
-        public void ChangeCurrentNode(Vector2Int newNode) {
+        public void ChangeConnectedNode(ChangingConnectedNodeIntention intention) {
             throw new System.NotImplementedException();
         }
 

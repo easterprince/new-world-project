@@ -3,27 +3,24 @@ using NewWorld.Battlefield.Units.Abilities;
 
 namespace NewWorld.Battlefield.Units.Intentions {
 
-    public abstract class Intention<IntentionType>
-        where IntentionType : Intention<IntentionType> {
+    public class Intention {
 
         // Fields.
 
-        private readonly Ability<IntentionType> source;
+        private bool satisfied = false;
+
+
+        // Properties.
+
+        public bool Satisfied {
+            get => satisfied;
+            set => satisfied = value;
+        }
 
 
         // Constructor.
 
-        public Intention(Ability<IntentionType> source) {
-            this.source = source;
-        }
-
-
-        // Satisfaction.
-        
-        public void Satisfy() {
-            source.SatisfyIntention(this as IntentionType);
-        }
-
+        public Intention() {}
 
 
     }
