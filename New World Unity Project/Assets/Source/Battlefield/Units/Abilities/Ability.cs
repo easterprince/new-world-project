@@ -2,38 +2,13 @@ using NewWorld.Battlefield.Units.Intentions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public class Ability {
-
-        // Fields.
-
-        private bool enabled = false;
-
-
-        // Properties.
-
-        public bool Enabled {
-            get => enabled;
-            protected set => enabled = value;
-        }
-
-
+    public abstract class Ability {
+               
         // Methods.
 
-        public void Disable() {
-            if (enabled) {
-                return;
-            }
-            enabled = false;
-            OnDisable();
-        }
+        public abstract Intention ReceiveIntention();
 
-        protected virtual void OnDisable() {}
-
-        public virtual Intention ReceiveIntention() {
-            return null;
-        }
-
-        public virtual void SatisfyIntention(Intention intention) {}
+        public abstract void AnswerIntention(Intention intention, bool satisfied);
 
     }
 

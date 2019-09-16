@@ -5,7 +5,7 @@ namespace NewWorld.Battlefield.Units.Intentions {
 
     public class Intention {
 
-        // Fields.
+        /*// Fields.
 
         private bool satisfied = false;
 
@@ -15,7 +15,7 @@ namespace NewWorld.Battlefield.Units.Intentions {
         public bool Satisfied {
             get => satisfied;
             set => satisfied = value;
-        }
+        }*/
 
 
         // Constructor.
