@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Intentions;
+using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
@@ -9,7 +11,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Fields.
 
         // Node update.
-        private ChangingConnectedNodeIntention changingConnectedNodeIntention;
+        private UpdateConnectedNodeIntention updateConnectedNodeIntention;
 
         // Position update.
         private Vector3 lastPosition;
@@ -19,18 +21,18 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Inner methods.
 
         protected override void OnStart() {
-            changingConnectedNodeIntention = new ChangingConnectedNodeIntention(TargetedNode);
+            updateConnectedNodeIntention = new UpdateConnectedNodeIntention(TargetedNode);
             lastPosition = CalculatePoisiton(out _);
         }
 
         protected override void OnStop() {
-            changingConnectedNodeIntention = null;
+            updateConnectedNodeIntention = null;
         }
 
         protected override Vector3 CalculatePoisiton(out bool targetReached) {
             targetReached = false;
             Vector2 newPosition2D;
-            if (!StartedMotion || StartedMotion && changingConnectedNodeIntention != null) {
+            if (!StartedMotion || StartedMotion && !updateConnectedNodeIntention.Satisfied) {
                 newPosition2D = CurrentNode;
             } else {
                 Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.y);
@@ -54,16 +56,16 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Intentions management.
 
-        public override Intention ReceiveIntention() {
-            return changingConnectedNodeIntention;
+        public override IEnumerable<Intention> ReceiveIntentions() {
+            if (updateConnectedNodeIntention == null || updateConnectedNodeIntention.Satisfied) {
+                return null;
+            }
+            return new SingleElementEnumerable<UpdateConnectedNodeIntention>(updateConnectedNodeIntention);
         }
 
-        public override void AnswerIntention(Intention intention, bool satisfied) {
-            if (intention == changingConnectedNodeIntention) {
-                if (satisfied) {
-                    changingConnectedNodeIntention = null;
-                    lastTime = Time.time;
-                }
+        public override void Fulfil(Intention intention) {
+            if (intention == null) {
+                throw new System.ArgumentNullException(nameof(intention));
             }
         }
 

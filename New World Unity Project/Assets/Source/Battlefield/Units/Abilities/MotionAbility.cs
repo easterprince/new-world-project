@@ -22,13 +22,9 @@ namespace NewWorld.Battlefield.Units.Abilities {
         public float Speed => speed;
         public bool StartedMotion => startedMotion;
 
-        protected Vector2Int CurrentNode {
-            get => currentNode;
-        }
+        public Vector2Int CurrentNode => currentNode;
 
-        protected Vector2Int TargetedNode {
-            get => targetedNode;
-        }
+        public Vector2Int TargetedNode => targetedNode;
 
 
         // Interactions.

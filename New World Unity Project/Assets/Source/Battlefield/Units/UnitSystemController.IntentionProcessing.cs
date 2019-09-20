@@ -24,17 +24,17 @@ namespace NewWorld.Battlefield.Units {
 
         private void ProcessIntentions() {
             foreach (UnitController unit in units) {
-                List<Intention> intentions = unit.ReceiveIntentions();
+                IEnumerable<Intention> intentions = unit.ReceiveIntentions();
                 if (intentions == null) {
                     continue;
                 }
                 foreach (Intention intention in intentions) {
-                    if (intention is ChangingConnectedNodeIntention changeConnectedNode) {
-                        NodeDescription node = MapController.Instance.GetSurfaceNode(changeConnectedNode.NewConnectedNode);
+                    if (intention is UpdateConnectedNodeIntention updateConnectedNode) {
+                        NodeDescription node = MapController.Instance.GetSurfaceNode(updateConnectedNode.NewConnectedNode);
                         if (node == null) {
                             continue;
                         }
-                        unit.ChangeConnectedNode(changeConnectedNode);
+                        unit.Fulfil(intention);
                     }
                 }
             }

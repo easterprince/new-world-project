@@ -3,7 +3,7 @@ using NewWorld.Battlefield.Units.Abilities;
 
 namespace NewWorld.Battlefield.Units.Intentions {
 
-    public class ChangingConnectedNodeIntention : Intention {
+    public class UpdateConnectedNodeIntention : Intention {
 
         // Fields.
 
@@ -17,7 +17,7 @@ namespace NewWorld.Battlefield.Units.Intentions {
 
         // Constructors.
 
-        public ChangingConnectedNodeIntention(Vector2Int newConnectedNode) : base() {
+        public UpdateConnectedNodeIntention(Vector2Int newConnectedNode) : base() {
             this.newConnectedNode = newConnectedNode;
         }
 

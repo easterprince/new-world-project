@@ -3,10 +3,11 @@ using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Composition;
 using NewWorld.Battlefield.Units.Intentions;
+using NewWorld.Battlefield.Units.Core;
 
 namespace NewWorld.Battlefield.Units {
 
-    public class UnitController : MonoBehaviour {
+    public class UnitController : MonoBehaviour, IIntending {
 
         // Fabric.
 
@@ -24,7 +25,7 @@ namespace NewWorld.Battlefield.Units {
             GameObject unit = Instantiate(prefab);
             unit.name = name ?? defaultGameObjectName;
             UnitController unitController = unit.GetComponent<UnitController>();
-            unitController.description = new UnitDescription(description);
+            unitController.core = new UnitCore(description);
             unitController.currentVisionDirection = visionDirection;
             return unitController;
         }
@@ -32,15 +33,15 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
-        private UnitDescription description;
         private int currentVisionDirection;
+        private UnitCore core;
 
         private SpriteRenderer spriteRenderer;
 
 
         // Properties.
 
-        public UnitDescription Description => description;
+        public Vector2Int ConnectedNode => core.ConnectedNode;
 
 
         // Life cycle.
@@ -49,7 +50,7 @@ namespace NewWorld.Battlefield.Units {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        private void Start() {
+        private void Update() {
             UpdateVisiblePosition();
         }
 
@@ -64,25 +65,22 @@ namespace NewWorld.Battlefield.Units {
             UpdateVisiblePosition();
         }
 
-        public List<Intention> ReceiveIntentions() {
-            return null;
+        public IEnumerable<Intention> ReceiveIntentions() {
+            return core.ReceiveIntentions();
         }
 
-        public void ChangeConnectedNode(ChangingConnectedNodeIntention intention) {
-            throw new System.NotImplementedException();
+        public void Fulfil(Intention intention) {
+            core.Fulfil(intention);
         }
 
 
         // Support.
 
         private void UpdateVisiblePosition() {
-            float height = MapController.Instance.GetSurfaceHeight(description.CurrentNode);
-            Vector3 realPosition = new Vector3(description.CurrentNode.x, description.CurrentNode.y, height);
+            Vector3 realPosition = core.GetPosition();
             transform.position = CoordinatesTransformations.RealToVisible(realPosition, currentVisionDirection, out int spriteOrder);
             spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.Units;
         }
-
-
     }
 
 }
