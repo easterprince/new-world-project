@@ -68,7 +68,7 @@ namespace NewWorld.Battlefield.Loading {
             };
             mapDescription = mapGenerator.Generate();
             unitDescriptions = new List<UnitDescription>();
-            int unitsCount = 100;
+            int unitsCount = 300;
             for (int i = 0; i < unitsCount; ++i) {
                 Vector2Int position;
                 do {

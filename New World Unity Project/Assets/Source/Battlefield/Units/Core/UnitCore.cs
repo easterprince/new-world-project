@@ -70,7 +70,7 @@ namespace NewWorld.Battlefield.Units.Core {
             }
             if (!plannedMotion) {
                 plannedMotion = true;
-                nextMovementTime = Time.time + Random.Range(1f, 2f);
+                nextMovementTime = Time.time + Random.Range(0f, 1.5f);
             }
             if (plannedMotion) {
                 if (Time.time >= nextMovementTime) {

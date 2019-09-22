@@ -23,6 +23,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Position update.
         private Vector3 lastPosition;
         private float lastTime;
+        private float startTime;
         private bool zInitialized = false;
 
 
@@ -34,9 +35,10 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Inner methods.
 
         protected override void OnStart() {
-            lastTime = Time.time;
             updateConnectedNodeIntention = new UpdateConnectedNodeIntention(TargetedNode);
             lastPosition = CalculatePoisiton(out _);
+            lastTime = Time.time;
+            startTime = lastTime;
             zInitialized = false;
         }
 
@@ -59,7 +61,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             Vector2 newPosition2D;
             if (updateConnectedNodeIntention != null) {
                 newPosition2D = CurrentNode;
-                if (Time.time - lastTime > latencyTime) {
+                if (currentTime - startTime > latencyTime) {
                     motionCondition = MotionCondition.Failed;
                 }
             } else {
