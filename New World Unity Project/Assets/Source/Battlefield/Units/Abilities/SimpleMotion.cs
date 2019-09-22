@@ -10,7 +10,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Constants.
 
-        private float LatencyTime = 0.5f;
+        private const float latencyTime = 0.5f;
 
 
         // Fields.
@@ -41,7 +41,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             Vector2 newPosition2D;
             if (updateConnectedNodeIntention != null) {
                 newPosition2D = CurrentNode;
-                if (Time.time - lastTime > LatencyTime) {
+                if (Time.time - lastTime > latencyTime) {
                     motionCondition = MotionCondition.Failed;
                 }
             } else {
