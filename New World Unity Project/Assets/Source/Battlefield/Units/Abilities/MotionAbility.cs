@@ -30,6 +30,9 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Interactions.
 
         public void StartMotion(Vector2Int currentNode, Vector2Int targetedNode) {
+            if (startedMotion) {
+                StopMotion();
+            }
             startedMotion = true;
             this.currentNode = currentNode;
             this.targetedNode = targetedNode;
@@ -37,17 +40,23 @@ namespace NewWorld.Battlefield.Units.Abilities {
         }
 
         public void StopMotion() {
+            if (!startedMotion) {
+                return;
+            } 
             startedMotion = false;
             OnStop();
         }
 
         public Vector3 GetPositionInMotion() {
+            if (!StartedMotion) {
+                throw new System.InvalidOperationException("Not moving - position is undefined!");
+            }
             Vector3 position = CalculatePoisiton(out bool targetReached);
             if (targetReached) {
                 StopMotion();
             }
             return position;
-        }        
+        }
 
 
         // Inner methods.
