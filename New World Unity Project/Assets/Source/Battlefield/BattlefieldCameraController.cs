@@ -69,11 +69,11 @@ namespace NewWorld.Battlefield {
                     int xDirection = VisionDirections.GetNextClockwiseDirection(currentVisionDirection);
                     int yDirection = currentVisionDirection;
                     Vector2 realPositionAddition = Vector2.zero;
-                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(xDirection)).normalized * Input.GetAxis("Common X");
-                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(yDirection)).normalized * Input.GetAxis("Common Y");
+                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(xDirection)).normalized * Input.GetAxisRaw("Common X");
+                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(yDirection)).normalized * Input.GetAxisRaw("Common Y");
                     realPositionAddition *= motionSpeedModifier;
                     currentRealPosition += realPositionAddition;
-                    currentSize += scrollingSpeedModifier * -Input.GetAxis("Common Z");
+                    currentSize += scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
                     currentSize = Mathf.Clamp(currentSize, minCameraSize, maxCameraSize);
                 } else {
                     currentRealPosition = defaultRealPosition;
