@@ -12,6 +12,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Constants.
 
         private const float latencyTime = 0.5f;
+        private const float verticalSpeed = 3f;
 
 
         // Fields.
@@ -22,6 +23,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Position update.
         private Vector3 lastPosition;
         private float lastTime;
+        private bool zInitialized = false;
 
 
         // Constructor.
@@ -35,6 +37,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             lastTime = Time.time;
             updateConnectedNodeIntention = new UpdateConnectedNodeIntention(TargetedNode);
             lastPosition = CalculatePoisiton(out _);
+            zInitialized = false;
         }
 
         protected override void OnStop() {
@@ -42,8 +45,17 @@ namespace NewWorld.Battlefield.Units.Abilities {
         }
 
         protected override Vector3 CalculatePoisiton(out MotionCondition motionCondition) {
-            UpdateIntentionState();
             motionCondition = MotionCondition.Moving;
+
+            // Check intention.
+            UpdateIntentionState();
+
+            // Update time.
+            float currentTime = Time.time;
+            float deltaTime = currentTime - lastTime;
+            lastTime = currentTime;
+
+            // Calculate x and y components.
             Vector2 newPosition2D;
             if (updateConnectedNodeIntention != null) {
                 newPosition2D = CurrentNode;
@@ -52,9 +64,6 @@ namespace NewWorld.Battlefield.Units.Abilities {
                 }
             } else {
                 Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.y);
-                float currentTime = Time.time;
-                float deltaTime = currentTime - lastTime;
-                lastTime = currentTime;
                 float deltaDistance = Speed * deltaTime;
                 Vector2 path = TargetedNode - lastPosition2D;
                 if (path.magnitude <= deltaDistance) {
@@ -64,7 +73,18 @@ namespace NewWorld.Battlefield.Units.Abilities {
                     newPosition2D = lastPosition2D + deltaDistance * path.normalized;
                 }
             }
+
+            // Calculate z component.
             float z = Mathf.Max(MapController.Instance.GetSurfaceHeight(newPosition2D, UnitAccount.Size), 0);
+            if (zInitialized) {
+                float deltaZ = verticalSpeed * deltaTime;
+                if (Mathf.Abs(z - lastPosition.z) > deltaZ) {
+                    z = Mathf.Sign(z - lastPosition.z) * deltaZ + lastPosition.z;
+                }
+            } else {
+                zInitialized = true;
+            }
+
             lastPosition = new Vector3(newPosition2D.x, newPosition2D.y, z);
             return lastPosition;
         }
