@@ -24,7 +24,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Constants.
 
-        private const float ZeroHeightSurfaceBrightness = 0.7f;
+        private const float zeroHeightSurfaceBrightness = 0.7f;
 
 
         // Fields.
@@ -69,7 +69,7 @@ namespace NewWorld.Battlefield.Map {
             // Updating surface.
             surface.transform.position = CoordinatesTransformations.RealToVisible(surfaceRealPosition, currentDirection, out int spriteOrder);
             surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
-            float surfaceBrightness = ZeroHeightSurfaceBrightness + (1 - ZeroHeightSurfaceBrightness) * (realHeight / MapController.Instance.HeightLimit);
+            float surfaceBrightness = zeroHeightSurfaceBrightness + (1 - zeroHeightSurfaceBrightness) * (realHeight / MapController.Instance.HeightLimit);
             surface.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0, 0, surfaceBrightness);
 
             // Updating sides.
