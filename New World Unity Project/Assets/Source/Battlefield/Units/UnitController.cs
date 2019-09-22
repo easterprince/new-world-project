@@ -31,6 +31,11 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
+        // Constants.
+
+        private const float unitSize = 0.49f;
+
+
         // Fields.
 
         private int currentVisionDirection;
@@ -78,7 +83,7 @@ namespace NewWorld.Battlefield.Units {
 
         private void UpdateVisiblePosition() {
             Vector3 realPosition = core.GetPosition();
-            transform.position = CoordinatesTransformations.RealToVisible(realPosition, currentVisionDirection, out int spriteOrder);
+            transform.position = CoordinatesTransformations.RealToVisible(realPosition, currentVisionDirection, unitSize, out int spriteOrder);
             spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.Units;
         }
     }

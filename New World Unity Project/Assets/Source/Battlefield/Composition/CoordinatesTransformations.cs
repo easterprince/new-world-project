@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace NewWorld.Battlefield.Composition {
 
@@ -19,16 +20,51 @@ namespace NewWorld.Battlefield.Composition {
 
         public static Vector3 RealToVisible(Vector3 real, int visionDirection, out int order) {
             if (!VisionDirections.IsValidDirection(visionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("visionDirection", visionDirection);
+                throw VisionDirections.BuildInvalidDirectionException(nameof(visionDirection), visionDirection);
             }
-            return RotatedToVisible(RotateReal(real, visionDirection), out order);
+            return RealToVisible(real, visionDirection, 0, out order);
         }
 
         public static Vector3 RealToVisible(Vector3 real, int visionDirection) {
             if (!VisionDirections.IsValidDirection(visionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("visionDirection", visionDirection);
+                throw VisionDirections.BuildInvalidDirectionException(nameof(visionDirection), visionDirection);
             }
-            return RotatedToVisible(RotateReal(real, visionDirection));
+            return RealToVisible(real, visionDirection, 0);
+        }
+
+        public static Vector3 RealToVisible(Vector3 real, int visionDirection, float size, out int order) {
+            if (!VisionDirections.IsValidDirection(visionDirection)) {
+                throw VisionDirections.BuildInvalidDirectionException(nameof(visionDirection), visionDirection);
+            }
+            if (!IsValidSize(size)) {
+                throw BuildInvalidSizeException(nameof(size), size);
+            }
+            return RotatedToVisible(RotateReal(real, visionDirection), size, out order);
+        }
+
+        public static Vector3 RealToVisible(Vector3 real, int visionDirection, float size) {
+            if (!VisionDirections.IsValidDirection(visionDirection)) {
+                throw VisionDirections.BuildInvalidDirectionException(nameof(visionDirection), visionDirection);
+            }
+            if (!IsValidSize(size)) {
+                throw BuildInvalidSizeException(nameof(size), size);
+            }
+            return RotatedToVisible(RotateReal(real, visionDirection), size);
+        }
+
+
+        // Exception builder.
+
+        public static bool IsValidSize(float parameterValue) {
+            return parameterValue >= 0;
+        }
+
+        public static ArgumentOutOfRangeException BuildInvalidSizeException(string parameterName, float parameterValue) {
+            return new ArgumentOutOfRangeException(
+                parameterName,
+                parameterValue,
+                $"Provided size is invalid. It must be non-negative."
+            );
         }
 
 
@@ -36,7 +72,7 @@ namespace NewWorld.Battlefield.Composition {
 
         private static Vector3 RotateReal(Vector3 real, int visionDirection) {
             if (!VisionDirections.IsValidDirection(visionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("visionDirection", visionDirection);
+                throw VisionDirections.BuildInvalidDirectionException(nameof(visionDirection), visionDirection);
             }
             Vector3 rotated = real;
             if (visionDirection == 1 || visionDirection == 2) {
@@ -52,12 +88,18 @@ namespace NewWorld.Battlefield.Composition {
             return rotated;
         }
 
-        private static Vector3 RotatedToVisible(Vector3 real, out int order) {
-            order = -Mathf.RoundToInt(2 * real.x + 2 * real.y) * SpriteLayers.SublayersPerLayer;
-            return RotatedToVisible(real);
+        private static Vector3 RotatedToVisible(Vector3 real, float size, out int order) {
+            if (!IsValidSize(size)) {
+                throw BuildInvalidSizeException(nameof(size), size);
+            }
+            order = -Mathf.RoundToInt(2 * (real.x + real.y - size)) * SpriteLayers.SublayersPerLayer;
+            return RotatedToVisible(real, size);
         }
 
-        private static Vector3 RotatedToVisible(Vector3 real) {
+        private static Vector3 RotatedToVisible(Vector3 real, float size) {
+            if (!IsValidSize(size)) {
+                throw BuildInvalidSizeException(nameof(size), size);
+            }
             return new Vector3(
                 real.x - real.y,
                 0.5f * real.x + 0.5f * real.y + reversedHidingDifference * real.z,
