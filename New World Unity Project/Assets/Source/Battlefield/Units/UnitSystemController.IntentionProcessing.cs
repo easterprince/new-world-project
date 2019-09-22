@@ -35,6 +35,7 @@ namespace NewWorld.Battlefield.Units {
                             continue;
                         }
                         unit.Fulfil(intention);
+                        intention.Satisfy();
                     }
                 }
             }

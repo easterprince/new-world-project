@@ -30,9 +30,10 @@ namespace NewWorld.Battlefield.Units.Abilities {
         }
 
         protected override Vector3 CalculatePoisiton(out bool targetReached) {
+            UpdateIntentionState();
             targetReached = false;
             Vector2 newPosition2D;
-            if (!StartedMotion || StartedMotion && !updateConnectedNodeIntention.Satisfied) {
+            if (!StartedMotion || updateConnectedNodeIntention != null) {
                 newPosition2D = CurrentNode;
             } else {
                 Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.y);
@@ -41,7 +42,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
                 lastTime = currentTime;
                 float deltaDistance = Speed * deltaTime;
                 Vector2 path = TargetedNode - lastPosition2D;
-                if (path.sqrMagnitude <= deltaDistance) {
+                if (path.magnitude <= deltaDistance) {
                     newPosition2D = lastPosition2D;
                     targetReached = true;
                 } else {
@@ -57,7 +58,8 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Intentions management.
 
         public override IEnumerable<Intention> ReceiveIntentions() {
-            if (updateConnectedNodeIntention == null || updateConnectedNodeIntention.Satisfied) {
+            UpdateIntentionState();
+            if (updateConnectedNodeIntention == null) {
                 return null;
             }
             return new SingleElementEnumerable<UpdateConnectedNodeIntention>(updateConnectedNodeIntention);
@@ -69,6 +71,18 @@ namespace NewWorld.Battlefield.Units.Abilities {
             }
         }
 
+
+        // Support.
+
+        private void UpdateIntentionState() {
+            if (updateConnectedNodeIntention == null) {
+                return;
+            }
+            if (updateConnectedNodeIntention.Satisfied) {
+                updateConnectedNodeIntention = null;
+                lastTime = Time.time;
+            }
+        }
 
 
     }

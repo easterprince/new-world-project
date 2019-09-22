@@ -20,6 +20,7 @@ namespace NewWorld.Battlefield.Units.Core {
 
         public Vector2Int ConnectedNode => connectedNode;
         public bool CanMove => motionAbility != null;
+        public bool Moving => motionAbility?.StartedMotion ?? false;
 
 
         // Constructor.
@@ -44,7 +45,7 @@ namespace NewWorld.Battlefield.Units.Core {
 
         public void StartMotion(Vector2Int targetedNode) {
             if (motionAbility == null) {
-                return;
+                throw new System.InvalidOperationException("No motion ability - motion is impossible!");
             }
             motionAbility.StartMotion(connectedNode, targetedNode);
         }

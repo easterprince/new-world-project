@@ -10,6 +10,10 @@ namespace NewWorld.Battlefield.Units.Core {
 
         private readonly UnitLocator locator;
 
+        // TODO. Make another giving orders class.
+        private bool plannedMotion = false;
+        private float nextMovementTime = 0;
+
 
         // Properties.
 
@@ -29,7 +33,7 @@ namespace NewWorld.Battlefield.Units.Core {
             if (description == null) {
                 throw new System.ArgumentNullException(nameof(description));
             }
-            locator = new UnitLocator(null, description.CurrentNode);
+            locator = new UnitLocator(new Abilities.SimpleMotion(), description.CurrentNode);
         }
 
 
@@ -45,7 +49,28 @@ namespace NewWorld.Battlefield.Units.Core {
         }
 
         public IEnumerable<Intention> ReceiveIntentions() {
+            Walk();
             return locator.ReceiveIntentions();
+        }
+
+
+        // Support.
+
+        private void Walk() {
+            if (!locator.CanMove || locator.Moving) {
+                return;
+            }
+            if (!plannedMotion) {
+                plannedMotion = true;
+                nextMovementTime = Time.time + Random.Range(1f, 2f);
+            }
+            if (plannedMotion) {
+                if (Time.time >= nextMovementTime) {
+                    plannedMotion = false;
+                    Vector2Int offset = new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
+                    locator.StartMotion(locator.ConnectedNode + offset);
+                }
+            }
         }
 
 
