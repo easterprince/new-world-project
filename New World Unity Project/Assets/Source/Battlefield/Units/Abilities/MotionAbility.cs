@@ -6,6 +6,15 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
     public abstract class MotionAbility : Ability {
 
+        // Enumerator.
+
+        protected enum MotionCondition {
+            Moving,
+            TargetReached,
+            Failed
+        }
+
+
         // Fields.
 
         // Parameters.
@@ -21,9 +30,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         public float Speed => speed;
         public bool StartedMotion => startedMotion;
-
         public Vector2Int CurrentNode => currentNode;
-
         public Vector2Int TargetedNode => targetedNode;
 
 
@@ -51,8 +58,8 @@ namespace NewWorld.Battlefield.Units.Abilities {
             if (!StartedMotion) {
                 throw new System.InvalidOperationException("Not moving - position is undefined!");
             }
-            Vector3 position = CalculatePoisiton(out bool targetReached);
-            if (targetReached) {
+            Vector3 position = CalculatePoisiton(out MotionCondition motionCondition);
+            if (motionCondition == MotionCondition.Failed || motionCondition == MotionCondition.TargetReached) {
                 StopMotion();
             }
             return position;
@@ -65,7 +72,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         protected abstract void OnStop();
 
-        protected abstract Vector3 CalculatePoisiton(out bool targetReached);
+        protected abstract Vector3 CalculatePoisiton(out MotionCondition motionCondition);
 
 
     }

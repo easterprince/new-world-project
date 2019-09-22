@@ -8,6 +8,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
     public class SimpleMotion : MotionAbility {
 
+        // Constants.
+
+        private float LatencyTime = 0.5f;
+
+
         // Fields.
 
         // Node update.
@@ -21,6 +26,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Inner methods.
 
         protected override void OnStart() {
+            lastTime = Time.time;
             updateConnectedNodeIntention = new UpdateConnectedNodeIntention(TargetedNode);
             lastPosition = CalculatePoisiton(out _);
         }
@@ -29,12 +35,15 @@ namespace NewWorld.Battlefield.Units.Abilities {
             updateConnectedNodeIntention = null;
         }
 
-        protected override Vector3 CalculatePoisiton(out bool targetReached) {
+        protected override Vector3 CalculatePoisiton(out MotionCondition motionCondition) {
             UpdateIntentionState();
-            targetReached = false;
+            motionCondition = MotionCondition.Moving;
             Vector2 newPosition2D;
-            if (!StartedMotion || updateConnectedNodeIntention != null) {
+            if (updateConnectedNodeIntention != null) {
                 newPosition2D = CurrentNode;
+                if (Time.time - lastTime > LatencyTime) {
+                    motionCondition = MotionCondition.Failed;
+                }
             } else {
                 Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.y);
                 float currentTime = Time.time;
@@ -44,7 +53,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
                 Vector2 path = TargetedNode - lastPosition2D;
                 if (path.magnitude <= deltaDistance) {
                     newPosition2D = lastPosition2D;
-                    targetReached = true;
+                    motionCondition = MotionCondition.TargetReached;
                 } else {
                     newPosition2D = lastPosition2D + deltaDistance * path.normalized;
                 }
