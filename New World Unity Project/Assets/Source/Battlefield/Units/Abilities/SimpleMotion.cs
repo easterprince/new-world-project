@@ -2,6 +2,7 @@
 using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Intentions;
+using NewWorld.Battlefield.Units.Core;
 using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Abilities {
@@ -21,6 +22,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Position update.
         private Vector3 lastPosition;
         private float lastTime;
+
+
+        // Constructor.
+
+        public SimpleMotion(UnitAccount unitAccount) : base(unitAccount) {}
 
 
         // Inner methods.
@@ -58,7 +64,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
                     newPosition2D = lastPosition2D + deltaDistance * path.normalized;
                 }
             }
-            float z = Mathf.Max(MapController.Instance.GetSurfaceHeight(newPosition2D), 0);
+            float z = Mathf.Max(MapController.Instance.GetSurfaceHeight(newPosition2D, UnitAccount.Size), 0);
             lastPosition = new Vector3(newPosition2D.x, newPosition2D.y, z);
             return lastPosition;
         }

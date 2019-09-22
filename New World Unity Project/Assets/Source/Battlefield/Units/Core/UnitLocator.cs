@@ -25,7 +25,7 @@ namespace NewWorld.Battlefield.Units.Core {
 
         // Constructor.
 
-        public UnitLocator(MotionAbility motionAbility, Vector2Int connectedNode) {
+        public UnitLocator(UnitAccount unitAccount, MotionAbility motionAbility, Vector2Int connectedNode) : base(unitAccount) {
             this.motionAbility = motionAbility;
             this.connectedNode = connectedNode;
         }

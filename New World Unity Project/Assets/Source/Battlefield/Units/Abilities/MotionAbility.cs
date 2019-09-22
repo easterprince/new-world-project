@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Units.Intentions;
+using NewWorld.Battlefield.Units.Core;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
@@ -32,6 +31,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
         public bool StartedMotion => startedMotion;
         public Vector2Int CurrentNode => currentNode;
         public Vector2Int TargetedNode => targetedNode;
+
+
+        // Constructor.
+
+        public MotionAbility(UnitAccount unitAccount) : base(unitAccount) {}
 
 
         // Interactions.

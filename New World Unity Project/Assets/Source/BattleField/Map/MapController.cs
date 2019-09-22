@@ -47,12 +47,23 @@ namespace NewWorld.Battlefield.Map {
 
         // Information.
 
-        public float GetSurfaceHeight(Vector2 position) {
-            Vector2Int tileArrayPosition = RealToTileArrayPosition(position);
-            if (!IsValidTileArrayPosition(tileArrayPosition)) {
-                return float.NegativeInfinity;
+        public float GetSurfaceHeight(Vector2 position, float size = 0) {
+            if (!CoordinatesTransformations.IsValidSize(size)) {
+                throw CoordinatesTransformations.BuildInvalidSizeException(nameof(size), size);
             }
-            return tileHeights[tileArrayPosition.x, tileArrayPosition.y];
+            float sizeHalf = 0.5f * size;
+            Vector2Int coveredStart = RealToTileArrayPosition(position - new Vector2(sizeHalf, sizeHalf));
+            Vector2Int coveredFinish = RealToTileArrayPosition(position + new Vector2(sizeHalf, sizeHalf));
+            float height = float.NegativeInfinity;
+            for (Vector2Int tileArrayPosition = coveredStart; tileArrayPosition.x <= coveredFinish.x; ++tileArrayPosition.x) {
+                for (tileArrayPosition.y = coveredStart.y; tileArrayPosition.y <= coveredFinish.y; ++tileArrayPosition.y) {
+                    if (!IsValidTileArrayPosition(tileArrayPosition)) {
+                        continue;
+                    }
+                    height = Mathf.Max(height, tileHeights[tileArrayPosition.x, tileArrayPosition.y]);
+                }
+            }
+            return height;
         }
 
         public NodeDescription GetSurfaceNode(Vector2Int position) {

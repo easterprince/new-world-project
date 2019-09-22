@@ -8,7 +8,12 @@ namespace NewWorld.Battlefield.Units.Core {
 
         // Fields.
 
+        // Account.
+        private readonly UnitAccount account;
+
+        // Modules.
         private readonly UnitLocator locator;
+        private readonly float size;
 
         // TODO. Make another giving orders class.
         private bool plannedMotion = false;
@@ -18,6 +23,7 @@ namespace NewWorld.Battlefield.Units.Core {
         // Properties.
 
         public Vector2Int ConnectedNode => locator.ConnectedNode;
+        public float Size => size;
 
 
         // Interactions.
@@ -33,7 +39,9 @@ namespace NewWorld.Battlefield.Units.Core {
             if (description == null) {
                 throw new System.ArgumentNullException(nameof(description));
             }
-            locator = new UnitLocator(new Abilities.SimpleMotion(), description.CurrentNode);
+            account = new UnitAccount(this);
+            locator = new UnitLocator(account, new Abilities.SimpleMotion(account), description.ConnectedNode);
+            size = description.Size;
         }
 
 

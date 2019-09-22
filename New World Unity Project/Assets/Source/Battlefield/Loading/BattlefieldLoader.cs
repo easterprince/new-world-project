@@ -74,7 +74,7 @@ namespace NewWorld.Battlefield.Loading {
                 do {
                     position = new Vector2Int(random.Next(mapDescription.Size.x), random.Next(mapDescription.Size.y));
                 } while (mapDescription.GetSurfaceNode(position) == null);
-                unitDescriptions.Add(new UnitDescription(position));
+                unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
         }
 
