@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Composition;
 using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Map {
@@ -35,16 +34,6 @@ namespace NewWorld.Battlefield.Map {
                     Vector3 position = new Vector3(x, y, nodeDescription.Height);
                     node.Place(position);
                 }
-            }
-        }
-
-        public void Rotate(int newVisionDirection) {
-            if (!VisionDirections.IsValidDirection(newVisionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
-            }
-
-            foreach (NodeController node in nodes) {
-                node?.Rotate(newVisionDirection);
             }
         }
 

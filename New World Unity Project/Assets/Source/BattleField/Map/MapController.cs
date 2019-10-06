@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Loading;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -13,7 +12,6 @@ namespace NewWorld.Battlefield.Map {
         private Vector2Int tilesCount;
         private float[,] tileHeights;
         private TileController[,] tiles;
-        private int currentVisionDirection;
 
 
         // Properties.
@@ -37,8 +35,6 @@ namespace NewWorld.Battlefield.Map {
             tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
             tileHeights = new float[tilesCount.x, tilesCount.y];
             tiles = new TileController[tilesCount.x, tilesCount.y];
-            currentVisionDirection = 0;
-            ReinitializeHidingsObservation();
             DoForAllTiles(UpdateTileHeight);
             DoForAllTiles(UpdateTileAtPosition);
             NodeGridController.Instance.Load(description);
@@ -47,13 +43,16 @@ namespace NewWorld.Battlefield.Map {
 
         // Information.
 
-        public float GetSurfaceHeight(Vector2 position, float size = 0) {
-            if (!CoordinatesTransformations.IsValidSize(size)) {
-                throw CoordinatesTransformations.BuildInvalidSizeException(nameof(size), size);
+        public float GetSurfaceHeight(Vector2 position, float maximumRadius = 0) {
+            if (maximumRadius < 0) {
+                throw new System.ArgumentOutOfRangeException(nameof(maximumRadius), "Radius should be non-negative number.");
             }
-            float sizeHalf = 0.5f * size;
-            Vector2Int coveredStart = RealToTileArrayPosition(position - new Vector2(sizeHalf, sizeHalf));
-            Vector2Int coveredFinish = RealToTileArrayPosition(position + new Vector2(sizeHalf, sizeHalf));
+            Vector2Int coveredStart = RealToTileArrayPosition(position - new Vector2(maximumRadius, maximumRadius));
+            coveredStart.x = Mathf.Clamp(coveredStart.x, 0, tilesCount.x - 1);
+            coveredStart.y = Mathf.Clamp(coveredStart.y, 0, tilesCount.y - 1);
+            Vector2Int coveredFinish = RealToTileArrayPosition(position + new Vector2(maximumRadius, maximumRadius));
+            coveredFinish.x = Mathf.Clamp(coveredFinish.x, 0, tilesCount.x - 1);
+            coveredFinish.y = Mathf.Clamp(coveredFinish.y, 0, tilesCount.y - 1);
             float height = float.NegativeInfinity;
             for (Vector2Int tileArrayPosition = coveredStart; tileArrayPosition.x <= coveredFinish.x; ++tileArrayPosition.x) {
                 for (tileArrayPosition.y = coveredStart.y; tileArrayPosition.y <= coveredFinish.y; ++tileArrayPosition.y) {
@@ -68,24 +67,6 @@ namespace NewWorld.Battlefield.Map {
 
         public NodeDescription GetSurfaceNode(Vector2Int position) {
             return description.GetSurfaceNode(position);
-        }
-
-
-        // Outer control.
-
-        public void Rotate(int newVisionDirection) {
-            if (!VisionDirections.IsValidDirection(newVisionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
-            }
-            currentVisionDirection = newVisionDirection;
-            ReinitializeHidingsObservation();
-            DoForAllTiles((Vector2Int tileArrayPosition) => {
-                TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
-                if (tile != null) {
-                    tile.Rotate(currentVisionDirection, CalculateHidingHeight(tileArrayPosition));
-                }
-            });
-            NodeGridController.Instance.Rotate(currentVisionDirection);
         }
 
 
@@ -165,7 +146,7 @@ namespace NewWorld.Battlefield.Map {
                     tiles[tileArrayPosition.x, tileArrayPosition.y] = tile;
                 }
                 Vector2 tileRealPosition = TileArrayToRealPosition(tileArrayPosition);
-                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight), CalculateHidingHeight(tileArrayPosition));
+                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight));
             }
         }
 

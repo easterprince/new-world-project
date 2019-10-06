@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -22,133 +21,39 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
-        // Constants.
-
-        private const float zeroHeightSurfaceBrightness = 0.7f;
-
-
         // Fields.
 
-        public GameObject surface;
+#pragma warning disable IDE0044, CS0414, CS0649
 
-        public GameObject baseSides;
+        private GameObject block;
 
-        private Vector3 basementRealPosition;
-        private float realHeight;
-        private int currentDirection;
-        private List<GameObject> allSides;
+#pragma warning restore IDE0044, CS0414, CS0649
+
+        private float height;
 
 
         // Properties.
 
-        public Vector3 BasementRealPosition => basementRealPosition;
-        public float RealHeight => realHeight;
+        public float Height => height;
 
 
         // Life cycle.
 
-        private void Awake() {
-            basementRealPosition = Vector3.zero;
-            currentDirection = 0;
-            allSides = new List<GameObject> {
-                baseSides
-            };
-        }
+        private void Awake() {}
 
 
         // Public methods.
 
-        public void Place(Vector3 surfaceRealPosition, float hidingHeight = float.NegativeInfinity) {
-            surfaceRealPosition.z = Mathf.Max(surfaceRealPosition.z, 0);
+        public void Place(Vector3 surfacePosition) {
+            surfacePosition.z = Mathf.Max(surfacePosition.z, 0);
 
             // Updating object itself.
-            basementRealPosition = new Vector3(surfaceRealPosition.x, surfaceRealPosition.y, -CoordinatesTransformations.TileHidingHeightDifference);
-            realHeight = surfaceRealPosition.z;
-            transform.position = CoordinatesTransformations.RealToVisible(basementRealPosition, currentDirection);
+            height = surfacePosition.z;
+            Vector3 centerPosition = surfacePosition;
+            centerPosition.z *= 0.5f;
+            transform.position = centerPosition;
+            transform.localScale = new Vector3(transform.localScale.x, surfacePosition.z, transform.localScale.z);
 
-            // Updating surface.
-            surface.transform.position = CoordinatesTransformations.RealToVisible(surfaceRealPosition, currentDirection, out int spriteOrder);
-            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
-            float surfaceBrightness = zeroHeightSurfaceBrightness + (1 - zeroHeightSurfaceBrightness) * (realHeight / MapController.Instance.HeightLimit);
-            surface.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0, 0, surfaceBrightness);
-
-            // Updating sides.
-            int index = 0;
-            bool lastSides = false;
-            Vector3 sidesRealPosition = basementRealPosition;
-            do {
-                if (sidesRealPosition.z >= realHeight - CoordinatesTransformations.TileHidingHeightDifference) {
-                    sidesRealPosition.z = realHeight - CoordinatesTransformations.TileHidingHeightDifference;
-                    lastSides = true;
-                }
-                GameObject sides;
-                if (allSides.Count <= index) {
-                    sides = Instantiate(baseSides);
-                    sides.name = $"Sides ({index})";
-                    sides.transform.parent = transform;
-                    allSides.Add(sides);
-                } else {
-                    sides = allSides[index];
-                }
-                sides.transform.position = CoordinatesTransformations.RealToVisible(sidesRealPosition, currentDirection);
-                sides.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder +
-                    (int) (lastSides ? SpriteLayers.Sublayers.TilesBackground : SpriteLayers.Sublayers.TilesForeground);
-                ++index;
-                sidesRealPosition.z = (index - 1) * CoordinatesTransformations.TileHidingHeightDifference;
-            } while (!lastSides);
-
-            // Removing unnecessary sides.
-            while (allSides.Count > index) {
-                int last = allSides.Count - 1;
-                Destroy(allSides[last]);
-                allSides.RemoveAt(last);
-            }
-
-            // Hide invisible sides.
-            Hide(hidingHeight);
-
-        }
-
-        public void Rotate(int newDirection, float hidingHeight = float.NegativeInfinity) {
-            if (!VisionDirections.IsValidDirection(newDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("newDirection", newDirection);
-            }
-
-            // Updating object itself.
-            currentDirection = newDirection;
-            transform.position = CoordinatesTransformations.RealToVisible(basementRealPosition, newDirection, out int spriteOrder);
-
-            // Update parts of tile.
-            surface.GetComponent<SpriteRenderer>().sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
-            for (int i = 0; i < allSides.Count; ++i) {
-                SpriteRenderer spriteRenderer = allSides[i].GetComponent<SpriteRenderer>();
-                if (i == allSides.Count - 1) {
-                    spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesBackground;
-                } else {
-                    spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.TilesForeground;
-                }
-            }
-
-            // Hide invisible sides.
-            Hide(hidingHeight);
-
-        }
-
-
-        // Support.
-
-        private void Hide(float hidingHeight) {
-            bool hide = true;
-            for (int i = 0; i < allSides.Count; ++i) {
-                float sideSurfaceHeight = i * CoordinatesTransformations.TileHidingHeightDifference;
-                if (hidingHeight < sideSurfaceHeight) {
-                    hide = false;
-                }
-                if (!hide && allSides[i].activeSelf == true) {
-                    break;
-                }
-                allSides[i].SetActive(!hide);
-            }
         }
 
 

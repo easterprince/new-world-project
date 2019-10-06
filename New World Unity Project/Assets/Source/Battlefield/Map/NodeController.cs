@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -23,49 +22,17 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
-        // Fields.
-
-        private Vector3 realPosition;
-        private int currentVisionDirection;
-
-        private SpriteRenderer spriteRenderer;
-
-
-        // Properties.
-
-        public Vector3 RealPosition => realPosition;
-
-
         // Life cycle.
 
-        private void Awake() {
-            realPosition = Vector3.zero;
-            currentVisionDirection = 0;
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
+        private void Awake() {}
 
 
         // External control.
 
-        public void Place(Vector3 newRealPosition) {
-            realPosition = newRealPosition;
-            UpdateVisiblePosition();
+        public void Place(Vector3 position) {
+            transform.position = position;
         }
-
-        public void Rotate(int newVisionDirection) {
-            currentVisionDirection = newVisionDirection;
-            UpdateVisiblePosition();
-        }
-
-
-        // Support.
-
-        private void UpdateVisiblePosition() {
-            transform.position = CoordinatesTransformations.RealToVisible(realPosition, currentVisionDirection, out int spriteOrder);
-            spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.Nodes;
-        }
-
-
+               
     }
 
 }
