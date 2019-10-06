@@ -9,19 +9,7 @@ namespace NewWorld.Battlefield {
 
         // Variables.
 
-#pragma warning disable IDE0044, CS0414, CS0649
-
-        [SerializeField]
-        private Map.MapController map = null;
-
-        [SerializeField]
-        private Units.UnitSystemController unitSystem = null;
-
-#pragma warning restore IDE0044, CS0414, CS0649
-
         private bool battleStarted;
-        private int currentDirection;
-        private int lastTurnInput;
 
 
         // Properties.
@@ -35,31 +23,9 @@ namespace NewWorld.Battlefield {
             base.Awake();
             Instance = this;
             battleStarted = false;
-            currentDirection = 0;
-            lastTurnInput = 0;
         }
 
-        private void Update() {
-
-            // Read rotation commands.
-            if (battleStarted) {
-                int newTurnInput = System.Math.Sign(Input.GetAxis("Turn"));
-                if (newTurnInput != lastTurnInput) {
-                    lastTurnInput = newTurnInput;
-                    if (newTurnInput > 0) {
-                        currentDirection = VisionDirections.GetNextClockwiseDirection(currentDirection);
-                    } else if (newTurnInput < 0) {
-                        currentDirection = VisionDirections.GetNextCounterclockwiseDirection(currentDirection);
-                    }
-                    if (newTurnInput != 0) {
-                        Map.MapController.Instance.Rotate(currentDirection);
-                        Units.UnitSystemController.Instance.Rotate(currentDirection);
-                        BattlefieldCameraController.Instance.Rotate(currentDirection);
-                    }
-                }
-            }
-
-        }
+        private void Update() {}
 
 
         // Controlling methods.

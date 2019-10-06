@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletones;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield {
 
@@ -13,17 +12,17 @@ namespace NewWorld.Battlefield {
 
         private Camera cameraComponent;
 
-        private float zOffset;
-        private Vector2 defaultRealPosition;
-        private Vector2 currentRealPosition;
-        private int currentVisionDirection;
+        private Vector3 defaultPosition;
+        private Quaternion defaultRotation;
         private float defaultSize;
-        private float currentSize;
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
         [SerializeField]
         private float motionSpeedModifier = 1.0f;
+
+        [SerializeField]
+        private float rotationSpeedModifier = 1.0f;
 
         [SerializeField]
         private float scrollingSpeedModifier = 1.0f;
@@ -53,63 +52,31 @@ namespace NewWorld.Battlefield {
             base.Awake();
             Instance = this;
             cameraComponent = GetComponent<Camera>();
-            zOffset = transform.position.z;
-            defaultRealPosition = Vector2.zero;
-            currentRealPosition = defaultRealPosition;
-            currentVisionDirection = 0;
+            defaultPosition = transform.position;
+            defaultRotation = transform.rotation;
             defaultSize = cameraComponent.orthographicSize;
-            currentSize = defaultSize;
         }
 
         private void Update() {
             if (BattlefieldController.Instance.BattleStarted) {
 
                 // Input processing.
-                if (Input.GetAxis("Cancel") == 0) {
-                    int xDirection = VisionDirections.GetNextClockwiseDirection(currentVisionDirection);
-                    int yDirection = currentVisionDirection;
-                    Vector2 realPositionAddition = Vector2.zero;
-                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(xDirection)).normalized * Input.GetAxisRaw("Common X");
-                    realPositionAddition += ((Vector2) VisionDirections.GetDirectionDelta(yDirection)).normalized * Input.GetAxisRaw("Common Y");
-                    realPositionAddition *= motionSpeedModifier;
-                    currentRealPosition += realPositionAddition;
-                    currentSize += scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
-                    currentSize = Mathf.Clamp(currentSize, minCameraSize, maxCameraSize);
+                if (Input.GetAxisRaw("Cancel") == 0) {
+                    Vector3 positionAddition = Vector3.zero;
+                    positionAddition += transform.right * Input.GetAxisRaw("Common X");
+                    positionAddition += transform.forward * Input.GetAxisRaw("Common Y");
+                    positionAddition *= motionSpeedModifier;
+                    transform.position += positionAddition;
+                    transform.rotation *= Quaternion.Euler(0, Input.GetAxisRaw("Turn") * rotationSpeedModifier, 0);
+                    float newSize = cameraComponent.orthographicSize + scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
+                    cameraComponent.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
                 } else {
-                    currentRealPosition = defaultRealPosition;
-                    currentSize = defaultSize;
+                    transform.position = defaultPosition;
+                    transform.rotation = defaultRotation;
+                    cameraComponent.orthographicSize = defaultSize;
                 }
 
-                // Properties updating.
-                UpdateCameraLocation();
-
             }
-        }
-
-
-        // Methods.
-
-        public void Place(Vector2 newRealPosition) {
-            currentRealPosition = newRealPosition;
-            UpdateCameraLocation();
-        }
-
-        public void Rotate(int newVisionDirection) {
-            if (!VisionDirections.IsValidDirection(newVisionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
-            }
-            currentVisionDirection = newVisionDirection;
-            UpdateCameraLocation();
-        }
-
-
-        // Support.
-
-        private void UpdateCameraLocation() {
-            Vector3 updatedPosition = CoordinatesTransformations.RealToVisible(currentRealPosition, currentVisionDirection);
-            updatedPosition.z = zOffset;
-            transform.position = updatedPosition;
-            cameraComponent.orthographicSize = currentSize;
         }
 
 
