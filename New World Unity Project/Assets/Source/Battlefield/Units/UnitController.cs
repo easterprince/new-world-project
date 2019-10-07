@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Composition;
 using NewWorld.Battlefield.Units.Intentions;
 using NewWorld.Battlefield.Units.Core;
 
@@ -15,10 +14,7 @@ namespace NewWorld.Battlefield.Units {
         private const string defaultGameObjectName = "Unit";
         private static GameObject prefab;
 
-        public static UnitController BuildUnit(UnitDescription description, int visionDirection, string name = defaultGameObjectName) {
-            if (!VisionDirections.IsValidDirection(visionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("visionDirection", visionDirection);
-            }
+        public static UnitController BuildUnit(UnitDescription description, string name = defaultGameObjectName) {
             if (prefab == null) {
                 prefab = Resources.Load<GameObject>(prefabPath);
             }
@@ -26,7 +22,6 @@ namespace NewWorld.Battlefield.Units {
             unit.name = name ?? defaultGameObjectName;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.core = new UnitCore(description);
-            unitController.currentVisionDirection = visionDirection;
             return unitController;
         }
 
@@ -38,10 +33,7 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
-        private int currentVisionDirection;
         private UnitCore core;
-
-        private SpriteRenderer spriteRenderer;
 
 
         // Properties.
@@ -51,24 +43,14 @@ namespace NewWorld.Battlefield.Units {
 
         // Life cycle.
 
-        private void Awake() {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
+        private void Awake() {}
 
         private void Update() {
-            UpdateVisiblePosition();
+            transform.position = core.GetPosition();
         }
 
 
         // Outer control.
-
-        public void Rotate(int visionDirection) {
-            if (!VisionDirections.IsValidDirection(visionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("visionDirection", visionDirection);
-            }
-            currentVisionDirection = visionDirection;
-            UpdateVisiblePosition();
-        }
 
         public IEnumerable<Intention> ReceiveIntentions() {
             return core.ReceiveIntentions();
@@ -79,13 +61,6 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
-        // Support.
-
-        private void UpdateVisiblePosition() {
-            Vector3 realPosition = core.GetPosition();
-            transform.position = CoordinatesTransformations.RealToVisible(realPosition, currentVisionDirection, unitSize, out int spriteOrder);
-            spriteRenderer.sortingOrder = spriteOrder + (int) SpriteLayers.Sublayers.Units;
-        }
     }
 
 }

@@ -13,7 +13,7 @@ namespace NewWorld.Battlefield.Units.Core {
 
         // Modules.
         private readonly UnitLocator locator;
-        private readonly float size;
+        private readonly float maximumRadius;
 
         // TODO. Make another giving orders class.
         private bool plannedMotion = false;
@@ -23,7 +23,7 @@ namespace NewWorld.Battlefield.Units.Core {
         // Properties.
 
         public Vector2Int ConnectedNode => locator.ConnectedNode;
-        public float Size => size;
+        public float MaximumRadius => maximumRadius;
 
 
         // Interactions.
@@ -41,7 +41,7 @@ namespace NewWorld.Battlefield.Units.Core {
             }
             account = new UnitAccount(this);
             locator = new UnitLocator(account, new Abilities.SimpleMotion(account), description.ConnectedNode);
-            size = description.Size;
+            maximumRadius = description.MaximumRadius;
         }
 
 

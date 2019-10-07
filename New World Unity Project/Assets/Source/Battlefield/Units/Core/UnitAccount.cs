@@ -19,7 +19,7 @@ namespace NewWorld.Battlefield.Units.Core {
         // Properties.
 
         public Vector2Int ConnectedNode => core.ConnectedNode;
-        public float Size => core.Size;
+        public float Size => core.MaximumRadius;
 
 
     }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Battlefield.Composition;
 using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Units {
@@ -9,7 +8,6 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
-        private int currentVisionDirection;
         private HashSet<UnitController> units;
 
 
@@ -19,7 +17,6 @@ namespace NewWorld.Battlefield.Units {
             base.Awake();
             Instance = this;
             InitializeIntentionProcessing();
-            currentVisionDirection = 0;
             units = new HashSet<UnitController>();
         }
 
@@ -33,19 +30,9 @@ namespace NewWorld.Battlefield.Units {
         public void Load(List<UnitDescription> unitDescriptions) {
             int index = 0;
             foreach (UnitDescription unitDescription in unitDescriptions) {
-                UnitController unit = UnitController.BuildUnit(unitDescription, currentVisionDirection, $"Unit {index++}");
+                UnitController unit = UnitController.BuildUnit(unitDescription, $"Unit {index++}");
                 unit.transform.parent = transform;
                 units.Add(unit);
-            }
-        }
-
-        public void Rotate(int visionDirection) {
-            if (!VisionDirections.IsValidDirection(visionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("visionDirection", visionDirection);
-            }
-            currentVisionDirection = visionDirection;
-            foreach (UnitController unit in units) {
-                unit.Rotate(currentVisionDirection);
             }
         }
 

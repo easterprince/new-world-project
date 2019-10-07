@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -8,29 +7,29 @@ namespace NewWorld.Battlefield.Units {
         // Fields.
 
         private readonly Vector2Int connectedNode;
-        private readonly float size;
+        private readonly float maximumRadius;
 
 
         // Constructors.
 
-        public UnitDescription(Vector2Int connectedNode, float size) {
-            if (!CoordinatesTransformations.IsValidSize(size)) {
-                throw CoordinatesTransformations.BuildInvalidSizeException(nameof(size), size);
+        public UnitDescription(Vector2Int connectedNode, float maximumRadius) {
+            if (maximumRadius < 0) {
+                throw new System.ArgumentOutOfRangeException(nameof(maximumRadius), "Radius should be non-negative.");
             }
             this.connectedNode = connectedNode;
-            this.size = size;
+            this.maximumRadius = maximumRadius;
         }
 
         public UnitDescription(UnitDescription other) {
             this.connectedNode = other.connectedNode;
-            this.size = other.size;
+            this.maximumRadius = other.maximumRadius;
         }
 
 
         // Properties.
 
         public Vector2Int ConnectedNode => connectedNode;
-        public float Size => size;
+        public float MaximumRadius => maximumRadius;
 
 
     }

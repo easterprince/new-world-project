@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities.Singletones;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield {
 
@@ -32,7 +31,6 @@ namespace NewWorld.Battlefield {
 
         public void StartBattle() {
             battleStarted = true;
-            BattlefieldCameraController.Instance.Place(Vector3.zero);
         }
 
 
