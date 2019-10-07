@@ -31,7 +31,7 @@ namespace NewWorld.Battlefield.Map {
                     NodeController node = NodeController.BuildNode($"Node ({x}, {y})");
                     node.transform.parent = transform;
                     nodes[x, y] = node;
-                    Vector3 position = new Vector3(x, y, nodeDescription.Height);
+                    Vector3 position = new Vector3(x, nodeDescription.Height, y);
                     node.Place(position);
                 }
             }

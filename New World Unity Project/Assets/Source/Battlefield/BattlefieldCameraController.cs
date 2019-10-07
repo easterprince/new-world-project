@@ -10,13 +10,14 @@ namespace NewWorld.Battlefield {
 
         // Fields.
 
-        private Camera cameraComponent;
-
         private Vector3 defaultPosition;
         private Quaternion defaultRotation;
-        private float defaultSize;
+        //private float defaultSize;
 
 #pragma warning disable IDE0044, CS0414, CS0649
+
+        [SerializeField]
+        private Camera cameraComponent;
 
         [SerializeField]
         private float motionSpeedModifier = 1.0f;
@@ -27,22 +28,22 @@ namespace NewWorld.Battlefield {
         [SerializeField]
         private float scrollingSpeedModifier = 1.0f;
 
-        [SerializeField]
-        private float minCameraSize = 3.0f;
+        //[SerializeField]
+        //private float minCameraSize = 3.0f;
 
-        [SerializeField]
-        private float maxCameraSize = 10.0f;
+        //[SerializeField]
+        //private float maxCameraSize = 10.0f;
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private void OnValidate() {
-            const float sizeLowerLimit = 1;
-            const float sizeUpperLimit = 1000;
-            minCameraSize = Mathf.Max(minCameraSize, sizeLowerLimit);
-            maxCameraSize = Mathf.Max(maxCameraSize, sizeLowerLimit);
-            minCameraSize = Mathf.Min(minCameraSize, sizeUpperLimit);
-            maxCameraSize = Mathf.Min(maxCameraSize, sizeUpperLimit);
-            minCameraSize = Mathf.Min(minCameraSize, maxCameraSize);
+            //const float sizeLowerLimit = 1;
+            //const float sizeUpperLimit = 1000;
+            //minCameraSize = Mathf.Max(minCameraSize, sizeLowerLimit);
+            //maxCameraSize = Mathf.Max(maxCameraSize, sizeLowerLimit);
+            //minCameraSize = Mathf.Min(minCameraSize, sizeUpperLimit);
+            //maxCameraSize = Mathf.Min(maxCameraSize, sizeUpperLimit);
+            //minCameraSize = Mathf.Min(minCameraSize, maxCameraSize);
         }
 
 
@@ -51,10 +52,9 @@ namespace NewWorld.Battlefield {
         protected override void Awake() {
             base.Awake();
             Instance = this;
-            cameraComponent = GetComponent<Camera>();
             defaultPosition = transform.position;
             defaultRotation = transform.rotation;
-            defaultSize = cameraComponent.orthographicSize;
+            //defaultSize = cameraComponent.orthographicSize;
         }
 
         private void Update() {
@@ -68,12 +68,12 @@ namespace NewWorld.Battlefield {
                     positionAddition *= motionSpeedModifier;
                     transform.position += positionAddition;
                     transform.rotation *= Quaternion.Euler(0, Input.GetAxisRaw("Turn") * rotationSpeedModifier, 0);
-                    float newSize = cameraComponent.orthographicSize + scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
-                    cameraComponent.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
+                    //float newSize = cameraComponent.orthographicSize + scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
+                    //cameraComponent.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
                 } else {
                     transform.position = defaultPosition;
                     transform.rotation = defaultRotation;
-                    cameraComponent.orthographicSize = defaultSize;
+                    //cameraComponent.orthographicSize = defaultSize;
                 }
 
             }

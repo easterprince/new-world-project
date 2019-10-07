@@ -146,7 +146,7 @@ namespace NewWorld.Battlefield.Map {
                     tiles[tileArrayPosition.x, tileArrayPosition.y] = tile;
                 }
                 Vector2 tileRealPosition = TileArrayToRealPosition(tileArrayPosition);
-                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight));
+                tile.Place(new Vector3(tileRealPosition.x, tileHeight, tileRealPosition.y));
             }
         }
 

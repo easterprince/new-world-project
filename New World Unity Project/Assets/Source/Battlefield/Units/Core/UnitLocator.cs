@@ -37,8 +37,8 @@ namespace NewWorld.Battlefield.Units.Core {
             if (motionAbility != null && motionAbility.StartedMotion) {
                 currentPosition = motionAbility.GetPositionInMotion();
             } else {
-                float z = MapController.Instance.GetSurfaceHeight(connectedNode);
-                currentPosition = new Vector3(connectedNode.x, connectedNode.y, z);
+                float y = MapController.Instance.GetSurfaceHeight(connectedNode);
+                currentPosition = new Vector3(connectedNode.x, y, connectedNode.y);
             }
             return currentPosition;
         }

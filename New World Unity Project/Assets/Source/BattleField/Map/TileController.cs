@@ -45,14 +45,14 @@ namespace NewWorld.Battlefield.Map {
         // Public methods.
 
         public void Place(Vector3 surfacePosition) {
-            surfacePosition.z = Mathf.Max(surfacePosition.z, 0);
+            surfacePosition.y = Mathf.Max(surfacePosition.y, 0);
 
             // Updating object itself.
-            height = surfacePosition.z;
+            height = surfacePosition.y;
             Vector3 centerPosition = surfacePosition;
-            centerPosition.z *= 0.5f;
+            centerPosition.y *= 0.5f;
             transform.position = centerPosition;
-            transform.localScale = new Vector3(transform.localScale.x, surfacePosition.z, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, surfacePosition.y, transform.localScale.z);
 
         }
 

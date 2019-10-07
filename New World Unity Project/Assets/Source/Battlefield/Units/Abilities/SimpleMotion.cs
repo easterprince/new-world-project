@@ -65,7 +65,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
                     motionCondition = MotionCondition.Failed;
                 }
             } else {
-                Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.y);
+                Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.z);
                 float deltaDistance = Speed * deltaTime;
                 Vector2 path = TargetedNode - lastPosition2D;
                 if (path.magnitude <= deltaDistance) {
@@ -76,18 +76,18 @@ namespace NewWorld.Battlefield.Units.Abilities {
                 }
             }
 
-            // Calculate z component.
-            float z = Mathf.Max(MapController.Instance.GetSurfaceHeight(newPosition2D, UnitAccount.Size), 0);
+            // Calculate y component.
+            float y = Mathf.Max(MapController.Instance.GetSurfaceHeight(newPosition2D, UnitAccount.Size), 0);
             if (zInitialized) {
                 float deltaZ = verticalSpeed * deltaTime;
-                if (Mathf.Abs(z - lastPosition.z) > deltaZ) {
-                    z = Mathf.Sign(z - lastPosition.z) * deltaZ + lastPosition.z;
+                if (Mathf.Abs(y - lastPosition.y) > deltaZ) {
+                    y = Mathf.Sign(y - lastPosition.y) * deltaZ + lastPosition.y;
                 }
             } else {
                 zInitialized = true;
             }
 
-            lastPosition = new Vector3(newPosition2D.x, newPosition2D.y, z);
+            lastPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
             return lastPosition;
         }
 
