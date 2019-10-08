@@ -1,10 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
     public partial class MapDescription {
+
+        // Constants.
+
+        private static readonly float safeHeightDifference = 1.1f * Mathf.Sqrt(6);
+        private static readonly Vector2Int[] mainDirections = new Vector2Int[] {
+            new Vector2Int(1, 1),
+            new Vector2Int(1, -1),
+            new Vector2Int(-1, 1),
+            new Vector2Int(-1, -1)
+        };
+
 
         // Fields.
 
@@ -18,7 +28,7 @@ namespace NewWorld.Battlefield.Map {
         /// Use in constructor to initialize fields for heights control.
         /// </summary>
         private void InitializeHeightsControl() {
-            isVisible = new bool[size.x, size.y, VisionDirections.Count];
+            isVisible = new bool[size.x, size.y, mainDirections.Length];
             visibleDirectionsCount = new int[size.x, size.y];
         }
 
@@ -33,8 +43,8 @@ namespace NewWorld.Battlefield.Map {
             upperLimit = heightLimit;
             lowerLimit = upperLimit;
 
-            for (int direction = 0; direction < VisionDirections.Count; ++direction) {
-                Vector2Int delta = VisionDirections.GetDirectionDelta(direction);
+            for (int direction = 0; direction < mainDirections.Length; ++direction) {
+                Vector2Int delta = mainDirections[direction];
 
                 // Adjust height of targeted node to save its own visibility.
                 float minHeight = 0;
@@ -86,8 +96,8 @@ namespace NewWorld.Battlefield.Map {
             NodeDescription updatedNode = surface[updatedPosition.x, updatedPosition.y];
             visibleDirectionsCount[updatedPosition.x, updatedPosition.y] = 0;
 
-            for (int direction = 0; direction < VisionDirections.Count; ++direction) {
-                Vector2Int delta = VisionDirections.GetDirectionDelta(direction);
+            for (int direction = 0; direction < mainDirections.Length; ++direction) {
+                Vector2Int delta = mainDirections[direction];
 
                 isVisible[updatedPosition.x, updatedPosition.y, direction] = false;
 

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Loading;
-using NewWorld.Battlefield.Composition;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -13,7 +12,6 @@ namespace NewWorld.Battlefield.Map {
         private Vector2Int tilesCount;
         private float[,] tileHeights;
         private TileController[,] tiles;
-        private int currentVisionDirection;
 
 
         // Properties.
@@ -27,31 +25,48 @@ namespace NewWorld.Battlefield.Map {
         override protected void Awake() {
             base.Awake();
             Instance = this;
-            description = BattlefieldLoader.Instance.MapDescription;
-            tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
-            tileHeights = new float[tilesCount.x, tilesCount.y];
-            tiles = new TileController[tilesCount.x, tilesCount.y];
-            currentVisionDirection = 0;
-            ReinitializeHidingsObservation();
-            DoForAllTiles(UpdateTileHeight);
-            DoForAllTiles(UpdateTileAtPosition);
         }
 
 
-        // Outer control.
+        // Initialization.
 
-        public void Rotate(int newVisionDirection) {
-            if (!VisionDirections.IsValidDirection(newVisionDirection)) {
-                throw VisionDirections.BuildInvalidDirectionException("newVisionDirection", newVisionDirection);
+        public void Load(MapDescription description) {
+            this.description = description ?? throw new System.ArgumentNullException("description");
+            tilesCount = new Vector2Int(2 * description.Size.x + 1, 2 * description.Size.y + 1);
+            tileHeights = new float[tilesCount.x, tilesCount.y];
+            tiles = new TileController[tilesCount.x, tilesCount.y];
+            DoForAllTiles(UpdateTileHeight);
+            DoForAllTiles(UpdateTileAtPosition);
+            NodeGridController.Instance.Load(description);
+        }
+
+
+        // Information.
+
+        public float GetSurfaceHeight(Vector2 position, float maximumRadius = 0) {
+            if (maximumRadius < 0) {
+                throw new System.ArgumentOutOfRangeException(nameof(maximumRadius), "Radius should be non-negative number.");
             }
-            currentVisionDirection = newVisionDirection;
-            ReinitializeHidingsObservation();
-            DoForAllTiles((Vector2Int tileArrayPosition) => {
-                TileController tile = tiles[tileArrayPosition.x, tileArrayPosition.y];
-                if (tile != null) {
-                    tile.Rotate(currentVisionDirection, CalculateHidingHeight(tileArrayPosition));
+            Vector2Int coveredStart = RealToTileArrayPosition(position - new Vector2(maximumRadius, maximumRadius));
+            coveredStart.x = Mathf.Clamp(coveredStart.x, 0, tilesCount.x - 1);
+            coveredStart.y = Mathf.Clamp(coveredStart.y, 0, tilesCount.y - 1);
+            Vector2Int coveredFinish = RealToTileArrayPosition(position + new Vector2(maximumRadius, maximumRadius));
+            coveredFinish.x = Mathf.Clamp(coveredFinish.x, 0, tilesCount.x - 1);
+            coveredFinish.y = Mathf.Clamp(coveredFinish.y, 0, tilesCount.y - 1);
+            float height = float.NegativeInfinity;
+            for (Vector2Int tileArrayPosition = coveredStart; tileArrayPosition.x <= coveredFinish.x; ++tileArrayPosition.x) {
+                for (tileArrayPosition.y = coveredStart.y; tileArrayPosition.y <= coveredFinish.y; ++tileArrayPosition.y) {
+                    if (!IsValidTileArrayPosition(tileArrayPosition)) {
+                        continue;
+                    }
+                    height = Mathf.Max(height, tileHeights[tileArrayPosition.x, tileArrayPosition.y]);
                 }
-            });
+            }
+            return height;
+        }
+
+        public NodeDescription GetSurfaceNode(Vector2Int position) {
+            return description.GetSurfaceNode(position);
         }
 
 
@@ -130,8 +145,8 @@ namespace NewWorld.Battlefield.Map {
                     tile.transform.parent = this.transform;
                     tiles[tileArrayPosition.x, tileArrayPosition.y] = tile;
                 }
-                Vector2 tileRealPosition = new Vector2(0.5f * tileArrayPosition.x - 1, 0.5f * tileArrayPosition.y - 1);
-                tile.Place(new Vector3(tileRealPosition.x, tileRealPosition.y, tileHeight), CalculateHidingHeight(tileArrayPosition));
+                Vector2 tileRealPosition = TileArrayToRealPosition(tileArrayPosition);
+                tile.Place(new Vector3(tileRealPosition.x, tileHeight, tileRealPosition.y));
             }
         }
 
@@ -160,6 +175,14 @@ namespace NewWorld.Battlefield.Map {
                 parameterValue,
                 $"Position must be inside node array, which size is {description.Size}."
             );
+        }
+
+        private Vector2Int RealToTileArrayPosition(Vector2 realPosition) {
+            return new Vector2Int(Mathf.RoundToInt(2 * realPosition.x + 1), Mathf.RoundToInt(2 * realPosition.y + 1));
+        }
+
+        private Vector2 TileArrayToRealPosition(Vector2Int tileArrayPosition) {
+            return new Vector2(0.5f * (tileArrayPosition.x - 1), 0.5f * (tileArrayPosition.y - 1));
         }
 
 

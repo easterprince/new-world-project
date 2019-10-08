@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Map.Generation;
+using NewWorld.Battlefield.Units;
 using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Loading {
 
-    public class BattlefieldLoader : SceneSingleton<BattlefieldLoader> {
+    public class BattlefieldLoader : MonoBehaviour {
 
         // Fields.
 
@@ -22,32 +23,27 @@ namespace NewWorld.Battlefield.Loading {
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private MapDescription mapDescription;
-        private Task<MapDescription> mapDescriptionLoading;
-
-        // Properties.
-
-        public MapDescription MapDescription => mapDescription;
+        private List<UnitDescription> unitDescriptions;
+        private Task battlefieldLoading;
 
 
         // Life cycle.
 
-        override protected void Awake() {
-            base.Awake();
-            Instance = this;
+        private void Awake() {
             loaded = false;
         }
 
         private void Start() {
-            mapDescriptionLoading = Task.Run(LoadMapDescription);
+            battlefieldLoading = Task.Run(LoadBattlefield);
         }
 
         private void Update() {
             if (!loaded) {
-                if (mapDescriptionLoading.IsCompleted) {
-                    mapDescription = mapDescriptionLoading.Result;
-                    BattlefieldController.Instance.LoadBattle();
-                    loadingScreen.LoadingAnimation = false;
+                if (battlefieldLoading.IsCompleted) {
                     loaded = true;
+                    MapController.Instance.Load(mapDescription);
+                    UnitSystemController.Instance.Load(unitDescriptions);
+                    loadingScreen.LoadingAnimation = false;
                 }
             }
             if (loaded) {
@@ -60,15 +56,26 @@ namespace NewWorld.Battlefield.Loading {
         }
 
 
-        // Map loading.
+        // Battlefield loading.
 
-        private MapDescription LoadMapDescription() {
+        private void LoadBattlefield() {
+            int seed = 123;
+            System.Random random = new System.Random(seed);
             ExperimentalMapGenerator mapGenerator = new ExperimentalMapGenerator {
-                Seed = 123,
-                Size = new Vector2Int(100, 100),
+                Seed = seed,
+                Size = new Vector2Int(80, 120),
                 HeightLimit = 5
             };
-            return mapGenerator.Generate();
+            mapDescription = mapGenerator.Generate();
+            unitDescriptions = new List<UnitDescription>();
+            int unitsCount = 300;
+            for (int i = 0; i < unitsCount; ++i) {
+                Vector2Int position;
+                do {
+                    position = new Vector2Int(random.Next(mapDescription.Size.x), random.Next(mapDescription.Size.y));
+                } while (mapDescription.GetSurfaceNode(position) == null);
+                unitDescriptions.Add(new UnitDescription(position, 0.48f));
+            }
         }
 
     }
