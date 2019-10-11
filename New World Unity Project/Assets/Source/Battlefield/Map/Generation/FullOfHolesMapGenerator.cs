@@ -32,7 +32,7 @@ namespace NewWorld.Battlefield.Map.Generation {
             return ((float) Erf(4 * x - 2) + 1) / 2;
         }
 
-        public override MapDescription Generate() {
+        public override MapDescription Generate(int seed) {
             MapDescription description = new MapDescription(Size, HeightLimit);
             for (Vector2Int position = Vector2Int.zero; position.x < Size.x; ++position.x) {
                 for (position.y = 0; position.y < Size.y; ++position.y) {

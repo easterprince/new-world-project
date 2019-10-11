@@ -62,11 +62,10 @@ namespace NewWorld.Battlefield.Loading {
             int seed = 123;
             System.Random random = new System.Random(seed);
             ExperimentalMapGenerator mapGenerator = new ExperimentalMapGenerator {
-                Seed = seed,
                 Size = new Vector2Int(80, 120),
                 HeightLimit = 5
             };
-            mapDescription = mapGenerator.Generate();
+            mapDescription = mapGenerator.Generate(seed);
             unitDescriptions = new List<UnitDescription>();
             int unitsCount = 300;
             for (int i = 0; i < unitsCount; ++i) {

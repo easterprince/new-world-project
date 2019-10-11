@@ -6,7 +6,6 @@ namespace NewWorld.Battlefield.Map.Generation {
 
         // Fields.
 
-        private int seed = 0;
         private float heightLimit = 0;
         private Vector2Int size = new Vector2Int(1, 1);
 
@@ -17,11 +16,6 @@ namespace NewWorld.Battlefield.Map.Generation {
 
 
         // Properties.
-
-        public int Seed {
-            get => seed;
-            set => seed = value;
-        }
 
         public float HeightLimit {
             get => heightLimit;
@@ -36,7 +30,7 @@ namespace NewWorld.Battlefield.Map.Generation {
 
         // Methods.
 
-        public abstract MapDescription Generate();
+        public abstract MapDescription Generate(int seed);
 
 
     }

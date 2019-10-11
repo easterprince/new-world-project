@@ -30,7 +30,6 @@ namespace NewWorld.Battlefield.Map {
             this.size = size;
             this.heightLimit = heightLimit;
             surface = new NodeDescription[size.x, size.y];
-            InitializeHeightsControl();
         }
 
 
@@ -43,32 +42,15 @@ namespace NewWorld.Battlefield.Map {
             return new NodeDescription(surface[position.x, position.y]);
         }
 
-        public bool TrySetSurfaceNode(Vector2Int position, NodeDescription description) {
-            if (!IsPositionValid(position)) {
-                throw BuildInvalidPositionException("position", position);
-            }
-            if (description != null) {
-                CalculateHeightLimits(position, out float lowerLimit, out float upperLimit);
-                if (Mathf.Clamp(description.Height, lowerLimit, upperLimit) != description.Height) {
-                    return false;
-                }
-            }
-            surface[position.x, position.y] = new NodeDescription(description);
-            RecalculateVisibility(position);
-            return true;
-        }
-
         public float SetSurfaceNode(Vector2Int position, NodeDescription description) {
             if (!IsPositionValid(position)) {
                 throw BuildInvalidPositionException("position", position);
             }
             description = new NodeDescription(description);
             if (description != null) {
-                CalculateHeightLimits(position, out float lowerLimit, out float upperLimit);
-                description.Height = Mathf.Clamp(description.Height, lowerLimit, upperLimit);
+                description.Height = Mathf.Clamp(description.Height, 0, heightLimit);
             }
             surface[position.x, position.y] = new NodeDescription(description);
-            RecalculateVisibility(position);
             return description.Height;
         }
 
