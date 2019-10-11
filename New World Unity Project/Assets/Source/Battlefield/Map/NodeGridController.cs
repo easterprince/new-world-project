@@ -3,7 +3,7 @@ using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Map {
 
-    public class NodeGridController : SceneSingleton<NodeGridController> {
+    public class NodeGridController : MonoBehaviour {
 
         // Fields.
 
@@ -12,10 +12,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Life cycle.
 
-        protected override void Awake() {
-            base.Awake();
-            Instance = this;
-        }
+        void Awake() {}
 
 
         // Control.

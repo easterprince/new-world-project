@@ -2,32 +2,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.Experimental {
+namespace NewWorld.Battlefield.Map {
 
-    public class TerrainGenerator : MonoBehaviour {
+    public class TerrainController : MonoBehaviour {
 
-        private int size;
-        private int heightLimit;
-        private int heightMapResolutionPerUnit;
-        private int heightMapResolution;
-        private int alphaMapResolution;
+        // Fields.
 
-        private TerrainLayer terrainLayer;
+#pragma warning disable IDE0044, CS0414, CS0649
+
+        [SerializeField]
+        private int clusterSize;
+
+#pragma warning restore IDE0044, CS0414, CS0649
 
 
-        void Awake() {
+        private void OnValidate() {
+            clusterSize = Mathf.Clamp(clusterSize, 4, 16);
+            clusterSize = Mathf.NextPowerOfTwo(clusterSize);
+        }
 
-            size = 16;
+
+        // Life cycle.
+
+        void Awake() {}
+
+
+        // Initialization.
+
+        public void Load(MapDescription description) {
+            throw new System.NotImplementedException();
+
+            /*
+            TerrainLayer terrainLayer;
+
+            int heightLimit;
+            int heightMapResolutionPerUnit;
+            int heightMapResolution;
+            int alphaMapResolution;
+
+            clusterSize = 16;
             heightLimit = 10;
             heightMapResolutionPerUnit = 32;
-            heightMapResolution = size * heightMapResolutionPerUnit + 1;
-            alphaMapResolution = size * heightMapResolutionPerUnit;
+            heightMapResolution = clusterSize * heightMapResolutionPerUnit + 1;
+            alphaMapResolution = clusterSize * heightMapResolutionPerUnit;
 
             terrainLayer = Resources.Load("Default Terrain Layer") as TerrainLayer;
 
             float[,] heightMap = new float[heightMapResolution, heightMapResolution];
-            for (Vector2Int tilePosition =  Vector2Int.zero; tilePosition.x < size; ++tilePosition.x) {
-                for (tilePosition.y = 0; tilePosition.y < size; ++tilePosition.y) {
+            for (Vector2Int tilePosition = Vector2Int.zero; tilePosition.x < clusterSize; ++tilePosition.x) {
+                for (tilePosition.y = 0; tilePosition.y < clusterSize; ++tilePosition.y) {
                     float height = Random.Range(0f, 1f);
                     float normalizedHeight = height / heightLimit;
                     foreach (Vector2Int pointPosition in GetAllPointsOfTile(tilePosition)) {
@@ -57,7 +80,7 @@ namespace NewWorld.Experimental {
             terrainData.alphamapResolution = alphaMapResolution;
             terrainData.baseMapResolution = 1024;
             terrainData.SetDetailResolution(1024, 16);
-            terrainData.size = new Vector3(size, heightLimit, size);
+            terrainData.size = new Vector3(clusterSize, heightLimit, clusterSize);
             terrainData.SetHeights(0, 0, heightMap);
             terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
             terrainData.SetAlphamaps(0, 0, alphaMap);
@@ -66,9 +89,21 @@ namespace NewWorld.Experimental {
             terrainObject.name = "Terrain";
             terrainObject.transform.parent = transform;
             Terrain terrain = terrainObject.GetComponent<Terrain>();
+            */
 
         }
 
+
+        // Information.
+
+        public float GetSurfaceHeight(Vector2 position, float maximumRadius = 0) {
+            throw new System.NotImplementedException();
+        }
+
+
+        // Enumerables.
+
+        /*
         private IEnumerable<Vector2Int> GetAllPoints() {
             Vector2Int point = Vector2Int.zero;
             for (point.x = 0; point.x < heightMapResolution; ++point.x) {
@@ -123,7 +158,7 @@ namespace NewWorld.Experimental {
                 yield return point;
             }
         }
-
+        */
 
     }
 
