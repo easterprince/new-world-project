@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 614740435}
   - component: {fileID: 614740434}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Terrain Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -330,6 +330,11 @@ PrefabInstance:
         type: 3}
       propertyPath: motionSpeedModifier
       value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067451207183545210, guid: c27423dc8b126ac44b94b4f8902db56e,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c27423dc8b126ac44b94b4f8902db56e, type: 3}

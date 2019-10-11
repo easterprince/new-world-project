@@ -17,11 +17,11 @@ namespace NewWorld.Experimental {
 
         void Awake() {
 
-            size = 8;
+            size = 16;
             heightLimit = 10;
-            heightMapResolutionPerUnit = 16;
+            heightMapResolutionPerUnit = 32;
             heightMapResolution = size * heightMapResolutionPerUnit + 1;
-            alphaMapResolution = 16;
+            alphaMapResolution = size * heightMapResolutionPerUnit;
 
             terrainLayer = Resources.Load("Default Terrain Layer") as TerrainLayer;
 
@@ -48,7 +48,7 @@ namespace NewWorld.Experimental {
             float[,,] alphaMap = new float[alphaMapResolution, alphaMapResolution, 1];
             for (int x = 0; x < alphaMapResolution; ++x) {
                 for (int y = 0; y < alphaMapResolution; ++y) {
-                    alphaMap[x, y, 0] = 1;
+                    alphaMap[x, y, 0] = (x + y) % 2;
                 }
             }
 
