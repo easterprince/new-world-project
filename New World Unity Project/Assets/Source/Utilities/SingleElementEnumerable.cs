@@ -1,38 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace NewWorld.Utilities {
 
-    public class SingleElementEnumerable<T> : IEnumerable<T> {
+    public static class Enumerables {
 
-        // Fields.
-
-        private T element;
-
-
-        // Properties.
-
-        public T Element {
-            get => element;
-            set => element = value;
-        }
-
-
-        // Constructor.
-
-        public SingleElementEnumerable(T element) {
-            this.element = element;
-        }
-
-
-        // Enumeration.
-
-        public IEnumerator<T> GetEnumerator() {
+        public static IEnumerable<T> GetItself<T>(T element) {
             yield return element;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
-            yield return element;
+        public static IEnumerable<Vector2Int> GetAllVectorsInRectangle(Vector2Int start, Vector2Int finish) {
+            Vector2Int vector = Vector2Int.zero;
+            for (vector.x = start.x; vector.x < finish.x; ++vector.x) {
+                for (vector.y = start.y; vector.y < finish.y; ++vector.y) {
+                    yield return vector;
+                }
+            }
+        }
+
+        public static IEnumerable<Vector2Int> GetAllVectorsInRectangle(Vector2Int finish) {
+            return GetAllVectorsInRectangle(Vector2Int.zero, finish);
         }
 
 

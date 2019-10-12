@@ -99,7 +99,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             if (updateConnectedNodeIntention == null) {
                 return null;
             }
-            return new SingleElementEnumerable<UpdateConnectedNodeIntention>(updateConnectedNodeIntention);
+            return Enumerables.GetItself(updateConnectedNodeIntention);
         }
 
         public override void Fulfil(Intention intention) {
