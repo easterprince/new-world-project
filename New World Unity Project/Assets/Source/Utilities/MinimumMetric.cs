@@ -2,10 +2,10 @@
 
 namespace NewWorld.Utilities {
 
-    public static class MaximumMetric {
+    public static class MinimumMetric {
         
         public static float GetNorm(in Vector2 vector) {
-            return Mathf.Max(vector.x, vector.y);
+            return Mathf.Min(vector.x, vector.y);
         }
 
 

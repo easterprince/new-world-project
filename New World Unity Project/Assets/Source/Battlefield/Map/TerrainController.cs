@@ -40,7 +40,7 @@ namespace NewWorld.Battlefield.Map {
         private void OnValidate() {
             clusterSize = Mathf.NextPowerOfTwo(Mathf.Clamp(clusterSize, 1, 32));
             heightMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(heightMapResolution - 1, 32, 2048)) + 1;
-            alphaMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(heightMapResolution, 32, 2048));
+            alphaMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(alphaMapResolution, 32, 2048));
             tileMaximumRadius = Mathf.Clamp(tileMaximumRadius, 0, 1);
             flatBorder = Mathf.Max(0.5f, flatBorder);
             bottomLevel = Mathf.Min(0, bottomLevel);
@@ -58,38 +58,56 @@ namespace NewWorld.Battlefield.Map {
 
         public void Load(MapDescription description) {
 
-            int heightMapResolutionPerUnit = (heightMapResolution - 1) / clusterSize;
             clustersCount = new Vector2Int(
                     Mathf.CeilToInt((description.Size.x - 1 + 2 * flatBorder) / clusterSize),
                     Mathf.CeilToInt((description.Size.y - 1 + 2 * flatBorder) / clusterSize)
             );
             clusters = new Terrain[clustersCount.x, clustersCount.y];
 
-            foreach (Vector2Int clusterIndex in Enumerables.GetAllVectorsInRectangle(clustersCount)) {
+            int heightMapResolutionPerUnit = (heightMapResolution - 1) / clusterSize;
+            int alphaMapResolutionPerUnit = alphaMapResolution / clusterSize;
+            Vector2Int lastHeightPoint = clustersCount * (heightMapResolution - 1);
+            Vector2Int lastAlphaPoint = clustersCount * alphaMapResolution - Vector2Int.one;
+
+            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
 
                 float[,] heightMap = new float[heightMapResolution, heightMapResolution];
                 Vector2Int startPoint = clusterIndex * (heightMapResolution - 1);
-                foreach (Vector2Int relativePoint in Enumerables.GetAllVectorsInRectangle(new Vector2Int(heightMapResolution, heightMapResolution))) {
-                    Vector2 pointPosition = (Vector2) (startPoint + relativePoint) / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
-                    Vector2Int mainTile = Vector2Int.FloorToInt(pointPosition + new Vector2(tileMaximumRadius, tileMaximumRadius));
-                    float heightSum = 0;
-                    float weightSum = 0;
-                    foreach (Vector2Int tile in Enumerables.GetAllVectorsInRectangle(mainTile, mainTile + new Vector2Int(2, 2))) {
-                        float height = Mathf.Max(-1, description.GetSurfaceNode(tile)?.Height ?? -1);
-                        float distance = MaximumMetric.GetMaximumNorm((Vector2) tile - pointPosition);
-                        float weight = Mathf.Max(0, (1 - 2 * tileMaximumRadius) - distance);
-                        heightSum += weight * height;
-                        weightSum += weight;
+                foreach (Vector2Int relativePoint in Enumerables.InRange2(heightMapResolution)) {
+                    Vector2Int point = startPoint + relativePoint;
+                    float heightValue = 0;
+                    if (point.x != 0 && point.y != 0 && point.x != lastHeightPoint.x && point.y != lastHeightPoint.y) {
+                        Vector2 pointPosition = (Vector2) point / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
+                        Vector2Int mainTile = Vector2Int.FloorToInt(pointPosition + new Vector2(tileMaximumRadius, tileMaximumRadius));
+                        float heightSum = 0;
+                        float weightSum = 0;
+                        foreach (Vector2Int tile in Enumerables.InRange2(mainTile, mainTile + new Vector2Int(2, 2))) {
+                            float height = Mathf.Max(-1, description.GetSurfaceNode(tile)?.Height ?? -1);
+                            float distance = MaximumMetric.GetNorm(tile - pointPosition);
+                            float weight = Mathf.Max(0, (1 - 2 * tileMaximumRadius) - distance);
+                            heightSum += weight * height;
+                            weightSum += weight;
+                        }
+                        float pointHeight = heightSum / weightSum - bottomLevel;
+                        heightValue = pointHeight / (description.HeightLimit - bottomLevel);
                     }
-                    float pointHeight = heightSum / weightSum - bottomLevel;
-                    heightMap[relativePoint.y, relativePoint.x] = pointHeight / (description.HeightLimit - bottomLevel);
+                    heightMap[relativePoint.y, relativePoint.x] = heightValue;
                 }
 
                 float[,,] alphaMap = new float[alphaMapResolution, alphaMapResolution, 1];
-                for (int x = 0; x < alphaMapResolution; ++x) {
-                    for (int y = 0; y < alphaMapResolution; ++y) {
-                        alphaMap[x, y, 0] = 1;
+                startPoint = clusterIndex * alphaMapResolution;
+                foreach (Vector2Int relativePoint in Enumerables.InRange2(alphaMapResolution)) {
+                    Vector2Int point = startPoint + relativePoint;
+                    float alphaValue = 0;
+                    if (point.x != 0 && point.y != 0 && point.x != lastAlphaPoint.x && point.y != lastAlphaPoint.y) {
+                        Vector2 pointPosition = (point + new Vector2(0.5f, 0.5f)) / alphaMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
+                        float borderDistance = Mathf.Max(0, Mathf.Max(
+                                Mathf.Abs(Mathf.Clamp(pointPosition.x, 0, description.Size.x - 1) - pointPosition.x),
+                                Mathf.Abs(Mathf.Clamp(pointPosition.y, 0, description.Size.y - 1) - pointPosition.y)
+                        ) - tileMaximumRadius);
+                        alphaValue = Mathf.Max(0, 1 - borderDistance / (0.5f * flatBorder));
                     }
+                    alphaMap[relativePoint.y, relativePoint.x, 0] = alphaValue;
                 }
 
                 TerrainData terrainData = new TerrainData();
