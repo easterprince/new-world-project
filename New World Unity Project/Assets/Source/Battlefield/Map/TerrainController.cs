@@ -78,15 +78,26 @@ namespace NewWorld.Battlefield.Map {
                     float heightValue = 0;
                     if (point.x != 0 && point.y != 0 && point.x != lastHeightPoint.x && point.y != lastHeightPoint.y) {
                         Vector2 pointPosition = (Vector2) point / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
-                        Vector2Int mainTile = Vector2Int.FloorToInt(pointPosition + new Vector2(tileMaximumRadius, tileMaximumRadius));
+                        Vector2Int mainTile = Vector2Int.FloorToInt(pointPosition);
+                        Vector2 betweenTilesPosition = pointPosition - mainTile;
+                        float[,] weights = new float[2, 2];
+                        foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
+                            weights[tileDifference.x, tileDifference.y] = 1;
+                        }
+                        for (int coordinate = 0; coordinate <= 1; ++coordinate) {
+                            float xDistance = Mathf.Max(Mathf.Abs(betweenTilesPosition.x - coordinate) - tileMaximumRadius, 0);
+                            weights[coordinate, 0] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - xDistance);
+                            weights[coordinate, 1] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - xDistance);
+                            float yDistance = Mathf.Max(Mathf.Abs(betweenTilesPosition.y - coordinate) - tileMaximumRadius, 0);
+                            weights[0, coordinate] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - yDistance);
+                            weights[1, coordinate] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - yDistance);
+                        }
                         float heightSum = 0;
                         float weightSum = 0;
-                        foreach (Vector2Int tile in Enumerables.InRange2(mainTile, mainTile + new Vector2Int(2, 2))) {
-                            float height = Mathf.Max(-1, description.GetSurfaceNode(tile)?.Height ?? -1);
-                            float distance = MaximumMetric.GetNorm(tile - pointPosition);
-                            float weight = Mathf.Max(0, (1 - 2 * tileMaximumRadius) - distance);
-                            heightSum += weight * height;
-                            weightSum += weight;
+                        foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
+                            float height = description.GetSurfaceNode(mainTile + tileDifference)?.Height ?? bottomLevel;
+                            heightSum += height * weights[tileDifference.x, tileDifference.y];
+                            weightSum += weights[tileDifference.x, tileDifference.y];
                         }
                         float pointHeight = heightSum / weightSum - bottomLevel;
                         heightValue = pointHeight / (description.HeightLimit - bottomLevel);
@@ -132,7 +143,6 @@ namespace NewWorld.Battlefield.Map {
                 clusters[clusterIndex.x, clusterIndex.y] = terrain;
 
             }
-
 
         }
 
