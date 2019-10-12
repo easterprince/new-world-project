@@ -23,6 +23,12 @@ namespace NewWorld.Battlefield.Map {
         [SerializeField]
         private float tileMaximumRadius;
 
+        [SerializeField]
+        private float flatBorder;
+
+        [SerializeField]
+        private float bottomLevel;
+
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private TerrainLayer terrainLayer;
@@ -36,6 +42,8 @@ namespace NewWorld.Battlefield.Map {
             heightMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(heightMapResolution - 1, 32, 2048)) + 1;
             alphaMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(heightMapResolution, 32, 2048));
             tileMaximumRadius = Mathf.Clamp(tileMaximumRadius, 0, 1);
+            flatBorder = Mathf.Max(0.5f, flatBorder);
+            bottomLevel = Mathf.Min(0, bottomLevel);
         }
 
 
@@ -52,8 +60,9 @@ namespace NewWorld.Battlefield.Map {
 
             int heightMapResolutionPerUnit = (heightMapResolution - 1) / clusterSize;
             clustersCount = new Vector2Int(
-                    description.Size.x / clusterSize + (description.Size.x % clusterSize == 0 ? 0 : 1),
-                    description.Size.y / clusterSize + (description.Size.y % clusterSize == 0 ? 0 : 1));
+                    Mathf.CeilToInt((description.Size.x - 1 + 2 * flatBorder) / clusterSize),
+                    Mathf.CeilToInt((description.Size.y - 1 + 2 * flatBorder) / clusterSize)
+            );
             clusters = new Terrain[clustersCount.x, clustersCount.y];
 
             foreach (Vector2Int clusterIndex in Enumerables.GetAllVectorsInRectangle(clustersCount)) {
@@ -61,7 +70,7 @@ namespace NewWorld.Battlefield.Map {
                 float[,] heightMap = new float[heightMapResolution, heightMapResolution];
                 Vector2Int startPoint = clusterIndex * (heightMapResolution - 1);
                 foreach (Vector2Int relativePoint in Enumerables.GetAllVectorsInRectangle(new Vector2Int(heightMapResolution, heightMapResolution))) {
-                    Vector2 pointPosition = (Vector2) (startPoint + relativePoint) / heightMapResolutionPerUnit;
+                    Vector2 pointPosition = (Vector2) (startPoint + relativePoint) / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
                     Vector2Int mainTile = Vector2Int.FloorToInt(pointPosition + new Vector2(tileMaximumRadius, tileMaximumRadius));
                     float heightSum = 0;
                     float weightSum = 0;
@@ -72,8 +81,8 @@ namespace NewWorld.Battlefield.Map {
                         heightSum += weight * height;
                         weightSum += weight;
                     }
-                    float pointHeight = heightSum / weightSum;
-                    heightMap[relativePoint.y, relativePoint.x] = pointHeight / description.HeightLimit;
+                    float pointHeight = heightSum / weightSum - bottomLevel;
+                    heightMap[relativePoint.y, relativePoint.x] = pointHeight / (description.HeightLimit - bottomLevel);
                 }
 
                 float[,,] alphaMap = new float[alphaMapResolution, alphaMapResolution, 1];
@@ -88,14 +97,18 @@ namespace NewWorld.Battlefield.Map {
                 terrainData.alphamapResolution = alphaMapResolution;
                 terrainData.baseMapResolution = 1024;
                 terrainData.SetDetailResolution(1024, 16);
-                terrainData.size = new Vector3(clusterSize, description.HeightLimit, clusterSize);
+                terrainData.size = new Vector3(clusterSize, description.HeightLimit - bottomLevel, clusterSize);
                 terrainData.SetHeights(0, 0, heightMap);
                 terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
                 terrainData.SetAlphamaps(0, 0, alphaMap);
 
                 GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
                 terrainObject.transform.parent = transform;
-                terrainObject.transform.position = new Vector3(clusterIndex.x * clusterSize, 0, clusterIndex.y * clusterSize);
+                terrainObject.transform.position = new Vector3(
+                        clusterIndex.x * clusterSize- flatBorder,
+                        bottomLevel,
+                        clusterIndex.y * clusterSize - flatBorder
+                );
                 terrainObject.name = "Cluster " + terrainObject.transform.position;
                 Terrain terrain = terrainObject.GetComponent<Terrain>();
                 clusters[clusterIndex.x, clusterIndex.y] = terrain;

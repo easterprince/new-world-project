@@ -417,6 +417,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clusterSize: 8
+  heightMapResolution: 65
+  alphaMapResolution: 128
+  tileMaximumRadius: 0.25
+  flatBorder: 2.5
+  bottomLevel: -2
 --- !u!1 &1081232763
 GameObject:
   m_ObjectHideFlags: 0

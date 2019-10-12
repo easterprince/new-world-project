@@ -36,16 +36,17 @@ namespace NewWorld.Battlefield.Map {
         // Node processing.
 
         public NodeDescription GetSurfaceNode(Vector2Int position) {
-            if (!IsPositionValid(position) || surface[position.x, position.y] == null) {
+            position.x = Mathf.Clamp(position.x, 0, size.x - 1);
+            position.y = Mathf.Clamp(position.y, 0, size.y - 1);
+            if (surface[position.x, position.y] == null) {
                 return null;
             }
             return new NodeDescription(surface[position.x, position.y]);
         }
 
         public float SetSurfaceNode(Vector2Int position, NodeDescription description) {
-            if (!IsPositionValid(position)) {
-                throw BuildInvalidPositionException("position", position);
-            }
+            position.x = Mathf.Clamp(position.x, 0, size.x - 1);
+            position.y = Mathf.Clamp(position.y, 0, size.y - 1);
             description = new NodeDescription(description);
             if (description != null) {
                 description.Height = Mathf.Clamp(description.Height, 0, heightLimit);
