@@ -144,13 +144,39 @@ namespace NewWorld.Battlefield.Map {
 
             }
 
+            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+                clusters[clusterIndex.x, clusterIndex.y].SetNeighbors(
+                    (clusterIndex.x == 0 ? null : clusters[clusterIndex.x - 1, clusterIndex.y]),
+                    (clusterIndex.y == 0 ? null : clusters[clusterIndex.x, clusterIndex.y - 1]),
+                    (clusterIndex.x == clustersCount.x - 1 ? null : clusters[clusterIndex.x + 1, clusterIndex.y]),
+                    (clusterIndex.y == clustersCount.y - 1 ? null : clusters[clusterIndex.x, clusterIndex.y + 1])
+                );
+            }
+
         }
 
 
         // Information.
 
         public float GetSurfaceHeight(Vector2 position, float maximumRadius = 0) {
-            return clusters[0, 0].SampleHeight(position);
+            return GetSurfaceHeight(new Vector3(position.x, 0, position.y), maximumRadius);
+        }
+
+        public float GetSurfaceHeight(Vector3 position, float maximumRadius = 0) {
+            Vector2Int clusterPosition = GetNearestClusterPosition(position);
+            Terrain cluster = clusters[clusterPosition.x, clusterPosition.y];
+            return cluster.SampleHeight(position) + cluster.transform.position.y;
+        }
+
+
+        // Support.
+
+        private Vector2Int GetNearestClusterPosition(Vector3 position) {
+            Vector3Int clusterPosition3 = Vector3Int.FloorToInt((position - clusters[0, 0].transform.position) / clusterSize);
+            Vector2Int clusterPosition = new Vector2Int(clusterPosition3.x, clusterPosition3.z);
+            clusterPosition.x = Mathf.Clamp(clusterPosition.x, 0, clustersCount.x - 1);
+            clusterPosition.y = Mathf.Clamp(clusterPosition.y, 0, clustersCount.y - 1);
+            return clusterPosition;
         }
 
 

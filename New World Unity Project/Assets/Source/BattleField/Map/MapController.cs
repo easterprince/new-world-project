@@ -54,6 +54,13 @@ namespace NewWorld.Battlefield.Map {
             return terrain.GetSurfaceHeight(position, maximumRadius);
         }
 
+        public float GetSurfaceHeight(Vector3 position, float maximumRadius = 0) {
+            if (maximumRadius < 0) {
+                throw new System.ArgumentOutOfRangeException(nameof(maximumRadius), "Radius should be non-negative number.");
+            }
+            return terrain.GetSurfaceHeight(position, maximumRadius);
+        }
+
         public NodeDescription GetSurfaceNode(Vector2Int position) {
             return description.GetSurfaceNode(position);
         }

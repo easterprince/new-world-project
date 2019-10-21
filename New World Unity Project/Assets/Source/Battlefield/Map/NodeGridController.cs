@@ -28,7 +28,9 @@ namespace NewWorld.Battlefield.Map {
                     NodeController node = NodeController.BuildNode($"Node ({x}, {y})");
                     node.transform.parent = transform;
                     nodes[x, y] = node;
-                    Vector3 position = new Vector3(x, nodeDescription.Height, y);
+                    //float height = nodeDescription.Height;
+                    float height = MapController.Instance.GetSurfaceHeight(new Vector2(x, y));
+                    Vector3 position = new Vector3(x, height, y);
                     node.Place(position);
                 }
             }
