@@ -27,7 +27,7 @@ namespace NewWorld.Battlefield.Map {
         private float flatBorder;
 
         [SerializeField]
-        private float bottomLevel;
+        private float abyssLevel;
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
@@ -43,7 +43,7 @@ namespace NewWorld.Battlefield.Map {
             alphaMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(alphaMapResolution, 32, 2048));
             tileMaximumRadius = Mathf.Clamp(tileMaximumRadius, 0, 1);
             flatBorder = Mathf.Max(0.5f, flatBorder);
-            bottomLevel = Mathf.Min(0, bottomLevel);
+            abyssLevel = Mathf.Min(0, abyssLevel);
         }
 
 
@@ -78,29 +78,7 @@ namespace NewWorld.Battlefield.Map {
                     float heightValue = 0;
                     if (point.x != 0 && point.y != 0 && point.x != lastHeightPoint.x && point.y != lastHeightPoint.y) {
                         Vector2 pointPosition = (Vector2) point / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
-                        Vector2Int mainTile = Vector2Int.FloorToInt(pointPosition);
-                        Vector2 betweenTilesPosition = pointPosition - mainTile;
-                        float[,] weights = new float[2, 2];
-                        foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
-                            weights[tileDifference.x, tileDifference.y] = 1;
-                        }
-                        for (int coordinate = 0; coordinate <= 1; ++coordinate) {
-                            float xDistance = Mathf.Max(Mathf.Abs(betweenTilesPosition.x - coordinate) - tileMaximumRadius, 0);
-                            weights[coordinate, 0] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - xDistance);
-                            weights[coordinate, 1] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - xDistance);
-                            float yDistance = Mathf.Max(Mathf.Abs(betweenTilesPosition.y - coordinate) - tileMaximumRadius, 0);
-                            weights[0, coordinate] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - yDistance);
-                            weights[1, coordinate] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - yDistance);
-                        }
-                        float heightSum = 0;
-                        float weightSum = 0;
-                        foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
-                            float height = description.GetSurfaceNode(mainTile + tileDifference)?.Height ?? bottomLevel;
-                            heightSum += height * weights[tileDifference.x, tileDifference.y];
-                            weightSum += weights[tileDifference.x, tileDifference.y];
-                        }
-                        float pointHeight = heightSum / weightSum - bottomLevel;
-                        heightValue = pointHeight / (description.HeightLimit - bottomLevel);
+                        heightValue = (CalculateHeight(pointPosition, description) - abyssLevel) / (description.HeightLimit - abyssLevel);
                     }
                     heightMap[relativePoint.y, relativePoint.x] = heightValue;
                 }
@@ -116,7 +94,10 @@ namespace NewWorld.Battlefield.Map {
                                 Mathf.Abs(Mathf.Clamp(pointPosition.x, 0, description.Size.x - 1) - pointPosition.x),
                                 Mathf.Abs(Mathf.Clamp(pointPosition.y, 0, description.Size.y - 1) - pointPosition.y)
                         ) - tileMaximumRadius);
-                        alphaValue = Mathf.Max(0, 1 - borderDistance / (0.5f * flatBorder));
+                        float borderAlphaValue = Mathf.Max(0, 1 - borderDistance / (0.5f * flatBorder));
+                        float pointHeight = CalculateHeight(pointPosition, description);
+                        float abyssAlphaValue = (Mathf.Min(pointHeight, 0) - abyssLevel) / -abyssLevel;
+                        alphaValue = Mathf.Min(abyssAlphaValue, borderAlphaValue);
                     }
                     alphaMap[relativePoint.y, relativePoint.x, 0] = alphaValue;
                 }
@@ -126,7 +107,7 @@ namespace NewWorld.Battlefield.Map {
                 terrainData.alphamapResolution = alphaMapResolution;
                 terrainData.baseMapResolution = 1024;
                 terrainData.SetDetailResolution(1024, 16);
-                terrainData.size = new Vector3(clusterSize, description.HeightLimit - bottomLevel, clusterSize);
+                terrainData.size = new Vector3(clusterSize, description.HeightLimit - abyssLevel, clusterSize);
                 terrainData.SetHeights(0, 0, heightMap);
                 terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
                 terrainData.SetAlphamaps(0, 0, alphaMap);
@@ -135,7 +116,7 @@ namespace NewWorld.Battlefield.Map {
                 terrainObject.transform.parent = transform;
                 terrainObject.transform.position = new Vector3(
                         clusterIndex.x * clusterSize- flatBorder,
-                        bottomLevel,
+                        abyssLevel,
                         clusterIndex.y * clusterSize - flatBorder
                 );
                 terrainObject.name = "Cluster " + terrainObject.transform.position;
@@ -153,6 +134,35 @@ namespace NewWorld.Battlefield.Map {
                 );
             }
 
+        }
+
+
+        // Height calculation.
+
+        private float CalculateHeight(Vector2 position, MapDescription description) {
+            Vector2Int mainTile = Vector2Int.FloorToInt(position);
+            Vector2 betweenTilesPosition = position - mainTile;
+            float[,] weights = new float[2, 2];
+            foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
+                weights[tileDifference.x, tileDifference.y] = 1;
+            }
+            for (int coordinate = 0; coordinate <= 1; ++coordinate) {
+                float xDistance = Mathf.Max(Mathf.Abs(betweenTilesPosition.x - coordinate) - tileMaximumRadius, 0);
+                weights[coordinate, 0] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - xDistance);
+                weights[coordinate, 1] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - xDistance);
+                float yDistance = Mathf.Max(Mathf.Abs(betweenTilesPosition.y - coordinate) - tileMaximumRadius, 0);
+                weights[0, coordinate] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - yDistance);
+                weights[1, coordinate] *= Mathf.Max(0, 1 - 2 * tileMaximumRadius - yDistance);
+            }
+            float heightSum = 0;
+            float weightSum = 0;
+            foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
+                float nodeHeight = description.GetClosestSurfaceNode(mainTile + tileDifference)?.Height ?? abyssLevel;
+                heightSum += nodeHeight * weights[tileDifference.x, tileDifference.y];
+                weightSum += weights[tileDifference.x, tileDifference.y];
+            }
+            float height = heightSum / weightSum;
+            return height;
         }
 
 

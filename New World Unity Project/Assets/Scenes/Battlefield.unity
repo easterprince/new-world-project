@@ -388,7 +388,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &933362406
 Transform:
@@ -418,10 +418,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clusterSize: 8
   heightMapResolution: 65
-  alphaMapResolution: 128
+  alphaMapResolution: 64
   tileMaximumRadius: 0
   flatBorder: 2.5
-  bottomLevel: -2
+  abyssLevel: -3
 --- !u!1 &1081232763
 GameObject:
   m_ObjectHideFlags: 0

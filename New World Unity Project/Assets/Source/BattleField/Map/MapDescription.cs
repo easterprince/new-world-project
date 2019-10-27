@@ -36,8 +36,14 @@ namespace NewWorld.Battlefield.Map {
         // Node processing.
 
         public NodeDescription GetSurfaceNode(Vector2Int position) {
-            position.x = Mathf.Clamp(position.x, 0, size.x - 1);
-            position.y = Mathf.Clamp(position.y, 0, size.y - 1);
+            if (!IsPositionValid(position) || surface[position.x, position.y] == null) {
+                return null;
+            }
+            return new NodeDescription(surface[position.x, position.y]);
+        }
+
+        public NodeDescription GetClosestSurfaceNode(Vector2 worldPosition) {
+            Vector2Int position = GetClosestPosition(worldPosition);
             if (surface[position.x, position.y] == null) {
                 return null;
             }
@@ -45,8 +51,9 @@ namespace NewWorld.Battlefield.Map {
         }
 
         public float SetSurfaceNode(Vector2Int position, NodeDescription description) {
-            position.x = Mathf.Clamp(position.x, 0, size.x - 1);
-            position.y = Mathf.Clamp(position.y, 0, size.y - 1);
+            if (!IsPositionValid(position)) {
+                throw BuildInvalidPositionException(nameof(position), position);
+            }
             description = new NodeDescription(description);
             if (description != null) {
                 description.Height = Mathf.Clamp(description.Height, 0, heightLimit);
@@ -60,6 +67,12 @@ namespace NewWorld.Battlefield.Map {
 
         private bool IsPositionValid(Vector2Int position) {
             return position.x >= 0 && position.x < size.x && position.y >= 0 && position.y < size.y;
+        }
+
+        private Vector2Int GetClosestPosition(Vector2 worldPosition) {
+            worldPosition.x = Mathf.Clamp(worldPosition.x, 0, size.x - 1);
+            worldPosition.y = Mathf.Clamp(worldPosition.y, 0, size.y - 1);
+            return Vector2Int.RoundToInt(worldPosition);
         }
 
         private System.ArgumentOutOfRangeException BuildInvalidPositionException(string parameterName, Vector2Int position) {
