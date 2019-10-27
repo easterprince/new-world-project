@@ -50,16 +50,17 @@ namespace NewWorld.Battlefield.Map {
             return new NodeDescription(surface[position.x, position.y]);
         }
 
-        public float SetSurfaceNode(Vector2Int position, NodeDescription description) {
+        public void SetSurfaceNode(Vector2Int position, NodeDescription description) {
             if (!IsPositionValid(position)) {
                 throw BuildInvalidPositionException(nameof(position), position);
             }
-            description = new NodeDescription(description);
-            if (description != null) {
-                description.Height = Mathf.Clamp(description.Height, 0, heightLimit);
+            if (description == null) {
+                surface[position.x, position.y] = null;
+            } else {
+                surface[position.x, position.y] = new NodeDescription(
+                    Mathf.Clamp(description.Height, 0, heightLimit)
+                );
             }
-            surface[position.x, position.y] = new NodeDescription(description);
-            return description.Height;
         }
 
 

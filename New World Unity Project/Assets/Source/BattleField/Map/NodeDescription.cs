@@ -4,15 +4,12 @@ namespace NewWorld.Battlefield.Map {
 
     public class NodeDescription {
 
-        private float height;
+        private readonly float height;
 
 
         // Properties.
 
-        public float Height {
-            get => height;
-            set => height = value;
-        }
+        public float Height => height;
 
 
         // ToString().
@@ -30,7 +27,7 @@ namespace NewWorld.Battlefield.Map {
 
         public NodeDescription(NodeDescription other) {
             if (other == null) {
-                throw new System.ArgumentNullException("other");
+                throw new System.ArgumentNullException(nameof(other));
             }
             height = other.height;
         }
