@@ -22,10 +22,10 @@ namespace NewWorld.Battlefield.Map {
 
         public MapDescription(Vector2Int size, float heightLimit) {
             if (size.x <= 0 || size.y <= 0) {
-                throw new System.ArgumentOutOfRangeException("size", size, $"Components of size must be positive.");
+                throw new System.ArgumentOutOfRangeException(nameof(size), size, $"Components of size must be positive.");
             }
             if (heightLimit < 0) {
-                throw new System.ArgumentOutOfRangeException("heightLimit", heightLimit, $"Height limit must be non-negative.");
+                throw new System.ArgumentOutOfRangeException(nameof(heightLimit), heightLimit, $"Height limit must be non-negative.");
             }
             this.size = size;
             this.heightLimit = heightLimit;
