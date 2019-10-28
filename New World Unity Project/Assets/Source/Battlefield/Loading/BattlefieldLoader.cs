@@ -58,14 +58,15 @@ namespace NewWorld.Battlefield.Loading {
         // Battlefield planning and loading.
 
         private IEnumerator PlanBattlefield() {
-            Task battlefieldPlanning = Task.Run(CreateBattlefield);
+            Task<BattlefieldDescription> battlefieldPlanning = Task.Run(CreateBattlefield);
             while (!battlefieldPlanning.IsCompleted) {
                 yield return null;
             }
+            battlefieldDescription = battlefieldPlanning.Result;
             readyToLoad = true;
         }
 
-        private void CreateBattlefield() {
+        private BattlefieldDescription CreateBattlefield() {
             int seed = 123;
             System.Random random = new System.Random(seed);
             ExperimentalMapGenerator mapGenerator = new ExperimentalMapGenerator {
@@ -82,7 +83,7 @@ namespace NewWorld.Battlefield.Loading {
                 } while (mapDescription.GetSurfaceNode(position) == null);
                 unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
-            battlefieldDescription = new BattlefieldDescription(mapDescription, unitDescriptions);
+            return new BattlefieldDescription(mapDescription, unitDescriptions);
         }
 
         private IEnumerator LoadBattlefield() {

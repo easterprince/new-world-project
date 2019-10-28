@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using NewWorld.Utilities;
 
@@ -54,7 +55,7 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
-        // Initialization.
+        // Loading.
 
         public IEnumerator Load(MapDescription description) {
             if (description == null) {
@@ -67,43 +68,17 @@ namespace NewWorld.Battlefield.Map {
             );
             clusters = new Terrain[clustersCount.x, clustersCount.y];
 
-            int heightMapResolutionPerUnit = (heightMapResolution - 1) / clusterSize;
-            int alphaMapResolutionPerUnit = alphaMapResolution / clusterSize;
-            Vector2Int lastHeightPoint = clustersCount * (heightMapResolution - 1);
-            Vector2Int lastAlphaPoint = clustersCount * alphaMapResolution - Vector2Int.one;
+            Task<float[,][,]> heightMapCalculating = Task.Run(() => CalculateHeightMaps(description));
+            Task<float[,][,,]> alphaMapCalculating = Task.Run(() => CalculateAlphaMaps(description));
+            while (!heightMapCalculating.IsCompleted || !alphaMapCalculating.IsCompleted) {
+                yield return null;
+            }
+            float[,][,] heightMaps = heightMapCalculating.Result;
+            float[,][,,] alphaMaps = alphaMapCalculating.Result;
 
             foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
-
-                float[,] heightMap = new float[heightMapResolution, heightMapResolution];
-                Vector2Int startPoint = clusterIndex * (heightMapResolution - 1);
-                foreach (Vector2Int relativePoint in Enumerables.InRange2(heightMapResolution)) {
-                    Vector2Int point = startPoint + relativePoint;
-                    float heightValue = 0;
-                    if (point.x != 0 && point.y != 0 && point.x != lastHeightPoint.x && point.y != lastHeightPoint.y) {
-                        Vector2 pointPosition = (Vector2) point / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
-                        heightValue = (CalculateHeight(pointPosition, description) - abyssLevel) / (description.HeightLimit - abyssLevel);
-                    }
-                    heightMap[relativePoint.y, relativePoint.x] = heightValue;
-                }
-
-                float[,,] alphaMap = new float[alphaMapResolution, alphaMapResolution, 1];
-                startPoint = clusterIndex * alphaMapResolution;
-                foreach (Vector2Int relativePoint in Enumerables.InRange2(alphaMapResolution)) {
-                    Vector2Int point = startPoint + relativePoint;
-                    float alphaValue = 0;
-                    if (point.x != 0 && point.y != 0 && point.x != lastAlphaPoint.x && point.y != lastAlphaPoint.y) {
-                        Vector2 pointPosition = (point + new Vector2(0.5f, 0.5f)) / alphaMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
-                        float borderDistance = Mathf.Max(0, Mathf.Max(
-                                Mathf.Abs(Mathf.Clamp(pointPosition.x, 0, description.Size.x - 1) - pointPosition.x),
-                                Mathf.Abs(Mathf.Clamp(pointPosition.y, 0, description.Size.y - 1) - pointPosition.y)
-                        ) - tileMaximumRadius);
-                        float borderAlphaValue = Mathf.Max(0, 1 - borderDistance / (0.5f * flatBorder));
-                        float pointHeight = CalculateHeight(pointPosition, description);
-                        float abyssAlphaValue = (Mathf.Min(pointHeight, 0) - abyssLevel) / -abyssLevel;
-                        alphaValue = Mathf.Min(abyssAlphaValue, borderAlphaValue);
-                    }
-                    alphaMap[relativePoint.y, relativePoint.x, 0] = alphaValue;
-                }
+                float[,] heightMap = heightMaps[clusterIndex.x, clusterIndex.y];
+                float[,,] alphaMap = alphaMaps[clusterIndex.x, clusterIndex.y];
 
                 TerrainData terrainData = new TerrainData();
                 terrainData.heightmapResolution = heightMapResolution;
@@ -138,6 +113,65 @@ namespace NewWorld.Battlefield.Map {
             }
 
             yield break;
+        }
+
+        private float[,][,] CalculateHeightMaps(MapDescription description) {
+            float[,][,] heightMaps = new float[clustersCount.x, clustersCount.y][,];
+
+            int heightMapResolutionPerUnit = (heightMapResolution - 1) / clusterSize;
+            Vector2Int lastHeightPoint = clustersCount * (heightMapResolution - 1);
+
+            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+
+                float[,] heightMap = new float[heightMapResolution, heightMapResolution];
+                Vector2Int startPoint = clusterIndex * (heightMapResolution - 1);
+                foreach (Vector2Int relativePoint in Enumerables.InRange2(heightMapResolution)) {
+                    Vector2Int point = startPoint + relativePoint;
+                    float heightValue = 0;
+                    if (point.x != 0 && point.y != 0 && point.x != lastHeightPoint.x && point.y != lastHeightPoint.y) {
+                        Vector2 pointPosition = (Vector2) point / heightMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
+                        heightValue = (CalculateHeight(pointPosition, description) - abyssLevel) / (description.HeightLimit - abyssLevel);
+                    }
+                    heightMap[relativePoint.y, relativePoint.x] = heightValue;
+                }
+                heightMaps[clusterIndex.x, clusterIndex.y] = heightMap;
+
+            }
+
+            return heightMaps;
+        }
+
+        private float[,][,,] CalculateAlphaMaps(MapDescription description) {
+            float[,][,,] alphaMaps = new float[clustersCount.x, clustersCount.y][,,];
+
+            int alphaMapResolutionPerUnit = alphaMapResolution / clusterSize;
+            Vector2Int lastAlphaPoint = clustersCount * alphaMapResolution - Vector2Int.one;
+
+            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+
+                float[,,] alphaMap = new float[alphaMapResolution, alphaMapResolution, 1];
+                Vector2Int startPoint = clusterIndex * alphaMapResolution;
+                foreach (Vector2Int relativePoint in Enumerables.InRange2(alphaMapResolution)) {
+                    Vector2Int point = startPoint + relativePoint;
+                    float alphaValue = 0;
+                    if (point.x != 0 && point.y != 0 && point.x != lastAlphaPoint.x && point.y != lastAlphaPoint.y) {
+                        Vector2 pointPosition = (point + new Vector2(0.5f, 0.5f)) / alphaMapResolutionPerUnit - new Vector2(flatBorder, flatBorder);
+                        float borderDistance = Mathf.Max(0, Mathf.Max(
+                                Mathf.Abs(Mathf.Clamp(pointPosition.x, 0, description.Size.x - 1) - pointPosition.x),
+                                Mathf.Abs(Mathf.Clamp(pointPosition.y, 0, description.Size.y - 1) - pointPosition.y)
+                        ) - tileMaximumRadius);
+                        float borderAlphaValue = Mathf.Max(0, 1 - borderDistance / (0.5f * flatBorder));
+                        float pointHeight = CalculateHeight(pointPosition, description);
+                        float abyssAlphaValue = (Mathf.Min(pointHeight, 0) - abyssLevel) / -abyssLevel;
+                        alphaValue = Mathf.Min(abyssAlphaValue, borderAlphaValue);
+                    }
+                    alphaMap[relativePoint.y, relativePoint.x, 0] = alphaValue;
+                }
+                alphaMaps[clusterIndex.x, clusterIndex.y] = alphaMap;
+
+            }
+
+            return alphaMaps;
         }
 
 
