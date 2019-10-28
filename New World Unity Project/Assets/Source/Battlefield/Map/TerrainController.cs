@@ -68,6 +68,7 @@ namespace NewWorld.Battlefield.Map {
             );
             clusters = new Terrain[clustersCount.x, clustersCount.y];
 
+            // TODO. For each cluster make its own task to achieve maximal cpu usage.
             Task<float[,][,]> heightMapCalculating = Task.Run(() => CalculateHeightMaps(description));
             Task<float[,][,,]> alphaMapCalculating = Task.Run(() => CalculateAlphaMaps(description));
             while (!heightMapCalculating.IsCompleted || !alphaMapCalculating.IsCompleted) {
@@ -141,6 +142,7 @@ namespace NewWorld.Battlefield.Map {
             return heightMaps;
         }
 
+        // TODO. Make abyss white.
         private float[,][,,] CalculateAlphaMaps(MapDescription description) {
             float[,][,,] alphaMaps = new float[clustersCount.x, clustersCount.y][,,];
 
