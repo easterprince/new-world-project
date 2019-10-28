@@ -58,7 +58,7 @@ namespace NewWorld.Battlefield {
         }
 
         private void Update() {
-            if (BattlefieldController.Instance.BattleStarted) {
+            if (BattlefieldController.Instance?.BattleStarted ?? true) {
 
                 // Input processing.
                 if (Input.GetAxisRaw("Cancel") == 0) {

@@ -24,7 +24,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         private Vector3 lastPosition;
         private float lastTime;
         private float startTime;
-        private bool zInitialized = false;
+        private bool yInitialized = false;
 
 
         // Constructor.
@@ -39,7 +39,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             lastPosition = CalculatePoisiton(out _);
             lastTime = Time.time;
             startTime = lastTime;
-            zInitialized = false;
+            yInitialized = false;
         }
 
         protected override void OnStop() {
@@ -77,14 +77,14 @@ namespace NewWorld.Battlefield.Units.Abilities {
             }
 
             // Calculate y component.
-            float y = Mathf.Max(MapController.Instance.GetSurfaceHeight(newPosition2D, UnitAccount.Size), 0);
-            if (zInitialized) {
-                float deltaZ = verticalSpeed * deltaTime;
-                if (Mathf.Abs(y - lastPosition.y) > deltaZ) {
-                    y = Mathf.Sign(y - lastPosition.y) * deltaZ + lastPosition.y;
+            float y = MapController.Instance.GetSurfaceHeight(newPosition2D, UnitAccount.Size);
+            if (yInitialized) {
+                float deltaY = verticalSpeed * deltaTime;
+                if (Mathf.Abs(y - lastPosition.y) > deltaY) {
+                    y = Mathf.Sign(y - lastPosition.y) * deltaY + lastPosition.y;
                 }
             } else {
-                zInitialized = true;
+                yInitialized = true;
             }
 
             lastPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
@@ -99,7 +99,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             if (updateConnectedNodeIntention == null) {
                 return null;
             }
-            return new SingleElementEnumerable<UpdateConnectedNodeIntention>(updateConnectedNodeIntention);
+            return Enumerables.GetItself(updateConnectedNodeIntention);
         }
 
         public override void Fulfil(Intention intention) {

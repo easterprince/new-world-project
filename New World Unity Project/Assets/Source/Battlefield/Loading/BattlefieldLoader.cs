@@ -5,15 +5,12 @@ using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Map.Generation;
 using NewWorld.Battlefield.Units;
-using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Loading {
 
     public class BattlefieldLoader : MonoBehaviour {
 
         // Fields.
-
-        private bool loaded;
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
@@ -22,32 +19,34 @@ namespace NewWorld.Battlefield.Loading {
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
-        private MapDescription mapDescription;
-        private List<UnitDescription> unitDescriptions;
-        private Task battlefieldLoading;
+        private bool readyToLoad;
+        private bool readyToStart;
+
+        private BattlefieldDescription battlefieldDescription;
 
 
         // Life cycle.
 
         private void Awake() {
-            loaded = false;
+            readyToLoad = false;
+            readyToStart = false;
         }
 
         private void Start() {
-            battlefieldLoading = Task.Run(LoadBattlefield);
+            StartCoroutine(PlanBattlefield());
         }
 
         private void Update() {
-            if (!loaded) {
-                if (battlefieldLoading.IsCompleted) {
-                    loaded = true;
-                    MapController.Instance.Load(mapDescription);
-                    UnitSystemController.Instance.Load(unitDescriptions);
+            if (readyToLoad) {
+                StartCoroutine(LoadBattlefield());
+                readyToLoad = false;
+            }
+            if (readyToStart) {
+                if (loadingScreen.LoadingAnimation) {
                     loadingScreen.LoadingAnimation = false;
                 }
-            }
-            if (loaded) {
                 if (Input.anyKey) {
+                    readyToStart = false;
                     loadingScreen.gameObject.SetActive(false);
                     BattlefieldController.Instance.StartBattle();
                     Destroy(this.gameObject);
@@ -56,18 +55,26 @@ namespace NewWorld.Battlefield.Loading {
         }
 
 
-        // Battlefield loading.
+        // Battlefield planning and loading.
 
-        private void LoadBattlefield() {
+        private IEnumerator PlanBattlefield() {
+            Task<BattlefieldDescription> battlefieldPlanning = Task.Run(CreateBattlefield);
+            while (!battlefieldPlanning.IsCompleted) {
+                yield return null;
+            }
+            battlefieldDescription = battlefieldPlanning.Result;
+            readyToLoad = true;
+        }
+
+        private BattlefieldDescription CreateBattlefield() {
             int seed = 123;
             System.Random random = new System.Random(seed);
             ExperimentalMapGenerator mapGenerator = new ExperimentalMapGenerator {
-                Seed = seed,
                 Size = new Vector2Int(80, 120),
                 HeightLimit = 5
             };
-            mapDescription = mapGenerator.Generate();
-            unitDescriptions = new List<UnitDescription>();
+            MapDescription mapDescription = mapGenerator.Generate(seed);
+            List<UnitDescription> unitDescriptions = new List<UnitDescription>();
             int unitsCount = 300;
             for (int i = 0; i < unitsCount; ++i) {
                 Vector2Int position;
@@ -76,7 +83,14 @@ namespace NewWorld.Battlefield.Loading {
                 } while (mapDescription.GetSurfaceNode(position) == null);
                 unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
+            return new BattlefieldDescription(mapDescription, unitDescriptions);
         }
+
+        private IEnumerator LoadBattlefield() {
+            yield return StartCoroutine(BattlefieldController.Instance.Load(battlefieldDescription));
+            readyToStart = true;
+        }
+
 
     }
 
