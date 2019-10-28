@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using NewWorld.Utilities.Singletones;
 
 namespace NewWorld.Battlefield.Map {
@@ -17,11 +18,15 @@ namespace NewWorld.Battlefield.Map {
 
         // Control.
 
-        public void Load(MapDescription mapDescription) {
-            nodes = new NodeController[mapDescription.Size.x, mapDescription.Size.y];
-            for (int x = 0; x < mapDescription.Size.x; ++x) {
-                for (int y = 0; y < mapDescription.Size.y; ++y) {
-                    NodeDescription nodeDescription = mapDescription.GetSurfaceNode(new Vector2Int(x, y));
+        public IEnumerator Load(MapDescription description) {
+            if (description == null) {
+                throw new System.ArgumentNullException(nameof(description));
+            }
+
+            nodes = new NodeController[description.Size.x, description.Size.y];
+            for (int x = 0; x < description.Size.x; ++x) {
+                for (int y = 0; y < description.Size.y; ++y) {
+                    NodeDescription nodeDescription = description.GetSurfaceNode(new Vector2Int(x, y));
                     if (nodeDescription == null) {
                         continue;
                     }
@@ -34,6 +39,9 @@ namespace NewWorld.Battlefield.Map {
                     node.Place(position);
                 }
             }
+
+            yield break;
+
         }
 
 

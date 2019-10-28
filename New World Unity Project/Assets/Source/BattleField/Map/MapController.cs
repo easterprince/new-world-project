@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Loading;
 
@@ -38,10 +39,10 @@ namespace NewWorld.Battlefield.Map {
 
         // Initialization.
 
-        public void Load(MapDescription description) {
-            this.description = description ?? throw new System.ArgumentNullException("description");
-            terrain.Load(description);
-            nodeGrid.Load(description);
+        public IEnumerator Load(MapDescription description) {
+            this.description = description ?? throw new System.ArgumentNullException(nameof(description));
+            yield return StartCoroutine(terrain.Load(description));
+            yield return StartCoroutine(nodeGrid.Load(description));
         }
 
 

@@ -56,7 +56,10 @@ namespace NewWorld.Battlefield.Map {
 
         // Initialization.
 
-        public void Load(MapDescription description) {
+        public IEnumerator Load(MapDescription description) {
+            if (description == null) {
+                throw new System.ArgumentNullException(nameof(description));
+            } 
 
             clustersCount = new Vector2Int(
                     Mathf.CeilToInt((description.Size.x - 1 + 2 * flatBorder) / clusterSize),
@@ -134,6 +137,7 @@ namespace NewWorld.Battlefield.Map {
                 );
             }
 
+            yield break;
         }
 
 
