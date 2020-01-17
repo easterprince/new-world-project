@@ -6,7 +6,11 @@ namespace NewWorld.Utilities {
 
     public static class Enumerables {
 
-        public static IEnumerable<T> GetItself<T>(T element) {
+        public static IEnumerable<T> GetNothing<T>() {
+            yield break;
+        }
+
+        public static IEnumerable<T> GetSingle<T>(T element) {
             yield return element;
         }
 

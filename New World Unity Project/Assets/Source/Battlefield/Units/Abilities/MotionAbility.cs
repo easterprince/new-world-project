@@ -1,70 +1,49 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Units.Core;
+using NewWorld.Battlefield.Units.Actions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
     public abstract class MotionAbility : Ability {
 
-        // Enumerator.
-
-        protected enum MotionCondition {
-            Moving,
-            TargetReached,
-            Failed
-        }
-
-
         // Fields.
 
-        // Parameters.
-        private readonly float speed = 1;
-
         // Motion characteristics.
-        private bool startedMotion;
-        private Vector2Int currentNode;
+        private bool moves = false;
+        private Vector2Int startingNode;
         private Vector2Int targetedNode;
 
 
         // Properties.
 
-        public float Speed => speed;
-        public bool StartedMotion => startedMotion;
-        public Vector2Int CurrentNode => currentNode;
+        public bool Moves => moves;
+        public Vector2Int StartingNode => startingNode;
         public Vector2Int TargetedNode => targetedNode;
 
 
         // Constructor.
 
-        public MotionAbility(UnitAccount unitAccount) : base(unitAccount) {}
+        public MotionAbility(UnitController owner) : base(owner) {}
 
 
         // Interactions.
 
-        public void StartMotion(Vector2Int currentNode, Vector2Int targetedNode) {
-            if (startedMotion) {
-                StopMotion();
+        public void StartMotion(Vector2Int from, Vector2Int to) {
+            if (moves) {
+                throw new System.InvalidOperationException("Motion has been started already.");
             }
-            startedMotion = true;
-            this.currentNode = currentNode;
-            this.targetedNode = targetedNode;
+            moves = true;
+            startingNode = from;
+            targetedNode = to;
             OnStart();
         }
 
-        public void StopMotion() {
-            if (!startedMotion) {
-                return;
-            } 
-            startedMotion = false;
-            OnStop();
-        }
-
-        public Vector3 GetPositionInMotion() {
-            if (!StartedMotion) {
-                throw new System.InvalidOperationException("Not moving - position is undefined!");
+        public Vector3 UpdatePosition() {
+            if (!Moves) {
+                return Owner.Position;
             }
-            Vector3 position = CalculatePoisiton(out MotionCondition motionCondition);
-            if (motionCondition == MotionCondition.Failed || motionCondition == MotionCondition.TargetReached) {
-                StopMotion();
+            Vector3 position = CalculatePoisiton(out bool finished);
+            if (finished) {
+                moves = false;
             }
             return position;
         }
@@ -74,9 +53,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         protected abstract void OnStart();
 
-        protected abstract void OnStop();
-
-        protected abstract Vector3 CalculatePoisiton(out MotionCondition motionCondition);
+        protected abstract Vector3 CalculatePoisiton(out bool finished);
 
 
     }

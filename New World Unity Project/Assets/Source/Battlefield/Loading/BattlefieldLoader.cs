@@ -78,9 +78,17 @@ namespace NewWorld.Battlefield.Loading {
             int unitsCount = 300;
             for (int i = 0; i < unitsCount; ++i) {
                 Vector2Int position;
+                bool repeat;
                 do {
                     position = new Vector2Int(random.Next(mapDescription.Size.x), random.Next(mapDescription.Size.y));
-                } while (mapDescription.GetSurfaceNode(position) == null);
+                    repeat = false;
+                    foreach (UnitDescription description in unitDescriptions) {
+                        if (description.ConnectedNode == position) {
+                            repeat = true;
+                            break;
+                        }
+                    }
+                } while (repeat || mapDescription.GetSurfaceNode(position) == null);
                 unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
             return new BattlefieldDescription(mapDescription, unitDescriptions);
