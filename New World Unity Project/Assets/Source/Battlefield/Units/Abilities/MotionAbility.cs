@@ -37,23 +37,24 @@ namespace NewWorld.Battlefield.Units.Abilities {
             OnStart();
         }
 
-        public Vector3 UpdatePosition() {
+        public void UpdateLocation() {
             if (!Moves) {
-                return Owner.Position;
+                return;
             }
-            Vector3 position = CalculatePoisiton(out bool finished);
+            bool finished = CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation);
+            Owner.transform.position = newPosition;
+            Owner.transform.rotation = newRotation;
             if (finished) {
                 moves = false;
             }
-            return position;
         }
 
 
         // Inner methods.
 
-        protected abstract void OnStart();
+        abstract protected void OnStart();
 
-        protected abstract Vector3 CalculatePoisiton(out bool finished);
+        abstract protected bool CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation);
 
 
     }

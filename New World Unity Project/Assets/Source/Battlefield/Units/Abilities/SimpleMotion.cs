@@ -8,6 +8,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
     public class SimpleMotion : MotionAbility {
 
+        // Static.
+
+        private int speedAnimatorHash = Animator.StringToHash("Speed"); 
+
+
         // Fields.
 
         // Parameters.
@@ -26,15 +31,19 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Inner methods.
 
         protected override void OnStart() {
+            Owner.Animator?.SetFloat(speedAnimatorHash, speed);
             nodeUpdated = false;
         }
 
-        protected override Vector3 CalculatePoisiton(out bool finished) {
-            finished = false;
+        protected override bool CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation) {
+            bool finished = false;
 
             Vector3 lastPosition = Owner.Position;
+            Quaternion lastRotation = Owner.Rotation;
+            newPosition = lastPosition;
+            newRotation = lastRotation;
             if (!nodeUpdated) {
-                return lastPosition;
+                return finished;
             }
 
             // Update time.
@@ -50,15 +59,17 @@ namespace NewWorld.Battlefield.Units.Abilities {
             if (path.magnitude <= deltaDistance) {
                 newPosition2D = TargetedNode;
                 finished = true;
+                Owner.Animator?.SetFloat(speedAnimatorHash, 0); // TODO: Move animation finish to OnStop().
             } else {
                 newPosition2D = lastPosition2D + deltaDistance * path.normalized;
+                newRotation = Quaternion.LookRotation(new Vector3(path.x, 0, path.y));
             }
 
             // Calculate y component.
             float y = MapController.Instance.GetSurfaceHeight(newPosition2D);
 
-            Vector3 newPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
-            return newPosition;
+            newPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
+            return finished;
         }
 
 

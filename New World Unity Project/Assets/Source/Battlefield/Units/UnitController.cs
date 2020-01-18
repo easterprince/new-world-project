@@ -31,7 +31,10 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
-        // Components.
+        // Gameobject components.
+        private Animator animator;
+
+        // Game logic components.
         private UnitBehaviour behaviour = null;
         private MotionAbility motionAbility = null;
 
@@ -41,14 +44,14 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
+        public Animator Animator => animator;
+
         public UnitBehaviour Behaviour {
             get => behaviour;
-            set => behaviour = value;
         }
 
         public MotionAbility MotionAbility {
             get => motionAbility;
-            set => motionAbility = value;
         }
 
         public IEnumerable<Ability> AllAbilities {
@@ -60,20 +63,25 @@ namespace NewWorld.Battlefield.Units {
         }
 
         public Vector3 Position => transform.position;
+        public Quaternion Rotation => transform.rotation;
 
 
         // Life cycle.
 
+        private void Awake() {
+            animator = GetComponent<Animator>();
+        }
+
         private void Update() {
-            UpdatePosition();
+            UpdateLocation();
         }
 
 
         // Updates.
 
-        private void UpdatePosition() {
+        private void UpdateLocation() {
             if (motionAbility.Moves) {
-                transform.position = motionAbility.UpdatePosition();
+                motionAbility.UpdateLocation();
             } else {
                 Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
                 float height = MapController.Instance.GetSurfaceHeight(connectedNode);
