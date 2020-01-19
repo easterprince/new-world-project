@@ -25,7 +25,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Methods.
 
-        public abstract IEnumerable<UnitAction> ReceiveActions();
+        public abstract IEnumerable<GameAction> ReceiveActions();
 
 
     }

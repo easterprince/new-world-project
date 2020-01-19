@@ -48,14 +48,16 @@ namespace NewWorld.Battlefield.Units {
         // Actions collecting and applying.
 
         private void ProcessActions() {
-            foreach (UnitController unit in units) {
-                IEnumerable<UnitAction> actions = unit.ReceiveActions();
-                foreach (UnitAction action in actions) {
-                    if (action is RelocationAction relocationAction) {
-                        ValidateRelocation(relocationAction.NewConnectedNode, unit);
-                        onPositions.Remove(positions[unit]);
-                        onPositions[relocationAction.NewConnectedNode] = unit;
-                        positions[unit] = relocationAction.NewConnectedNode;
+            foreach (UnitController actingUnit in units) {
+                IEnumerable<GameAction> actions = actingUnit.ReceiveActions();
+                foreach (GameAction action in actions) {
+                    if (action is ConnectedNodeUpdate connectedNodeUpdate) {
+                        UnitController updatedUnit = connectedNodeUpdate.UpdatedUnit;
+                        Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
+                        ValidateRelocation(newConnectedNode, updatedUnit);
+                        onPositions.Remove(positions[updatedUnit]);
+                        onPositions[newConnectedNode] = updatedUnit;
+                        positions[updatedUnit] = newConnectedNode;
                     }
                 }
             }

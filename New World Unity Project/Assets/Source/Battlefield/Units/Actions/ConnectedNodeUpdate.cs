@@ -2,11 +2,11 @@
 
 namespace NewWorld.Battlefield.Units.Actions {
     
-    public class RelocationAction : UnitAction {
+    public class ConnectedNodeUpdate : UnitUpdate {
 
         // Fields.
 
-        private Vector2Int newConnectedNode;
+        private readonly Vector2Int newConnectedNode;
 
 
         // Properties.
@@ -16,9 +16,10 @@ namespace NewWorld.Battlefield.Units.Actions {
 
         // Constructor.
 
-        public RelocationAction(Vector2Int newConnectedNode) : base() {
+        public ConnectedNodeUpdate(UnitController updatedUnit, Vector2Int newConnectedNode) : base(updatedUnit) {
             this.newConnectedNode = newConnectedNode;
         }
+
 
     }
 

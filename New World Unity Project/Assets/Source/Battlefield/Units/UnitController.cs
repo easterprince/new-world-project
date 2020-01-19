@@ -92,21 +92,21 @@ namespace NewWorld.Battlefield.Units {
 
         // Actions generating.
 
-        public IEnumerable<UnitAction> ReceiveActions() {
+        public IEnumerable<GameAction> ReceiveActions() {
             if (behaviour != null) {
                 behaviour.Act();
             }
-            List<UnitAction> actions = null;
+            List<GameAction> actions = null;
             foreach (Ability ability in AllAbilities) {
-                foreach (UnitAction action in ability.ReceiveActions()) {
+                foreach (GameAction action in ability.ReceiveActions()) {
                     if (actions == null) {
-                        actions = new List<UnitAction>();
+                        actions = new List<GameAction>();
                     }
                     actions.Add(action);
                 }
             }
             if (actions == null) {
-                return Enumerables.GetNothing<UnitAction>();
+                return Enumerables.GetNothing<GameAction>();
             }
             return actions;
         }

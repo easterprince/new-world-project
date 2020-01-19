@@ -7,7 +7,7 @@ namespace NewWorld.Battlefield.Units.Actions {
 
         // Methods.
 
-        IEnumerable<UnitAction> ReceiveActions();
+        IEnumerable<GameAction> ReceiveActions();
 
     }
 

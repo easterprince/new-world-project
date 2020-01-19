@@ -52,9 +52,9 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Inner methods.
 
-        abstract protected void OnStart();
+        protected abstract void OnStart();
 
-        abstract protected bool CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation);
+        protected abstract bool CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation);
 
 
     }

@@ -2,6 +2,6 @@
 
 namespace NewWorld.Battlefield.Units.Actions {
 
-    public abstract class UnitAction {}
+    public abstract class GameAction {}
 
 }

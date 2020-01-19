@@ -10,7 +10,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Static.
 
-        private int speedAnimatorHash = Animator.StringToHash("Speed"); 
+        private static readonly int speedAnimatorHash = Animator.StringToHash("Speed"); 
 
 
         // Fields.
@@ -75,14 +75,14 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Actions management.
 
-        public override IEnumerable<UnitAction> ReceiveActions() {
+        public override IEnumerable<GameAction> ReceiveActions() {
             if (Moves && !nodeUpdated) {
-                RelocationAction relocationAction = new RelocationAction(TargetedNode);
+                ConnectedNodeUpdate relocationAction = new ConnectedNodeUpdate(Owner, TargetedNode);
                 nodeUpdated = true;
                 lastTime = Time.time;
-                return Enumerables.GetSingle<UnitAction>(relocationAction);
+                return Enumerables.GetSingle<GameAction>(relocationAction);
             }
-            return Enumerables.GetNothing<UnitAction>();
+            return Enumerables.GetNothing<GameAction>();
         }
 
 
