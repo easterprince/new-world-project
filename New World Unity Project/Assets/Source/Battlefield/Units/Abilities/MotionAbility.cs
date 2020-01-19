@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using NewWorld.Battlefield.Units.Actions;
+using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
@@ -15,7 +17,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Properties.
 
-        public bool Moves => moves;
+        public override bool IsUsed => moves;
         public Vector2Int StartingNode => startingNode;
         public Vector2Int TargetedNode => targetedNode;
 
@@ -37,16 +39,18 @@ namespace NewWorld.Battlefield.Units.Abilities {
             OnStart();
         }
 
-        public void UpdateLocation() {
-            if (!Moves) {
-                return;
+
+        // Actions management.
+
+        public override IEnumerable<GameAction> ReceiveActions() {
+            if (!moves) {
+                return Enumerables.GetNothing<GameAction>();
             }
-            bool finished = CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation);
-            Owner.transform.position = newPosition;
-            Owner.transform.rotation = newRotation;
+            IEnumerable<GameAction> actions = BuildActions(out bool finished);
             if (finished) {
                 moves = false;
             }
+            return actions;
         }
 
 
@@ -54,7 +58,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         protected abstract void OnStart();
 
-        protected abstract bool CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation);
+        protected abstract IEnumerable<GameAction> BuildActions(out bool finished);
 
 
     }

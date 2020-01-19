@@ -29,7 +29,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
         public void Act() {
             
             // Wander around.
-            if (unit.MotionAbility == null || unit.MotionAbility.Moves) {
+            if (unit.MotionAbility == null || unit.MotionAbility.IsUsed) {
                 return;
             }
             if (!plannedMotion) {

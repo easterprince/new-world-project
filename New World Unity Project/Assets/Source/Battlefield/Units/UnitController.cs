@@ -72,25 +72,12 @@ namespace NewWorld.Battlefield.Units {
             animator = GetComponent<Animator>();
         }
 
-        private void Update() {
-            UpdateLocation();
+        private void Start() {
+            SetDefaultLocation();
         }
 
 
-        // Updates.
-
-        private void UpdateLocation() {
-            if (motionAbility.Moves) {
-                motionAbility.UpdateLocation();
-            } else {
-                Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
-                float height = MapController.Instance.GetSurfaceHeight(connectedNode);
-                transform.position = new Vector3(connectedNode.x, height, connectedNode.y);
-            }
-        }
-
-
-        // Actions generating.
+        // Actions management.
 
         public IEnumerable<GameAction> ReceiveActions() {
             if (behaviour != null) {
@@ -99,6 +86,18 @@ namespace NewWorld.Battlefield.Units {
             List<GameAction> actions = null;
             foreach (Ability ability in AllAbilities) {
                 foreach (GameAction action in ability.ReceiveActions()) {
+                    if (action is UnitUpdate unitUpdate && unitUpdate.UpdatedUnit == this) {
+                        // TODO: Implement overloaded methods to process different types of actions.
+                        if (unitUpdate is TransformUpdate transformUpdate) {
+                            if (transformUpdate.NewPosition != null) {
+                                transform.position = transformUpdate.NewPosition.Value;
+                            }
+                            if (transformUpdate.NewRotation != null) {
+                                transform.rotation = transformUpdate.NewRotation.Value;
+                            }
+                            continue;
+                        }
+                    }
                     if (actions == null) {
                         actions = new List<GameAction>();
                     }
@@ -109,6 +108,15 @@ namespace NewWorld.Battlefield.Units {
                 return Enumerables.GetNothing<GameAction>();
             }
             return actions;
+        }
+
+
+        // Support methods.
+
+        private void SetDefaultLocation() {
+            Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
+            float height = MapController.Instance.GetSurfaceHeight(connectedNode);
+            transform.position = new Vector3(connectedNode.x, height, connectedNode.y);
         }
 
 

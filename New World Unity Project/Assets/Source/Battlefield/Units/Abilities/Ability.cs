@@ -14,6 +14,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Properties.
 
         protected UnitController Owner => owner;
+        public abstract bool IsUsed { get; }
 
 
         // Constructor.

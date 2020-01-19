@@ -35,15 +35,17 @@ namespace NewWorld.Battlefield.Units.Abilities {
             nodeUpdated = false;
         }
 
-        protected override bool CalculatePoisitonAndRotation(out Vector3 newPosition, out Quaternion newRotation) {
-            bool finished = false;
 
-            Vector3 lastPosition = Owner.Position;
-            Quaternion lastRotation = Owner.Rotation;
-            newPosition = lastPosition;
-            newRotation = lastRotation;
+        protected override IEnumerable<GameAction> BuildActions(out bool finished) {
+            finished = false;
+            List<GameAction> actions = null;
+
             if (!nodeUpdated) {
-                return finished;
+                actions = new List<GameAction>();
+                ConnectedNodeUpdate connectedNodeUpdate = new ConnectedNodeUpdate(Owner, TargetedNode);
+                lastTime = Time.time;
+                actions.Add(connectedNodeUpdate);
+                nodeUpdated = true;
             }
 
             // Update time.
@@ -51,7 +53,10 @@ namespace NewWorld.Battlefield.Units.Abilities {
             float deltaTime = currentTime - lastTime;
             lastTime = currentTime;
 
-            // Calculate x and y components.
+            Vector3 lastPosition = Owner.Position;
+            Quaternion lastRotation = Owner.Rotation;
+
+            // Calculate x and z components.
             Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.z);
             Vector2 newPosition2D;
             float deltaDistance = speed * deltaTime;
@@ -62,27 +67,28 @@ namespace NewWorld.Battlefield.Units.Abilities {
                 Owner.Animator?.SetFloat(speedAnimatorHash, 0); // TODO: Move animation finish to OnStop().
             } else {
                 newPosition2D = lastPosition2D + deltaDistance * path.normalized;
-                newRotation = Quaternion.LookRotation(new Vector3(path.x, 0, path.y));
             }
 
             // Calculate y component.
             float y = MapController.Instance.GetSurfaceHeight(newPosition2D);
 
-            newPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
-            return finished;
-        }
+            // Calculate position.
+            Vector3 newPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
 
-
-        // Actions management.
-
-        public override IEnumerable<GameAction> ReceiveActions() {
-            if (Moves && !nodeUpdated) {
-                ConnectedNodeUpdate relocationAction = new ConnectedNodeUpdate(Owner, TargetedNode);
-                nodeUpdated = true;
-                lastTime = Time.time;
-                return Enumerables.GetSingle<GameAction>(relocationAction);
+            // Calculate rotation.
+            Quaternion? newRotation = null;
+            if (path != Vector2.zero) {
+                newRotation = Quaternion.LookRotation(new Vector3(path.x, 0, path.y));
             }
-            return Enumerables.GetNothing<GameAction>();
+
+            // Add transform update.
+            TransformUpdate transformUpdate = new TransformUpdate(Owner, newPosition, newRotation);
+            if (actions == null) {
+                return Enumerables.GetSingle<GameAction>(transformUpdate);
+            } else {
+                actions.Add(transformUpdate);
+                return actions;
+            }
         }
 
 
