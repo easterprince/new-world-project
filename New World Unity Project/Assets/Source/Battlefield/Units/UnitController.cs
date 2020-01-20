@@ -44,8 +44,6 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
-        public Animator Animator => animator;
-
         public UnitBehaviour Behaviour {
             get => behaviour;
         }
@@ -96,6 +94,12 @@ namespace NewWorld.Battlefield.Units {
                                 transform.rotation = transformUpdate.NewRotation.Value;
                             }
                             continue;
+                        }
+                        if (unitUpdate is AnimatorParameterUpdate<float> animatorParameterUpdate) {
+                            animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
+                        }
+                        if (unitUpdate is AnimatorTriggerApplication animatorTriggerApplication) {
+                            animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
                         }
                     }
                     if (actions == null) {

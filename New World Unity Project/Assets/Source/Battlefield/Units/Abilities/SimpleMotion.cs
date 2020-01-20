@@ -10,7 +10,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Static.
 
-        private static readonly int speedAnimatorHash = Animator.StringToHash("Speed"); 
+        private static readonly int motionSpeedAnimatorHash = Animator.StringToHash("MotionSpeed"); 
 
 
         // Fields.
@@ -31,7 +31,6 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Inner methods.
 
         protected override void OnStart() {
-            Owner.Animator?.SetFloat(speedAnimatorHash, speed);
             nodeUpdated = false;
         }
 
@@ -42,13 +41,20 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
             if (!nodeUpdated) {
                 actions = new List<GameAction>();
+                
+                // Add node update.
                 ConnectedNodeUpdate connectedNodeUpdate = new ConnectedNodeUpdate(Owner, TargetedNode);
-                lastTime = Time.time;
                 actions.Add(connectedNodeUpdate);
+
+                // Add animation update.
+                AnimatorParameterUpdate<float> animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, speed);
+                actions.Add(animationParameterUpdate);
+
                 nodeUpdated = true;
+                lastTime = Time.time;
             }
 
-            // Update time.
+            // Calculate time.
             float currentTime = Time.time;
             float deltaTime = currentTime - lastTime;
             lastTime = currentTime;
@@ -63,8 +69,15 @@ namespace NewWorld.Battlefield.Units.Abilities {
             Vector2 path = TargetedNode - lastPosition2D;
             if (path.magnitude <= deltaDistance) {
                 newPosition2D = TargetedNode;
+
+                // Add animation update.
+                if (actions == null) {
+                    actions = new List<GameAction>();
+                }
+                AnimatorParameterUpdate<float> animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
+                actions.Add(animationParameterUpdate);
+
                 finished = true;
-                Owner.Animator?.SetFloat(speedAnimatorHash, 0); // TODO: Move animation finish to OnStop().
             } else {
                 newPosition2D = lastPosition2D + deltaDistance * path.normalized;
             }
