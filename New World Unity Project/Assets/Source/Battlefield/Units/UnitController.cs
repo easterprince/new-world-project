@@ -9,7 +9,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 
 namespace NewWorld.Battlefield.Units {
 
-    public class UnitController : MonoBehaviour, IActing {
+    public partial class UnitController : MonoBehaviour, IActing {
 
         // Fabric.
 
@@ -40,6 +40,7 @@ namespace NewWorld.Battlefield.Units {
         private MotionAbility motionAbility = null;
 
         // Parameters.
+        private Ability usedAbility = null;
         private float health = 1;
 
 
@@ -49,16 +50,12 @@ namespace NewWorld.Battlefield.Units {
             get => behaviour;
         }
 
-        public MotionAbility MotionAbility {
-            get => motionAbility;
+        public Ability UsedAbility {
+            get => usedAbility;
         }
 
-        public IEnumerable<Ability> AllAbilities {
-            get {
-                if (motionAbility != null) {
-                    yield return motionAbility;
-                }
-            }
+        public MotionAbility MotionAbility {
+            get => motionAbility;
         }
 
         public Vector3 Position => transform.position;
@@ -79,28 +76,25 @@ namespace NewWorld.Battlefield.Units {
         // Actions management.
 
         public IEnumerable<GameAction> ReceiveActions() {
+            
+            // Update used ability.
             if (behaviour != null) {
-                behaviour.Act();
+                behaviour.Act(out Ability useAnotherAbility);
+                if (useAnotherAbility != null) {
+                    if (usedAbility != null) {
+                        throw new System.InvalidOperationException("Can't change used ability while it's being used.");
+                    }
+                    usedAbility = useAnotherAbility;
+                }
             }
+
+            // Receive and process actions from used ability.
             List<GameAction> actions = null;
-            foreach (Ability ability in AllAbilities) {
-                foreach (GameAction action in ability.ReceiveActions()) {
+            if (usedAbility != null) {
+                foreach (GameAction action in usedAbility.ReceiveActions()) {
                     if (action is UnitUpdate unitUpdate && unitUpdate.UpdatedUnit == this) {
-                        // TODO: Implement overloaded methods to process different types of actions.
-                        if (unitUpdate is TransformUpdate transformUpdate) {
-                            if (transformUpdate.NewPosition != null) {
-                                transform.position = transformUpdate.NewPosition.Value;
-                            }
-                            if (transformUpdate.NewRotation != null) {
-                                transform.rotation = transformUpdate.NewRotation.Value;
-                            }
+                        if (ProcessUnitUpdate(unitUpdate)) {
                             continue;
-                        }
-                        if (unitUpdate is AnimatorParameterUpdate<float> animatorParameterUpdate) {
-                            animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
-                        }
-                        if (unitUpdate is AnimatorTriggerApplication animatorTriggerApplication) {
-                            animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
                         }
                     }
                     if (actions == null) {
@@ -108,7 +102,11 @@ namespace NewWorld.Battlefield.Units {
                     }
                     actions.Add(action);
                 }
+                if (!usedAbility.IsUsed) {
+                    usedAbility = null;
+                }
             }
+
             if (actions == null) {
                 return Enumerables.GetNothing<GameAction>();
             }

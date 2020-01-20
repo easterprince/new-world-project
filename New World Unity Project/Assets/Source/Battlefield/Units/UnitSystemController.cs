@@ -8,7 +8,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 
 namespace NewWorld.Battlefield.Units {
 
-    public class UnitSystemController : SceneSingleton<UnitSystemController> {
+    public partial class UnitSystemController : SceneSingleton<UnitSystemController> {
 
         // Fields.
 
@@ -52,13 +52,8 @@ namespace NewWorld.Battlefield.Units {
             foreach (UnitController actingUnit in units) {
                 IEnumerable<GameAction> actions = actingUnit.ReceiveActions();
                 foreach (GameAction action in actions) {
-                    if (action is ConnectedNodeUpdate connectedNodeUpdate) {
-                        UnitController updatedUnit = connectedNodeUpdate.UpdatedUnit;
-                        Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
-                        ValidateRelocation(newConnectedNode, updatedUnit);
-                        onPositions.Remove(positions[updatedUnit]);
-                        onPositions[newConnectedNode] = updatedUnit;
-                        positions[updatedUnit] = newConnectedNode;
+                    if (!ProcessGameAction(action)) {
+                        Debug.LogWarning($"Action { action.GetType() } has not been processed. Is it redundant?");
                     }
                 }
             }
