@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
     public class AnimatorParameterUpdate<ParameterType> : UnitUpdate
         where ParameterType : struct {
@@ -8,7 +8,7 @@ namespace NewWorld.Battlefield.Units.Actions {
         // Fields.
 
         private readonly int animationParameterHash;
-        private readonly ParameterType newValue; 
+        private readonly ParameterType newValue;
 
 
         // Properties.

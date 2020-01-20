@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions {
-    
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
+
     public class ConnectedNodeUpdate : UnitUpdate {
 
         // Fields.

@@ -3,6 +3,7 @@ using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Actions;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 

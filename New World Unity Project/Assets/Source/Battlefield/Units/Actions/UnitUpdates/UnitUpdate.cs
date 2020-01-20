@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
     public class UnitUpdate : GameAction {
 
@@ -15,7 +15,7 @@ namespace NewWorld.Battlefield.Units.Actions {
 
 
         // Constructor.
-    
+
         public UnitUpdate(UnitController updatedUnit) {
             if (updatedUnit == null) {
                 throw new System.ArgumentNullException(nameof(updatedUnit));
