@@ -2,10 +2,12 @@
 using UnityEngine;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Utilities;
+using NewWorld.Battlefield.Units.Abilities.Active;
+using NewWorld.Battlefield.Units;
 
-namespace NewWorld.Battlefield.Units.Abilities {
+namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
-    public abstract class MotionAbility : Ability {
+    public abstract class MotionAbility : ActiveAbility {
 
         // Fields.
 
@@ -22,7 +24,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Constructor.
 
-        public MotionAbility(UnitController owner) : base(owner) {}
+        public MotionAbility(UnitController owner) : base(owner) { }
 
 
         // Interactions.

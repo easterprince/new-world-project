@@ -2,6 +2,7 @@
 using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Abilities;
+using NewWorld.Battlefield.Units.Abilities.Active;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 
@@ -25,7 +26,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
         private bool plannedMotion = false;
         private float nextMovementTime = 0;
 
-        public void Act(out Ability useAbility) {
+        public void Act(out ActiveAbility useAbility) {
             useAbility = null;
 
             // Wander around.

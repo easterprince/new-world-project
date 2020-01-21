@@ -6,6 +6,8 @@ using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Behaviours;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Abilities.Active.Motion;
+using NewWorld.Battlefield.Units.Abilities.Active;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -40,7 +42,7 @@ namespace NewWorld.Battlefield.Units {
         private MotionAbility motionAbility = null;
 
         // Parameters.
-        private Ability usedAbility = null;
+        private ActiveAbility usedAbility = null;
         private float health = 1;
 
 
@@ -79,7 +81,7 @@ namespace NewWorld.Battlefield.Units {
             
             // Update used ability.
             if (behaviour != null) {
-                behaviour.Act(out Ability useAnotherAbility);
+                behaviour.Act(out ActiveAbility useAnotherAbility);
                 if (useAnotherAbility != null) {
                     if (usedAbility != null) {
                         throw new System.InvalidOperationException("Can't change used ability while it's being used.");

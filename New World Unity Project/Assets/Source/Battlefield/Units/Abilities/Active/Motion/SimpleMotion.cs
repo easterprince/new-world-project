@@ -4,14 +4,15 @@ using NewWorld.Battlefield.Map;
 using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units;
 
-namespace NewWorld.Battlefield.Units.Abilities {
+namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
     public class SimpleMotion : MotionAbility {
 
         // Static.
 
-        private static readonly int motionSpeedAnimatorHash = Animator.StringToHash("MotionSpeed"); 
+        private static readonly int motionSpeedAnimatorHash = Animator.StringToHash("MotionSpeed");
 
 
         // Fields.
@@ -26,7 +27,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Constructor.
 
-        public SimpleMotion(UnitController owner) : base(owner) {}
+        public SimpleMotion(UnitController owner) : base(owner) { }
 
 
         // Inner methods.
@@ -42,7 +43,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
             if (!nodeUpdated) {
                 actions = new List<GameAction>();
-                
+
                 // Add node update.
                 ConnectedNodeUpdate connectedNodeUpdate = new ConnectedNodeUpdate(Owner, TargetedNode);
                 actions.Add(connectedNodeUpdate);
