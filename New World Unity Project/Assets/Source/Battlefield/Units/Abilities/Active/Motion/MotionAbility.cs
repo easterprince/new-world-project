@@ -7,7 +7,7 @@ using NewWorld.Battlefield.Units;
 
 namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
-    public abstract class MotionAbility : UsableActiveAbility<Vector2Int> {
+    public abstract class MotionAbility : UsableAbility<Vector2Int> {
 
         // Fields.
 

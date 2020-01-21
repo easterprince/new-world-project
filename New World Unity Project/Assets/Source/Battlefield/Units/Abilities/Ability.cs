@@ -13,7 +13,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Properties.
 
-        protected UnitController Owner => owner;
+        public UnitController Owner => owner;
 
 
         // Constructor.

@@ -2,11 +2,11 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Active {
 
-    public abstract class UsableActiveAbility : ActiveAbility {
+    public abstract class UsableAbility : ActiveAbility {
 
         // Constructor.
 
-        public UsableActiveAbility(UnitController owner) : base(owner) { }
+        public UsableAbility(UnitController owner) : base(owner) { }
 
 
         // Methods.
@@ -16,11 +16,11 @@ namespace NewWorld.Battlefield.Units.Abilities.Active {
 
     }
 
-    public abstract class UsableActiveAbility<UsageParameterType> : ActiveAbility {
+    public abstract class UsableAbility<UsageParameterType> : ActiveAbility {
 
         // Constructor.
 
-        public UsableActiveAbility(UnitController owner) : base(owner) { }
+        public UsableAbility(UnitController owner) : base(owner) { }
 
 
         // Methods.
