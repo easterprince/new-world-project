@@ -64,6 +64,16 @@ namespace NewWorld.Battlefield.Units {
         public Quaternion Rotation => transform.rotation;
 
 
+        // Informational methods.
+
+        public bool HasAbility(Ability ability) {
+            if (ability == null) {
+                return false;
+            }
+            return motionAbility == ability;
+        }
+
+
         // Life cycle.
 
         private void Awake() {

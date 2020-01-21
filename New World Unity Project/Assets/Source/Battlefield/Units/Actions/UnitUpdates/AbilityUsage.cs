@@ -3,49 +3,37 @@ using NewWorld.Battlefield.Units.Abilities.Active;
 
 namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
-    public class AbilityUsage : UnitUpdate {
-
-        // Fields.
-
-        private readonly UsableAbility ability;
-
+    public class AbilityUsage : AbilityActivation {
 
         // Properties.
 
-        public UsableAbility Ability => ability;
+        public UsableAbility UsableAbility => Ability as UsableAbility;
 
 
         // Constructor.
 
-        public AbilityUsage(UnitController updatedUnit, UsableAbility ability) : base(updatedUnit) {
-            if (updatedUnit != ability.Owner) {
-                throw new System.ArgumentException("Updated unit must be owner of ability.");
-            }
-            this.ability = ability;
-        }
+        public AbilityUsage(UnitController updatedUnit, UsableAbility ability) : base(updatedUnit, ability) {}
 
 
     }
 
-    public class AbilityUsage<UsageParameterType> : UnitUpdate {
+    public class AbilityUsage<UsageParameterType> : AbilityActivation {
 
         // Fields.
 
-        private readonly UsableAbility<UsageParameterType> ability;
+        private readonly UsageParameterType usageParameter;
 
 
         // Properties.
 
-        public UsableAbility<UsageParameterType> Ability => ability;
+        public UsableAbility<UsageParameterType> UsableAbility => Ability as UsableAbility<UsageParameterType>;
+        public UsageParameterType UsageParameter => usageParameter;
 
 
         // Constructor.
 
-        public AbilityUsage(UnitController updatedUnit, UsableAbility<UsageParameterType> ability) : base(updatedUnit) {
-            if (updatedUnit != ability.Owner) {
-                throw new System.ArgumentException("Updated unit must be owner of ability.");
-            }
-            this.ability = ability;
+        public AbilityUsage(UnitController updatedUnit, UsableAbility<UsageParameterType> ability, UsageParameterType usageParameter) : base(updatedUnit, ability) {
+            this.usageParameter = usageParameter;
         }
 
 

@@ -24,6 +24,9 @@ namespace NewWorld.Battlefield.Units {
             if (unitUpdate is AnimatorTriggerApplication animatorTriggerApplication) {
                 return ProcessUnitUpdate(animatorTriggerApplication);
             }
+            if (unitUpdate is AbilityActivation abilityActivation) {
+                return ProcessUnitUpdate(abilityActivation);
+            }
             return false;
         }
 
@@ -44,6 +47,30 @@ namespace NewWorld.Battlefield.Units {
 
         private bool ProcessUnitUpdate(AnimatorTriggerApplication animatorTriggerApplication) {
             animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
+            return true;
+        }
+
+        private bool ProcessUnitUpdate(AbilityActivation abilityActivation) {
+            if (abilityActivation is AbilityUsage abilityUsage) {
+                ProcessUnitUpdate(abilityUsage);
+            }
+            if (abilityActivation is AbilityUsage<Vector2Int> abilityUsage1) {
+                ProcessUnitUpdate(abilityUsage1);
+            }
+            return false;
+        }
+
+        private bool ProcessUnitUpdate(AbilityUsage abilityUsage) {
+            if (HasAbility(abilityUsage.Ability)) {
+                abilityUsage.UsableAbility.Use();
+            }
+            return true;
+        }
+
+        private bool ProcessUnitUpdate<UsageParameterType>(AbilityUsage<UsageParameterType> abilityUsage) {
+            if (HasAbility(abilityUsage.Ability)) {
+                abilityUsage.UsableAbility.Use(abilityUsage.UsageParameter);
+            }
             return true;
         }
 
