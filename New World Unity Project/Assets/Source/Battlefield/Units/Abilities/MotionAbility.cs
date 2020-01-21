@@ -11,14 +11,12 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Motion characteristics.
         private bool moves = false;
-        private Vector2Int startingNode;
         private Vector2Int targetedNode;
 
 
         // Properties.
 
         public override bool IsUsed => moves;
-        public Vector2Int StartingNode => startingNode;
         public Vector2Int TargetedNode => targetedNode;
 
 
@@ -29,12 +27,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Interactions.
 
-        public void StartMotion(Vector2Int from, Vector2Int to) {
+        public void StartMotion(Vector2Int to) {
             if (moves) {
                 throw new System.InvalidOperationException("Motion has been started already.");
             }
             moves = true;
-            startingNode = from;
             targetedNode = to;
             OnStart();
         }
