@@ -48,7 +48,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                         MapController.Instance.GetSurfaceNode(newConnectedNode) == null || 
                         UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
                     );
-                    unit.MotionAbility.StartMotion(newConnectedNode);
+                    unit.MotionAbility.Use(newConnectedNode);
                     useAbility = unit.MotionAbility;
                 }
             }

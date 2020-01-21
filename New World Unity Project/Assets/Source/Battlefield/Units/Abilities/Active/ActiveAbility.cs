@@ -1,6 +1,4 @@
-﻿using NewWorld.Battlefield.Units;
-using NewWorld.Battlefield.Units.Abilities;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace NewWorld.Battlefield.Units.Abilities.Active {
 

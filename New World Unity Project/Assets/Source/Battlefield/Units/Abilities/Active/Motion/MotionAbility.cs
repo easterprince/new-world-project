@@ -7,7 +7,7 @@ using NewWorld.Battlefield.Units;
 
 namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
-    public abstract class MotionAbility : ActiveAbility {
+    public abstract class MotionAbility : UsableActiveAbility<Vector2Int> {
 
         // Fields.
 
@@ -29,9 +29,9 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Interactions.
 
-        public void StartMotion(Vector2Int to) {
+        override public void Use(Vector2Int to) {
             if (moves) {
-                throw new System.InvalidOperationException("Motion has been started already.");
+                throw new System.InvalidOperationException("Motion has been started already!");
             }
             moves = true;
             targetedNode = to;
@@ -41,9 +41,9 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Actions management.
 
-        public override IEnumerable<GameAction> ReceiveActions() {
+        override public IEnumerable<GameAction> ReceiveActions() {
             if (!moves) {
-                return Enumerables.GetNothing<GameAction>();
+                throw new System.InvalidOperationException("Motion has not been started!");
             }
             IEnumerable<GameAction> actions = BuildActions(out bool finished);
             if (finished) {
