@@ -7,19 +7,25 @@ using NewWorld.Battlefield.Units;
 
 namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
-    public abstract class MotionAbility : UsableAbility<Vector2Int> {
+    public abstract class MotionAbility : ActiveAbility {
+
+        // Static.
+
+        public static object FormParameterSet(Vector2Int destination) {
+            return destination;
+        }
+
 
         // Fields.
 
-        // Motion characteristics.
         private bool moves = false;
-        private Vector2Int targetedNode;
+        private Vector2Int destination;
 
 
         // Properties.
 
         sealed override public bool IsUsed => moves;
-        public Vector2Int TargetedNode => targetedNode;
+        public Vector2Int Destination => destination;
 
 
         // Constructor.
@@ -29,12 +35,15 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Interactions.
 
-        sealed override public void Use(Vector2Int to) {
+        sealed override public void Use(object parameterSet) {
             if (moves) {
                 throw new System.InvalidOperationException("Motion has been started already!");
             }
-            moves = true;
-            targetedNode = to;
+            if (!(parameterSet is Vector2Int destination)) {
+                throw new System.ArgumentException($"Parameter must be of class {this.destination.GetType()}.");
+            }
+            this.moves = true;
+            this.destination = destination;
             OnStart();
         }
 

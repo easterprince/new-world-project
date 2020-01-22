@@ -14,6 +14,11 @@ namespace NewWorld.Battlefield.Units.Abilities.Active {
         public ActiveAbility(UnitController owner) : base(owner) { }
 
 
+        // Methods.
+
+        public abstract void Use(object parameterSet);
+
+
     }
 
 }

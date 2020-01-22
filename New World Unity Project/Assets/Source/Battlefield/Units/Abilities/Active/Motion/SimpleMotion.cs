@@ -45,7 +45,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
                 actions = new List<GameAction>();
 
                 // Add node update.
-                ConnectedNodeUpdate connectedNodeUpdate = new ConnectedNodeUpdate(Owner, TargetedNode);
+                ConnectedNodeUpdate connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
                 actions.Add(connectedNodeUpdate);
 
                 // Add animation update.
@@ -68,9 +68,9 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
             Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.z);
             Vector2 newPosition2D;
             float deltaDistance = speed * deltaTime;
-            Vector2 path = TargetedNode - lastPosition2D;
+            Vector2 path = Destination - lastPosition2D;
             if (path.magnitude <= deltaDistance) {
-                newPosition2D = TargetedNode;
+                newPosition2D = Destination;
 
                 // Add animation update.
                 if (actions == null) {
