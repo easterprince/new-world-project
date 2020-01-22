@@ -18,7 +18,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Properties.
 
-        public override bool IsUsed => moves;
+        sealed override public bool IsUsed => moves;
         public Vector2Int TargetedNode => targetedNode;
 
 
@@ -29,7 +29,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Interactions.
 
-        override public void Use(Vector2Int to) {
+        sealed override public void Use(Vector2Int to) {
             if (moves) {
                 throw new System.InvalidOperationException("Motion has been started already!");
             }
@@ -41,7 +41,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Actions management.
 
-        override public IEnumerable<GameAction> ReceiveActions() {
+        sealed override public IEnumerable<GameAction> ReceiveActions() {
             if (!moves) {
                 throw new System.InvalidOperationException("Motion has not been started!");
             }
