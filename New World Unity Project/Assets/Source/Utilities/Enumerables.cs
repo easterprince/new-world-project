@@ -14,6 +14,15 @@ namespace NewWorld.Utilities {
             yield return element;
         }
 
+        public static IEnumerable<T> Unite<T>(IEnumerable<T> first, IEnumerable<T> second) {
+            foreach (T obj in first) {
+                yield return obj;
+            }
+            foreach (T obj in second) {
+                yield return obj;
+            }
+        }
+
         public static IEnumerable<Vector2Int> InSegment2(int finish) {
             Vector2Int vector = Vector2Int.zero;
             for (vector.x = 0; vector.x <= finish; ++vector.x) {

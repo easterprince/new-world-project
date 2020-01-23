@@ -21,8 +21,12 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
         private const float speed = 1;
 
         // Updating.
-        private bool nodeUpdated;
         private float lastTime;
+
+
+        // Properties.
+
+        sealed override public bool CanBeCancelled => false;
 
 
         // Constructor.
@@ -32,29 +36,17 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Inner methods.
 
-        protected override void OnStart() {
-            nodeUpdated = false;
+        override protected IEnumerable<GameAction> OnMotionStart() {
+            lastTime = Time.time;
+
+            var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
+            var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, speed);
+            return new GameAction[] { connectedNodeUpdate, animationParameterUpdate };
         }
 
 
-        protected override IEnumerable<GameAction> BuildActions(out bool finished) {
-            finished = false;
-            List<GameAction> actions = null;
-
-            if (!nodeUpdated) {
-                actions = new List<GameAction>();
-
-                // Add node update.
-                ConnectedNodeUpdate connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
-                actions.Add(connectedNodeUpdate);
-
-                // Add animation update.
-                AnimatorParameterUpdate<float> animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, speed);
-                actions.Add(animationParameterUpdate);
-
-                nodeUpdated = true;
-                lastTime = Time.time;
-            }
+        override protected IEnumerable<GameAction> OnUpdate(out bool completed) {
+            completed = false;
 
             // Calculate time.
             float currentTime = Time.time;
@@ -71,15 +63,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
             Vector2 path = Destination - lastPosition2D;
             if (path.magnitude <= deltaDistance) {
                 newPosition2D = Destination;
-
-                // Add animation update.
-                if (actions == null) {
-                    actions = new List<GameAction>();
-                }
-                AnimatorParameterUpdate<float> animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
-                actions.Add(animationParameterUpdate);
-
-                finished = true;
+                completed = true;
             } else {
                 newPosition2D = lastPosition2D + deltaDistance * path.normalized;
             }
@@ -98,12 +82,12 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
             // Add transform update.
             TransformUpdate transformUpdate = new TransformUpdate(Owner, newPosition, newRotation);
-            if (actions == null) {
-                return Enumerables.GetSingle<GameAction>(transformUpdate);
-            } else {
-                actions.Add(transformUpdate);
-                return actions;
-            }
+            return Enumerables.GetSingle(transformUpdate);
+        }
+
+        override protected IEnumerable<GameAction> OnFinish(FinishType finishType) {
+            var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
+            return Enumerables.GetSingle(animationParameterUpdate);
         }
 
 

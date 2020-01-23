@@ -18,13 +18,11 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Fields.
 
-        private bool moves = false;
         private Vector2Int destination;
 
 
         // Properties.
 
-        sealed override public bool IsUsed => moves;
         public Vector2Int Destination => destination;
 
 
@@ -33,40 +31,17 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
         public MotionAbility(UnitController owner) : base(owner) { }
 
 
-        // Interactions.
+        // Response methods.
 
-        sealed override public void Use(object parameterSet) {
-            if (moves) {
-                throw new System.InvalidOperationException("Motion has been started already!");
-            }
+        sealed override protected IEnumerable<GameAction> OnStart(object parameterSet) {
             if (!(parameterSet is Vector2Int destination)) {
                 throw new System.ArgumentException($"Parameter must be of class {this.destination.GetType()}.");
             }
-            this.moves = true;
             this.destination = destination;
-            OnStart();
+            return OnMotionStart();
         }
 
-
-        // Actions management.
-
-        sealed override public IEnumerable<GameAction> ReceiveActions() {
-            if (!moves) {
-                throw new System.InvalidOperationException("Motion has not been started!");
-            }
-            IEnumerable<GameAction> actions = BuildActions(out bool finished);
-            if (finished) {
-                moves = false;
-            }
-            return actions;
-        }
-
-
-        // Inner methods.
-
-        protected abstract void OnStart();
-
-        protected abstract IEnumerable<GameAction> BuildActions(out bool finished);
+        protected abstract IEnumerable<GameAction> OnMotionStart();
 
 
     }
