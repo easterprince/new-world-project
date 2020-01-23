@@ -91,12 +91,9 @@ namespace NewWorld.Battlefield.Units {
             
             // Update used ability.
             if (behaviour != null) {
-                behaviour.Act(out ActiveAbility useAnotherAbility);
-                if (useAnotherAbility != null) {
-                    if (usedAbility != null) {
-                        throw new System.InvalidOperationException("Can't change used ability while it's being used.");
-                    }
-                    usedAbility = useAnotherAbility;
+                AbilityUsage abilityUsage = behaviour.Act();
+                if (abilityUsage != null) {
+                    ProcessUnitUpdate(abilityUsage);
                 }
             }
 
@@ -104,10 +101,8 @@ namespace NewWorld.Battlefield.Units {
             List<GameAction> actions = null;
             if (usedAbility != null) {
                 foreach (GameAction action in usedAbility.ReceiveActions()) {
-                    if (action is UnitUpdate unitUpdate && unitUpdate.UpdatedUnit == this) {
-                        if (ProcessUnitUpdate(unitUpdate)) {
-                            continue;
-                        }
+                    if (action is UnitUpdate unitUpdate && unitUpdate.UpdatedUnit == this && ProcessUnitUpdate(unitUpdate)) {
+                        continue;
                     }
                     if (actions == null) {
                         actions = new List<GameAction>();

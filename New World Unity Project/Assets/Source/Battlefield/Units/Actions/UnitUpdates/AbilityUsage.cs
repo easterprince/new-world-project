@@ -3,7 +3,7 @@ using NewWorld.Battlefield.Units.Abilities.Active;
 
 namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
-    public abstract class AbilityUsage : UnitUpdate {
+    public class AbilityUsage : UnitUpdate {
 
         // Fields.
 

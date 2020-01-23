@@ -51,8 +51,9 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(AbilityUsage abilityUsage) {
-            if (HasAbility(abilityUsage.Ability)) {
-                abilityUsage.Ability.Use(abilityUsage.ParameterSet);
+            if (usedAbility == null && HasAbility(abilityUsage.Ability)) {
+                usedAbility = abilityUsage.Ability;
+                usedAbility.Use(abilityUsage.ParameterSet);
             }
             return true;
         }
