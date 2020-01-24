@@ -19,10 +19,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Constructor.
 
-        public AbilityUsage(UnitController updatedUnit, ActiveAbility ability, object parameterSet) : base(updatedUnit) {
-            if (updatedUnit != ability.Owner) {
-                throw new System.ArgumentException("Updated unit must be owner of ability.");
-            }
+        public AbilityUsage(ActiveAbility ability, object parameterSet) : base(ability.Owner) {
             this.ability = ability;
             this.parameterSet = parameterSet;
         }

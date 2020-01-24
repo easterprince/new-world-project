@@ -7,7 +7,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Constructor.
 
-        public AbilityCancellation(UnitController updatedUnit, ActiveAbility ability) : base(updatedUnit, ability, false) {}
+        public AbilityCancellation(ActiveAbility ability) : base(ability, false) {}
 
 
     }

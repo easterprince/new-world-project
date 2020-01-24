@@ -19,10 +19,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Constructor.
 
-        public AbilityStop(UnitController updatedUnit, ActiveAbility ability, bool forceStop) : base(updatedUnit) {
-            if (updatedUnit != ability.Owner) {
-                throw new System.ArgumentException("Updated unit must be owner of ability.");
-            }
+        public AbilityStop(ActiveAbility ability, bool forceStop) : base(ability.Owner) {
             this.ability = ability;
             this.forceStop = forceStop;
         }

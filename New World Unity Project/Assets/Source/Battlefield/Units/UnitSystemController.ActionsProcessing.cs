@@ -26,10 +26,11 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessGameAction(ConnectedNodeUpdate connectedNodeUpdate) {
             UnitController updatedUnit = connectedNodeUpdate.UpdatedUnit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
-            ValidateRelocation(newConnectedNode, updatedUnit);
-            onPositions.Remove(positions[updatedUnit]);
-            onPositions[newConnectedNode] = updatedUnit;
-            positions[updatedUnit] = newConnectedNode;
+            if (ValidateRelocation(newConnectedNode, updatedUnit)) {
+                onPositions.Remove(positions[updatedUnit]);
+                onPositions[newConnectedNode] = updatedUnit;
+                positions[updatedUnit] = newConnectedNode;
+            }
             return true;
         }
 

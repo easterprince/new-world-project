@@ -25,22 +25,20 @@ namespace NewWorld.Battlefield.Units.Behaviours {
 
 
         private bool plannedMotion = false;
-        private float nextMovementTime = 0;
+        private float nextMovementTime;
+        private float nextStopTime = float.PositiveInfinity;
 
         public void Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage) {
             abilityCancellation = null;
             abilityUsage = null;
-            if (unit.UsedAbility != null) {
-                return;
-            }
 
             // Wander around.
             if (unit.MotionAbility != null) {
-                if (!plannedMotion) {
+                if (!plannedMotion && !unit.MotionAbility.IsUsed) {
                     plannedMotion = true;
-                    nextMovementTime = Time.time + Random.Range(0f, 1.5f);
+                    nextMovementTime = Time.time + Random.Range(0f, 2f);
                 }
-                if (Time.time >= nextMovementTime && unit.UsedAbility == null) {
+                if (plannedMotion && Time.time >= nextMovementTime && unit.UsedAbility == null) {
                     plannedMotion = false;
                     Vector2Int curConnectedNode = UnitSystemController.Instance.GetConnectedNode(unit);
                     Vector2Int newConnectedNode;
@@ -51,7 +49,12 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                         UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
                     );
                     object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
-                    abilityUsage = new AbilityUsage(unit, unit.MotionAbility, parameterSet);
+                    abilityUsage = new AbilityUsage(unit.MotionAbility, parameterSet);
+                    nextStopTime = Time.time + Random.Range(0f, 2f);
+                }
+                if (Time.time >= nextStopTime && unit.MotionAbility.IsUsed) {
+                    abilityCancellation = new AbilityCancellation(unit.MotionAbility);
+                    nextStopTime = float.PositiveInfinity;
                 }
             }
 

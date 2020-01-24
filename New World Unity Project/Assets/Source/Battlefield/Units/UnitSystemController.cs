@@ -69,7 +69,9 @@ namespace NewWorld.Battlefield.Units {
 
             int index = 0;
             foreach (UnitDescription unitDescription in unitDescriptions) {
-                ValidateRelocation(unitDescription.ConnectedNode);
+                if (!ValidateRelocation(unitDescription.ConnectedNode)) {
+                    throw new System.InvalidOperationException($"Cannot connect unit to the given node ({ unitDescription.ConnectedNode }).");
+                }
                 UnitController unit = UnitController.BuildUnit(unitDescription, $"Unit {index++}");
                 unit.transform.parent = transform;
                 units.Add(unit);
@@ -83,14 +85,15 @@ namespace NewWorld.Battlefield.Units {
 
         // Support methods.
 
-        private void ValidateRelocation(Vector2Int newConnectedNode, UnitController unit = null) {
+        private bool ValidateRelocation(Vector2Int newConnectedNode, UnitController unit = null) {
             NodeDescription node = MapController.Instance.GetSurfaceNode(newConnectedNode);
             if (node == null) {
-                throw new System.InvalidOperationException("Connected node does not exist!");
+                return false;
             }
             if (onPositions.TryGetValue(newConnectedNode, out UnitController otherUnit) && otherUnit != unit) {
-                throw new System.InvalidOperationException("No two units may be connected to the same node.");
+                return false;
             }
+            return true;
         }
 
 

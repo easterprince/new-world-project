@@ -22,11 +22,12 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Updating.
         private float lastTime;
+        private bool destinationReached;
 
 
         // Properties.
 
-        sealed override public bool CanBeCancelled => false;
+        sealed override public bool CanBeCancelled => true;
 
 
         // Constructor.
@@ -38,56 +39,82 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         override protected IEnumerable<GameAction> OnMotionStart() {
             lastTime = Time.time;
+            destinationReached = false;
 
-            var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
             var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, speed);
-            return new GameAction[] { connectedNodeUpdate, animationParameterUpdate };
+            return Enumerables.GetSingle(animationParameterUpdate);
         }
 
 
         override protected IEnumerable<GameAction> OnUpdate(out bool completed) {
-            completed = false;
+            if (!destinationReached) {
 
-            // Calculate time.
-            float currentTime = Time.time;
-            float deltaTime = currentTime - lastTime;
-            lastTime = currentTime;
+                completed = false;
 
-            Vector3 lastPosition = Owner.Position;
-            Quaternion lastRotation = Owner.Rotation;
+                // Calculate time.
+                float currentTime = Time.time;
+                float deltaTime = currentTime - lastTime;
+                lastTime = currentTime;
 
-            // Calculate x and z components.
-            Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.z);
-            Vector2 newPosition2D;
-            float deltaDistance = speed * deltaTime;
-            Vector2 path = Destination - lastPosition2D;
-            if (path.magnitude <= deltaDistance) {
-                newPosition2D = Destination;
-                completed = true;
+                Vector3 lastPosition = Owner.Position;
+                Quaternion lastRotation = Owner.Rotation;
+
+                // Calculate x and z components.
+                Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.z);
+                Vector2 newPosition2D;
+                float deltaDistance = speed * deltaTime;
+                Vector2 path = Destination - lastPosition2D;
+                if (path.magnitude <= deltaDistance) {
+                    newPosition2D = Destination;
+                    destinationReached = true;
+                } else {
+                    newPosition2D = lastPosition2D + deltaDistance * path.normalized;
+                }
+
+                // Calculate y component.
+                float y = MapController.Instance.GetSurfaceHeight(newPosition2D);
+
+                // Calculate position.
+                Vector3 newPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
+
+                // Calculate rotation.
+                Quaternion? newRotation = null;
+                if (path != Vector2.zero) {
+                    newRotation = Quaternion.LookRotation(new Vector3(path.x, 0, path.y));
+                }
+
+                var transformUpdate = new TransformUpdate(Owner, newPosition, newRotation);
+                return Enumerables.GetSingle(transformUpdate);
+
+            } else if (UnitSystemController.Instance.GetConnectedNode(Owner) != Destination) {
+
+                completed = false;
+
+                var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
+                return Enumerables.GetSingle(connectedNodeUpdate);
+
             } else {
-                newPosition2D = lastPosition2D + deltaDistance * path.normalized;
+
+                completed = false;
+
+                return Enumerables.GetNothing<GameAction>();
+
             }
-
-            // Calculate y component.
-            float y = MapController.Instance.GetSurfaceHeight(newPosition2D);
-
-            // Calculate position.
-            Vector3 newPosition = new Vector3(newPosition2D.x, y, newPosition2D.y);
-
-            // Calculate rotation.
-            Quaternion? newRotation = null;
-            if (path != Vector2.zero) {
-                newRotation = Quaternion.LookRotation(new Vector3(path.x, 0, path.y));
-            }
-
-            // Add transform update.
-            TransformUpdate transformUpdate = new TransformUpdate(Owner, newPosition, newRotation);
-            return Enumerables.GetSingle(transformUpdate);
         }
 
         override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
             var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
-            return Enumerables.GetSingle(animationParameterUpdate);
+            var actions = Enumerables.GetSingle<GameAction>(animationParameterUpdate); 
+
+            var connectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
+            var currentNode = Vector2Int.RoundToInt(new Vector2(Owner.Position.x, Owner.Position.z));
+            if (connectedNode != currentNode) {
+                float y = MapController.Instance.GetSurfaceHeight(connectedNode);
+                var transformUpdate = new TransformUpdate(Owner, new Vector3(connectedNode.x, y, connectedNode.y), null);
+                actions = Enumerables.Unite(actions, transformUpdate);
+            }
+
+            return actions;
         }
 
 
