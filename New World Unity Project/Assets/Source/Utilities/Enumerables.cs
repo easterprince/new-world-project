@@ -6,6 +6,8 @@ namespace NewWorld.Utilities {
 
     public static class Enumerables {
 
+        // Trivial.
+
         public static IEnumerable<T> GetNothing<T>() {
             yield break;
         }
@@ -14,28 +16,55 @@ namespace NewWorld.Utilities {
             yield return element;
         }
 
-        public static IEnumerable<T> Unite<T>(T first, IEnumerable<T> second) {
-            yield return first;
-            foreach (T obj in second) {
-                yield return obj;
+
+        // Unions.
+
+        public static IEnumerable<T> Unite<T>(T element1, T element2) {
+            yield return element1;
+            yield return element2;
+        }
+
+        public static IEnumerable<T> Unite<T>(params T[] elements) {
+            foreach (T element in elements) {
+                yield return element;
             }
         }
 
-        public static IEnumerable<T> Unite<T>(IEnumerable<T> first, T second) {
-            foreach (T obj in first) {
-                yield return obj;
+        public static IEnumerable<T> Unite<T>(IEnumerable<T> enumerable, T additional) {
+            foreach (T element in enumerable) {
+                yield return element;
             }
-            yield return second;
+            yield return additional;
         }
 
-        public static IEnumerable<T> Unite<T>(IEnumerable<T> first, IEnumerable<T> second) {
-            foreach (T obj in first) {
-                yield return obj;
+        public static IEnumerable<T> Unite<T>(IEnumerable<T> enumerable, params T[] elements) {
+            foreach (T element in enumerable) {
+                yield return element;
             }
-            foreach (T obj in second) {
-                yield return obj;
+            foreach (T element in elements) {
+                yield return element;
             }
         }
+
+        public static IEnumerable<T> Unite<T>(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2) {
+            foreach (T element in enumerable1) {
+                yield return element;
+            }
+            foreach (T element in enumerable2) {
+                yield return element;
+            }
+        }
+
+        public static IEnumerable<T> Unite<T>(params IEnumerable<T>[] enumerables) {
+            foreach (IEnumerable<T> enumerable in enumerables) {
+                foreach (T element in enumerable) {
+                    yield return element;
+                }
+            }
+        }
+
+
+        // Vector2Int.
 
         public static IEnumerable<Vector2Int> InSegment2(int finish) {
             Vector2Int vector = Vector2Int.zero;

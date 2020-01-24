@@ -47,9 +47,10 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
 
         override protected IEnumerable<GameAction> OnUpdate(out bool completed) {
-            if (!destinationReached) {
+            completed = false;
+            var actions = Enumerables.GetNothing<GameAction>();
 
-                completed = false;
+            if (!destinationReached) {
 
                 // Calculate time.
                 float currentTime = Time.time;
@@ -84,22 +85,23 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
                 }
 
                 var transformUpdate = new TransformUpdate(Owner, newPosition, newRotation);
-                return Enumerables.GetSingle(transformUpdate);
-
-            } else if (UnitSystemController.Instance.GetConnectedNode(Owner) != Destination) {
-
-                completed = false;
-
-                var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
-                return Enumerables.GetSingle(connectedNodeUpdate);
-
-            } else {
-
-                completed = false;
-
-                return Enumerables.GetNothing<GameAction>();
+                actions = Enumerables.Unite(actions, transformUpdate);
 
             }
+            if (destinationReached) {
+                if (UnitSystemController.Instance.GetConnectedNode(Owner) != Destination) {
+
+                    var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, Destination);
+                    actions = Enumerables.Unite(actions, connectedNodeUpdate);
+
+                } else {
+
+                    completed = true;
+
+                }
+            }
+
+            return actions;
         }
 
         override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
