@@ -14,6 +14,17 @@ namespace NewWorld.Battlefield.Units {
         // Actions processing.
         // Note: method have to return true if action should not be sent to UnitSystemController to be processed, and false otherwise.
 
+
+        private bool ProcessGameAction(GameAction gameAction) {
+            if (gameAction == null) {
+                throw new System.ArgumentNullException(nameof(gameAction));
+            }
+            if (gameAction is UnitUpdate unitUpdate && unitUpdate.UpdatedUnit == this) {
+                return ProcessUnitUpdate(unitUpdate);
+            }
+            return false;
+        }
+
         private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
             if (unitUpdate is TransformUpdate transformUpdate) {
                 return ProcessUnitUpdate(transformUpdate);
@@ -26,6 +37,9 @@ namespace NewWorld.Battlefield.Units {
             }
             if (unitUpdate is AbilityUsage abilityUsage) {
                 return ProcessUnitUpdate(abilityUsage);
+            }
+            if (unitUpdate is AbilityStop abilityStop) {
+                return ProcessUnitUpdate(abilityStop);
             }
             return false;
         }
@@ -51,9 +65,15 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(AbilityUsage abilityUsage) {
-            if (usedAbility == null && HasAbility(abilityUsage.Ability)) {
-                usedAbility = abilityUsage.Ability;
-                usedAbility.Use(abilityUsage.ParameterSet);
+            if (plannedAbilityUsage == null || plannedAbilityUsage.Ability == usedAbility) {
+                plannedAbilityUsage = abilityUsage;
+            }
+            return true;
+        }
+
+        private bool ProcessUnitUpdate(AbilityStop abilityStop) {
+            if (plannedAbilityStop == null || plannedAbilityStop.Ability != usedAbility || !plannedAbilityStop.ForceStop && abilityStop.ForceStop) {
+                plannedAbilityStop = abilityStop;
             }
             return true;
         }

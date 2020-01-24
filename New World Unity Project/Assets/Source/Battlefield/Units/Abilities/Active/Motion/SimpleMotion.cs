@@ -85,7 +85,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
             return Enumerables.GetSingle(transformUpdate);
         }
 
-        override protected IEnumerable<GameAction> OnFinish(FinishType finishType) {
+        override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
             var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
             return Enumerables.GetSingle(animationParameterUpdate);
         }

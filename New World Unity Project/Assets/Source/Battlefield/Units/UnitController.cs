@@ -40,10 +40,15 @@ namespace NewWorld.Battlefield.Units {
         // Game logic components.
         private UnitBehaviour behaviour = null;
         private MotionAbility motionAbility = null;
-
-        // Parameters.
-        private ActiveAbility usedAbility = null;
         private float health = 1;
+
+        // Actions.
+        private List<GameAction> exteriorActions = new List<GameAction>();
+
+        // Ability using.
+        private ActiveAbility usedAbility = null;
+        private AbilityUsage plannedAbilityUsage = null;
+        private AbilityStop plannedAbilityStop = null;
 
 
         // Properties.
@@ -52,12 +57,12 @@ namespace NewWorld.Battlefield.Units {
             get => behaviour;
         }
 
-        public Ability UsedAbility {
-            get => usedAbility;
-        }
-
         public MotionAbility MotionAbility {
             get => motionAbility;
+        }
+
+        public Ability UsedAbility {
+            get => usedAbility;
         }
 
         public Vector3 Position => transform.position;
@@ -88,36 +93,55 @@ namespace NewWorld.Battlefield.Units {
         // Actions management.
 
         public IEnumerable<GameAction> ReceiveActions() {
-            
-            // Update used ability.
-            if (behaviour != null) {
-                AbilityUsage abilityUsage = behaviour.Act();
-                if (abilityUsage != null) {
-                    ProcessUnitUpdate(abilityUsage);
-                }
-            }
 
-            // Receive and process actions from used ability.
-            List<GameAction> actions = null;
-            if (usedAbility != null) {
-                foreach (GameAction action in usedAbility.ReceiveActions()) {
-                    if (action is UnitUpdate unitUpdate && unitUpdate.UpdatedUnit == this && ProcessUnitUpdate(unitUpdate)) {
-                        continue;
-                    }
-                    if (actions == null) {
-                        actions = new List<GameAction>();
-                    }
-                    actions.Add(action);
-                }
+            void CheckUsageAndProcessActions(IEnumerable<GameAction> actions) {
                 if (!usedAbility.IsUsed) {
                     usedAbility = null;
                 }
+                foreach (GameAction action in actions) {
+                    if (!ProcessGameAction(action)) {
+                        exteriorActions.Add(action);
+                    }
+                }
             }
 
-            if (actions == null) {
-                return Enumerables.GetNothing<GameAction>();
+            // Ask behaviour for orders.
+            if (behaviour != null) {
+                behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
+                if (abilityCancellation != null) {
+                    ProcessGameAction(abilityCancellation);
+                }
+                if (abilityUsage != null) {
+                    ProcessGameAction(abilityUsage);
+                }
             }
-            return actions;
+
+            // Update used ability.
+            if (plannedAbilityStop != null) {
+                if (plannedAbilityStop.Ability == usedAbility) {
+                    var actions = usedAbility.Stop(plannedAbilityStop.ForceStop);
+                    CheckUsageAndProcessActions(actions);
+                }
+                plannedAbilityStop = null;
+            }
+            if (plannedAbilityUsage != null) {
+                if (HasAbility(plannedAbilityUsage.Ability)) {
+                    usedAbility = plannedAbilityUsage.Ability;
+                    var actions = usedAbility.Use(plannedAbilityUsage.ParameterSet);
+                    CheckUsageAndProcessActions(actions);
+                }
+                plannedAbilityUsage = null;
+            }
+
+            // Receive and process actions from used ability.
+            if (usedAbility != null) {
+                var actions = usedAbility.ReceiveActions();
+                CheckUsageAndProcessActions(actions);
+            }
+
+            var unprocessedActions = exteriorActions;
+            exteriorActions = new List<GameAction>();
+            return unprocessedActions;
         }
 
 

@@ -7,10 +7,10 @@ namespace NewWorld.Battlefield.Units.Abilities.Active {
 
     public abstract class ActiveAbility : Ability {
 
-        protected enum FinishType {
+        protected enum StopType {
             Completed,
             Cancelled,
-            Aborted
+            Forced
         }
 
 
@@ -47,27 +47,18 @@ namespace NewWorld.Battlefield.Units.Abilities.Active {
             }
             var actions = OnUpdate(out bool completed);
             if (completed) {
-                var otherActions = OnFinish(FinishType.Completed);
+                var otherActions = OnFinish(StopType.Completed);
                 actions = Enumerables.Unite(actions, otherActions);
                 isUsed = false;
             }
             return actions;
         }
 
-        public IEnumerable<GameAction> TryCancel() {
-            if (!isUsed || !CanBeCancelled) {
+        public IEnumerable<GameAction> Stop(bool forceStop) {
+            if (!isUsed || !forceStop && !CanBeCancelled) {
                 return Enumerables.GetNothing<GameAction>();
             }
-            var actions = OnFinish(FinishType.Cancelled);
-            isUsed = false;
-            return actions;
-        }
-
-        public IEnumerable<GameAction> Abort() {
-            if (!isUsed) {
-                return Enumerables.GetNothing<GameAction>();
-            }
-            var actions = OnFinish(FinishType.Aborted);
+            var actions = OnFinish(forceStop ? StopType.Forced : StopType.Cancelled);
             isUsed = false;
             return actions;
         }
@@ -79,7 +70,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active {
 
         protected abstract IEnumerable<GameAction> OnUpdate(out bool completed);
 
-        protected abstract IEnumerable<GameAction> OnFinish(FinishType finishType);
+        protected abstract IEnumerable<GameAction> OnFinish(StopType stopType);
 
 
     }

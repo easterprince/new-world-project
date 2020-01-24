@@ -27,9 +27,11 @@ namespace NewWorld.Battlefield.Units.Behaviours {
         private bool plannedMotion = false;
         private float nextMovementTime = 0;
 
-        public AbilityUsage Act() {
+        public void Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage) {
+            abilityCancellation = null;
+            abilityUsage = null;
             if (unit.UsedAbility != null) {
-                return null;
+                return;
             }
 
             // Wander around.
@@ -38,25 +40,21 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                     plannedMotion = true;
                     nextMovementTime = Time.time + Random.Range(0f, 1.5f);
                 }
-                if (plannedMotion) {
-                    if (Time.time >= nextMovementTime) {
-                        plannedMotion = false;
-                        Vector2Int curConnectedNode = UnitSystemController.Instance.GetConnectedNode(unit);
-                        Vector2Int newConnectedNode;
-                        do {
-                            newConnectedNode = curConnectedNode + new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
-                        } while (
-                            MapController.Instance.GetSurfaceNode(newConnectedNode) == null ||
-                            UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
-                        );
-                        object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
-                        AbilityUsage abilityUsage = new AbilityUsage(unit, unit.MotionAbility, parameterSet);
-                        return abilityUsage;
-                    }
+                if (Time.time >= nextMovementTime && unit.UsedAbility == null) {
+                    plannedMotion = false;
+                    Vector2Int curConnectedNode = UnitSystemController.Instance.GetConnectedNode(unit);
+                    Vector2Int newConnectedNode;
+                    do {
+                        newConnectedNode = curConnectedNode + new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
+                    } while (
+                        MapController.Instance.GetSurfaceNode(newConnectedNode) == null ||
+                        UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
+                    );
+                    object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
+                    abilityUsage = new AbilityUsage(unit, unit.MotionAbility, parameterSet);
                 }
             }
 
-            return null;
         }
 
 
