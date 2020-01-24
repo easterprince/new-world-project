@@ -1235,11 +1235,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 164957702}
     m_Modifications:
-    - target: {fileID: 8067451206263112546, guid: c27423dc8b126ac44b94b4f8902db56e,
-        type: 3}
-      propertyPath: m_Name
-      value: Battle Camera
-      objectReference: {fileID: 0}
     - target: {fileID: 8067451206263112477, guid: c27423dc8b126ac44b94b4f8902db56e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1294,6 +1289,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067451206263112546, guid: c27423dc8b126ac44b94b4f8902db56e,
+        type: 3}
+      propertyPath: m_Name
+      value: Battle Camera
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c27423dc8b126ac44b94b4f8902db56e, type: 3}

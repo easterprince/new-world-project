@@ -27,8 +27,6 @@ namespace NewWorld.Battlefield {
             battleStarted = false;
         }
 
-        private void Update() {}
-
 
         // Loading.
 
