@@ -7,18 +7,11 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 
-    public class UnitBehaviour {
-
-        // Fields.
-
-        private readonly UnitController unit;
-
+    public class UnitBehaviour : UnitModule {
 
         // Constructor.
 
-        public UnitBehaviour(UnitController unit) {
-            this.unit = unit ?? throw new System.ArgumentNullException(nameof(unit));
-        }
+        public UnitBehaviour(UnitController owner) : base(owner) {}
 
 
         // Behaviour.
@@ -33,14 +26,14 @@ namespace NewWorld.Battlefield.Units.Behaviours {
             abilityUsage = null;
 
             // Wander around.
-            if (unit.MotionAbility != null) {
-                if (!plannedMotion && !unit.MotionAbility.IsUsed) {
+            if (Owner.MotionAbility != null) {
+                if (!plannedMotion && !Owner.MotionAbility.IsUsed) {
                     plannedMotion = true;
                     nextMovementTime = Time.time + Random.Range(0f, 2f);
                 }
-                if (plannedMotion && Time.time >= nextMovementTime && unit.UsedAbility == null) {
+                if (plannedMotion && Time.time >= nextMovementTime && Owner.UsedAbility == null) {
                     plannedMotion = false;
-                    Vector2Int curConnectedNode = UnitSystemController.Instance.GetConnectedNode(unit);
+                    Vector2Int curConnectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                     Vector2Int newConnectedNode;
                     do {
                         newConnectedNode = curConnectedNode + new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
@@ -49,12 +42,12 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                         UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
                     );
                     object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
-                    abilityUsage = new AbilityUsage(unit.MotionAbility, parameterSet);
+                    abilityUsage = new AbilityUsage(Owner.MotionAbility, parameterSet);
                     nextStopTime = Time.time + Random.Range(0f, 2f);
                     // nextStopTime = float.PositiveInfinity;
                 }
-                if (Time.time >= nextStopTime && unit.MotionAbility.IsUsed) {
-                    abilityCancellation = new AbilityCancellation(unit.MotionAbility);
+                if (Time.time >= nextStopTime && Owner.MotionAbility.IsUsed) {
+                    abilityCancellation = new AbilityCancellation(Owner.MotionAbility);
                     nextStopTime = float.PositiveInfinity;
                 }
             }
