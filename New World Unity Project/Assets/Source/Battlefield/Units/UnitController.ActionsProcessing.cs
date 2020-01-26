@@ -57,7 +57,11 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(transformUpdate));
             }
             if (transformUpdate.NewPosition != null) {
-                transform.position = transformUpdate.NewPosition.Value;
+                Vector3 newPosition = transformUpdate.NewPosition.Value;
+                Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
+                if (PositionIsAllowed(newPosition, connectedNode)) {
+                    transform.position = newPosition;
+                }
             }
             if (transformUpdate.NewRotation != null) {
                 transform.rotation = transformUpdate.NewRotation.Value;
@@ -109,7 +113,7 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(unitSystemUpdate));
             }
             if (unitSystemUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
-                ProcessUnitSystemUpdate(connectedNodeUpdate);
+                return ProcessUnitSystemUpdate(connectedNodeUpdate);
             }
             return false;
         }
@@ -118,7 +122,19 @@ namespace NewWorld.Battlefield.Units {
             if (connectedNodeUpdate == null) {
                 throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
             }
-            return false;
+            Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
+            if (PositionIsAllowed(transform.position, connectedNode)) {
+                return false;
+            }
+            return true;
+        }
+
+
+        // Support methods.
+
+        private static bool PositionIsAllowed(Vector3 position, Vector2Int connectedNode) {
+            Vector2 position2D = new Vector2(position.x, position.z);
+            return MaximumMetric.GetNorm(position2D - connectedNode) <= nodeDistanceLimit;
         }
 
 
