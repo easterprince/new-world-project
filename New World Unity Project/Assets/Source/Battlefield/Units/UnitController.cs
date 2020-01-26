@@ -28,6 +28,7 @@ namespace NewWorld.Battlefield.Units {
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
             unitController.motionAbility = new SimpleMotion(unitController);
+            unitController.durability = new UnitDurability(unitController, 100);
             return unitController;
         }
 
@@ -46,8 +47,8 @@ namespace NewWorld.Battlefield.Units {
 
         // Game logic components.
         private UnitBehaviour behaviour = null;
+        private UnitDurability durability = null;
         private MotionAbility motionAbility = null;
-        private float health = 1;
 
         // Actions.
         private List<GameAction> exteriorActions = new List<GameAction>();
@@ -70,6 +71,15 @@ namespace NewWorld.Battlefield.Units {
 
         public Ability UsedAbility {
             get => usedAbility;
+        }
+
+        public bool Destroyed {
+            get {
+                if (durability != null) {
+                    return durability.Destroyed;
+                }
+                return false;
+            }
         }
 
         public Vector3 Position => transform.position;

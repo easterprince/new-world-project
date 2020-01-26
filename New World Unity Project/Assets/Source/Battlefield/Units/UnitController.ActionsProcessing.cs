@@ -49,6 +49,9 @@ namespace NewWorld.Battlefield.Units {
             if (unitUpdate is AbilityStop abilityStop) {
                 return ProcessUnitUpdate(abilityStop);
             }
+            if (unitUpdate is DamageCausing damageCausing) {
+                return ProcessUnitUpdate(damageCausing);
+            }
             return false;
         }
 
@@ -101,6 +104,16 @@ namespace NewWorld.Battlefield.Units {
             }
             if (plannedAbilityStop == null || plannedAbilityStop.Ability != usedAbility || !plannedAbilityStop.ForceStop && abilityStop.ForceStop) {
                 plannedAbilityStop = abilityStop;
+            }
+            return true;
+        }
+
+        private bool ProcessUnitUpdate(DamageCausing damageCausing) {
+            if (damageCausing == null) {
+                throw new System.ArgumentNullException(nameof(damageCausing));
+            }
+            if (durability != null) {
+                durability.TakeDamage(damageCausing);
             }
             return true;
         }
