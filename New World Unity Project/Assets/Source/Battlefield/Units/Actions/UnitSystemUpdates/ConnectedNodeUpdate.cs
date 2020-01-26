@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
+namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
 
-    public class ConnectedNodeUpdate : UnitUpdate {
+    public class ConnectedNodeUpdate : UnitSystemUpdate {
 
         // Fields.
 

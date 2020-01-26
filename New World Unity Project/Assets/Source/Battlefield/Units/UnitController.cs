@@ -109,10 +109,10 @@ namespace NewWorld.Battlefield.Units {
             if (behaviour != null) {
                 behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
                 if (abilityCancellation != null) {
-                    ProcessGameAction(abilityCancellation);
+                    ProcessUnitUpdate(abilityCancellation);
                 }
                 if (abilityUsage != null) {
-                    ProcessGameAction(abilityUsage);
+                    ProcessUnitUpdate(abilityUsage);
                 }
             }
 
