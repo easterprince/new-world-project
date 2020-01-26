@@ -32,6 +32,13 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
+        // Static.
+
+        private const float nodeDistanceLimit = 0.6f;
+
+        public static float NodeDistanceLimit => nodeDistanceLimit;
+
+
         // Fields.
 
         // Gameobject components.
@@ -90,7 +97,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
-        // Actions management.
+        // Actions management and used ability update.
 
         public IEnumerable<GameAction> ReceiveActions() {
 
@@ -109,10 +116,10 @@ namespace NewWorld.Battlefield.Units {
             if (behaviour != null) {
                 behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
                 if (abilityCancellation != null) {
-                    ProcessGameAction(abilityCancellation);
+                    ProcessUnitUpdate(abilityCancellation);
                 }
                 if (abilityUsage != null) {
-                    ProcessGameAction(abilityUsage);
+                    ProcessUnitUpdate(abilityUsage);
                 }
             }
 

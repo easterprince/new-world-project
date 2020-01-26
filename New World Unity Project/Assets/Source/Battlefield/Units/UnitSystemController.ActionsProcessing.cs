@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -10,20 +11,32 @@ namespace NewWorld.Battlefield.Units {
         // Note: method have to return true if action has been successfully processed, and false otherwise.
 
         private bool ProcessGameAction(GameAction gameAction) {
-            if (gameAction is UnitUpdate unitUpdate) {
-                return ProcessGameAction(unitUpdate);
+            if (gameAction == null) {
+                throw new System.ArgumentNullException(nameof(gameAction));
+            }
+            if (gameAction is UnitSystemUpdate unitSystemUpdate) {
+                return ProcessUnitSystemUpdate(unitSystemUpdate);
             }
             return false;
         }
 
-        private bool ProcessGameAction(UnitUpdate unitUpdate) {
-            if (unitUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
-                return ProcessGameAction(connectedNodeUpdate);
+
+        // Unit System updates.
+
+        private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
+            if (unitSystemUpdate == null) {
+                throw new System.ArgumentNullException(nameof(unitSystemUpdate));
+            }
+            if (unitSystemUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
+                return ProcessUnitSystemUpdate(connectedNodeUpdate);
             }
             return false;
         }
 
-        private bool ProcessGameAction(ConnectedNodeUpdate connectedNodeUpdate) {
+        private bool ProcessUnitSystemUpdate(ConnectedNodeUpdate connectedNodeUpdate) {
+            if (connectedNodeUpdate == null) {
+                throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
+            }
             UnitController updatedUnit = connectedNodeUpdate.UpdatedUnit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
             if (ValidateRelocation(newConnectedNode, updatedUnit)) {
