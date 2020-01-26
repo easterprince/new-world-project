@@ -31,7 +31,7 @@ namespace NewWorld.Battlefield.Units {
         // Unit updates.
 
         private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
-            if (unitUpdate == null) {
+            if (unitUpdate == null || unitUpdate.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(unitUpdate));
             }
             if (unitUpdate is TransformUpdate transformUpdate) {
@@ -56,7 +56,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(TransformUpdate transformUpdate) {
-            if (transformUpdate == null) {
+            if (transformUpdate == null || transformUpdate.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(transformUpdate));
             }
             if (transformUpdate.NewPosition != null) {
@@ -73,7 +73,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(AnimatorParameterUpdate<float> animatorParameterUpdate) {
-            if (animatorParameterUpdate == null) {
+            if (animatorParameterUpdate == null || animatorParameterUpdate.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(animatorParameterUpdate));
             }
             animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
@@ -81,7 +81,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(AnimatorTriggerApplication animatorTriggerApplication) {
-            if (animatorTriggerApplication == null) {
+            if (animatorTriggerApplication == null || animatorTriggerApplication.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(animatorTriggerApplication));
             }
             animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
@@ -89,7 +89,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(AbilityUsage abilityUsage) {
-            if (abilityUsage == null) {
+            if (abilityUsage == null || abilityUsage.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(abilityUsage));
             }
             if (plannedAbilityUsage == null || plannedAbilityUsage.Ability == usedAbility) {
@@ -99,7 +99,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(AbilityStop abilityStop) {
-            if (abilityStop == null) {
+            if (abilityStop == null || abilityStop.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(abilityStop));
             }
             if (plannedAbilityStop == null || plannedAbilityStop.Ability != usedAbility || !plannedAbilityStop.ForceStop && abilityStop.ForceStop) {
@@ -109,7 +109,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitUpdate(DamageCausing damageCausing) {
-            if (damageCausing == null) {
+            if (damageCausing == null || damageCausing.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(damageCausing));
             }
             if (durability != null) {
@@ -122,7 +122,7 @@ namespace NewWorld.Battlefield.Units {
         // Unit System updates.
 
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
-            if (unitSystemUpdate == null) {
+            if (unitSystemUpdate == null || unitSystemUpdate.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(unitSystemUpdate));
             }
             if (unitSystemUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
@@ -132,7 +132,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitSystemUpdate(ConnectedNodeUpdate connectedNodeUpdate) {
-            if (connectedNodeUpdate == null) {
+            if (connectedNodeUpdate == null || connectedNodeUpdate.UpdatedUnit != this) {
                 throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
             }
             Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);

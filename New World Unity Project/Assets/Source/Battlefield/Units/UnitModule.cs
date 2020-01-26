@@ -17,10 +17,7 @@ namespace NewWorld.Battlefield.Units {
         // Constructor.
 
         public UnitModule(UnitController owner) {
-            if (owner == null) {
-                throw new System.ArgumentNullException(nameof(owner));
-            }
-            this.owner = owner;
+            this.owner = owner ?? throw new System.ArgumentNullException(nameof(owner));
         }
 
 
