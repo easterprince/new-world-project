@@ -50,8 +50,8 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                     );
                     object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
                     abilityUsage = new AbilityUsage(unit.MotionAbility, parameterSet);
-                    // nextStopTime = Time.time + Random.Range(0f, 2f);
-                    nextStopTime = float.PositiveInfinity;
+                    nextStopTime = Time.time + Random.Range(0f, 2f);
+                    // nextStopTime = float.PositiveInfinity;
                 }
                 if (Time.time >= nextStopTime && unit.MotionAbility.IsUsed) {
                     abilityCancellation = new AbilityCancellation(unit.MotionAbility);

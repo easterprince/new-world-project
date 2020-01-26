@@ -14,6 +14,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
         // Static.
 
         private static readonly int motionSpeedAnimatorHash = Animator.StringToHash("MotionSpeed");
+        private static readonly float tolerantNodeDistanceLimit = 0.55f;
 
 
         // Fields.
@@ -90,8 +91,8 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
             // Add connected node update.
             var connectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
-            var currentNode = Vector2Int.RoundToInt(new Vector2(Owner.Position.x, Owner.Position.z));
-            if (connectedNode != currentNode) {
+            if (MaximumMetric.GetNorm(newPosition2D - connectedNode) > tolerantNodeDistanceLimit) {
+                var currentNode = Vector2Int.RoundToInt(newPosition2D);
                 var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, currentNode);
                 actions = Enumerables.Unite(actions, connectedNodeUpdate);
             } else if (connectedNode == Destination) {
