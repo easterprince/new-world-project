@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Utilities;
+using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
@@ -99,6 +99,12 @@ namespace NewWorld.Battlefield.Units {
         // Life cycle.
 
         private void Awake() {
+            if (UnitSystemController.Instance == null) {
+                throw new MissingSingletonException<UnitSystemController>(this);
+            }
+            if (MapController.Instance == null) {
+                throw new MissingSingletonException<MapController>(this);
+            }
             animator = GetComponent<Animator>();
         }
 

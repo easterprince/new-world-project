@@ -17,10 +17,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
         // Constructor.
 
         public UnitUpdate(UnitController updatedUnit) {
-            if (updatedUnit == null) {
-                throw new System.ArgumentNullException(nameof(updatedUnit));
-            }
-            this.updatedUnit = updatedUnit;
+            this.updatedUnit = updatedUnit ?? throw new System.ArgumentNullException(nameof(updatedUnit));
         }
 
 

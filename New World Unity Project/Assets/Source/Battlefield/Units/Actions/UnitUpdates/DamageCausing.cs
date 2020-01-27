@@ -6,7 +6,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Fields.
 
-        private float damageValue;
+        private readonly float damageValue;
 
 
         // Properties.
@@ -16,7 +16,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Constructor.
 
-        public DamageCausing(UnitController owner, float damageValue) : base(owner) {
+        public DamageCausing(UnitController updatedUnit, float damageValue) : base(updatedUnit) {
             this.damageValue = damageValue;
         }
 

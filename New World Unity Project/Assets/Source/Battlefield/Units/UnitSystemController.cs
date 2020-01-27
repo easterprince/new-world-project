@@ -5,6 +5,7 @@ using NewWorld.Utilities.Singletones;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -12,6 +13,7 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
+        private long unusedUnitIndex = 0;
         private HashSet<UnitController> units;
         private Dictionary<UnitController, Vector2Int> positions;
         private Dictionary<Vector2Int, UnitController> onPositions;
@@ -67,33 +69,11 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(unitDescriptions));
             }
 
-            int index = 0;
             foreach (UnitDescription unitDescription in unitDescriptions) {
-                if (!ValidateRelocation(unitDescription.ConnectedNode)) {
-                    throw new System.InvalidOperationException($"Cannot connect unit to the given node ({ unitDescription.ConnectedNode }).");
-                }
-                UnitController unit = UnitController.BuildUnit(unitDescription, $"Unit {index++}");
-                unit.transform.parent = transform;
-                units.Add(unit);
-                positions[unit] = unitDescription.ConnectedNode;
-                onPositions[unitDescription.ConnectedNode] = unit;
+                ProcessUnitSystemUpdate(new UnitAddition(unitDescription));
             }
 
             yield break;
-        }
-
-
-        // Support methods.
-
-        private bool ValidateRelocation(Vector2Int newConnectedNode, UnitController unit = null) {
-            NodeDescription node = MapController.Instance.GetSurfaceNode(newConnectedNode);
-            if (node == null) {
-                return false;
-            }
-            if (onPositions.TryGetValue(newConnectedNode, out UnitController otherUnit) && otherUnit != unit) {
-                return false;
-            }
-            return true;
         }
 
 

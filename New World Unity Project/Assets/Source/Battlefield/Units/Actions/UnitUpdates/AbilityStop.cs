@@ -20,7 +20,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
         // Constructor.
 
         public AbilityStop(ActiveAbility ability, bool forceStop) : base(ability.Owner) {
-            this.ability = ability;
+            this.ability = ability ?? throw new System.ArgumentNullException(nameof(ability));
             this.forceStop = forceStop;
         }
 
