@@ -46,7 +46,6 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motions {
 
 
         override protected IEnumerable<GameAction> OnUpdate(out bool completed) {
-            completed = false;
             var actions = Enumerables.GetNothing<GameAction>();
 
             bool positionReached = false;
