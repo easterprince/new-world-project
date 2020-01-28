@@ -28,7 +28,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Constructor.
 
-        public MotionAbility(UnitController owner) : base(owner) { }
+        public MotionAbility(UnitController owner) : base(owner) {}
 
 
         // Response methods.
