@@ -161,7 +161,7 @@ namespace NewWorld.Battlefield.Units {
             }
             Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
             if (PositionIsAllowed(transform.position, connectedNode)) {
-                exteriorActions.Add(connectedNodeUpdate);
+                actionsToReturn.Add(connectedNodeUpdate);
             }
             return true;
         }

@@ -31,7 +31,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         public float Durability => Mathf.Max(0, durability);
-        public bool Destroyed => durability <= 0;
+        public bool Broken => durability <= 0;
 
 
         // Constructor.

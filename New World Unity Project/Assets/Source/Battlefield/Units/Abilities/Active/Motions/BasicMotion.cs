@@ -8,7 +8,7 @@ using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
 namespace NewWorld.Battlefield.Units.Abilities.Active.Motions {
 
-    public class SimpleMotion : MotionAbility {
+    public class BasicMotion : MotionAbility {
 
         // Static.
 
@@ -32,7 +32,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motions {
 
         // Constructor.
 
-        public SimpleMotion(UnitController owner) : base(owner) { }
+        public BasicMotion(UnitController owner) : base(owner) { }
 
 
         // Inner methods.

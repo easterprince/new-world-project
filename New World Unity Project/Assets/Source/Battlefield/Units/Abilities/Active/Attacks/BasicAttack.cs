@@ -37,13 +37,18 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
         // Life cycle.
 
         protected override IEnumerable<GameAction> OnStart() {
+            if (Target == null) {
+                return Enumerables.GetNothing<GameAction>();
+            }
+
             float currentTime = Time.time;
             float attackPeriod = 1 / attackSpeed;
             damageTime = currentTime + attackPeriod / 2;
             finishTime = currentTime + attackPeriod;
 
-            var action = new AnimatorParameterUpdate<float>(Owner, attackSpeedAnimatorHash, attackSpeed);
-            return Enumerables.GetSingle(action);
+            var animatorParameterUpdate = new AnimatorParameterUpdate<float>(Owner, attackSpeedAnimatorHash, attackSpeed);
+            var transformUpdate = new TransformUpdate(Owner, null, Quaternion.LookRotation(Target.Position - Owner.Position));
+            return new GameAction[] { transformUpdate, animatorParameterUpdate };
         }
 
         protected override IEnumerable<GameAction> OnUpdate(out bool completed) {

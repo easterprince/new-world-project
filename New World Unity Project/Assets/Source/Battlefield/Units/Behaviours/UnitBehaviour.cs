@@ -4,6 +4,7 @@ using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Abilities.Active.Motions;
+using NewWorld.Battlefield.Units.Abilities.Active.Attacks;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 
@@ -17,22 +18,35 @@ namespace NewWorld.Battlefield.Units.Behaviours {
         // Behaviour.
 
 
-        private bool plannedMotion = false;
-        private float nextMovementTime;
-        private float nextStopTime = float.PositiveInfinity;
+        private float? nextMovementTime = null;
+        private float? nextStopTime = null;
 
         public void Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage) {
             abilityCancellation = null;
             abilityUsage = null;
 
+            // Fight around.
+            if (Owner.AttackAbility != null) {
+                if (Owner.UsedAbility == null) {
+                    foreach (Vector2Int nodeDifference in Enumerables.InSegment2(-1, 1)) {
+                        var currentNode = UnitSystemController.Instance.GetConnectedNode(Owner);
+                        var otherNode = currentNode + nodeDifference;
+                        var otherUnit = UnitSystemController.Instance.GetUnitOnPosition(otherNode);
+                        if (otherUnit != null && otherUnit != Owner) {
+                            var parameterSet = AttackAbility.FormParameterSet(otherUnit);
+                            abilityUsage = new AbilityUsage(Owner.AttackAbility, parameterSet);
+                        }
+                    }
+                }
+            }
+
+
             // Wander around.
             if (Owner.MotionAbility != null) {
-                if (!plannedMotion && !Owner.MotionAbility.IsUsed) {
-                    plannedMotion = true;
+                if (!Owner.MotionAbility.IsUsed && nextMovementTime == null) {
                     nextMovementTime = Time.time + Random.Range(0f, 2f);
                 }
-                if (plannedMotion && Time.time >= nextMovementTime && Owner.UsedAbility == null) {
-                    plannedMotion = false;
+                if (Owner.UsedAbility == null && Time.time >= nextMovementTime.Value) {
                     Vector2Int curConnectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                     Vector2Int newConnectedNode;
                     do {
@@ -43,14 +57,21 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                     );
                     object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
                     abilityUsage = new AbilityUsage(Owner.MotionAbility, parameterSet);
-                    nextStopTime = Time.time + Random.Range(0f, 2f);
-                    // nextStopTime = float.PositiveInfinity;
-                }
-                if (Time.time >= nextStopTime && Owner.MotionAbility.IsUsed) {
-                    abilityCancellation = new AbilityCancellation(Owner.MotionAbility);
-                    nextStopTime = float.PositiveInfinity;
+                    nextMovementTime = null;
                 }
             }
+
+            // Get stupid around.
+            if (nextStopTime == null) {
+                nextStopTime = Time.time + Random.Range(0f, 10f);
+            }
+            if (Time.time >= nextStopTime.Value) {
+                if (Owner.UsedAbility != null) {
+                    abilityCancellation = new AbilityCancellation(Owner.MotionAbility);
+                }
+                nextStopTime = null;
+            }
+
 
         }
 

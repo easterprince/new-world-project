@@ -8,6 +8,7 @@ using NewWorld.Battlefield.Units.Behaviours;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Abilities.Active;
 using NewWorld.Battlefield.Units.Abilities.Active.Motions;
+using NewWorld.Battlefield.Units.Abilities.Active.Attacks;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -27,7 +28,8 @@ namespace NewWorld.Battlefield.Units {
             unit.name = name ?? defaultGameObjectName;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
-            unitController.motionAbility = new SimpleMotion(unitController);
+            unitController.motionAbility = new BasicMotion(unitController);
+            unitController.attackAbility = new BasicAttack(unitController);
             unitController.durability = new UnitDurability(unitController, 100);
             return unitController;
         }
@@ -48,10 +50,11 @@ namespace NewWorld.Battlefield.Units {
         // Game logic components.
         private UnitBehaviour behaviour = null;
         private UnitDurability durability = null;
-        private MotionAbility motionAbility = null;
+        private BasicMotion motionAbility = null;
+        private BasicAttack attackAbility = null;
 
         // Actions.
-        private List<GameAction> exteriorActions = new List<GameAction>();
+        private List<GameAction> actionsToReturn = new List<GameAction>();
 
         // Ability using.
         private ActiveAbility usedAbility = null;
@@ -65,18 +68,22 @@ namespace NewWorld.Battlefield.Units {
             get => behaviour;
         }
 
-        public MotionAbility MotionAbility {
+        public BasicMotion MotionAbility {
             get => motionAbility;
+        }
+
+        public BasicAttack AttackAbility {
+            get => attackAbility;
         }
 
         public Ability UsedAbility {
             get => usedAbility;
         }
 
-        public bool Destroyed {
+        public bool Broken {
             get {
                 if (durability != null) {
-                    return durability.Destroyed;
+                    return durability.Broken;
                 }
                 return false;
             }
@@ -92,7 +99,7 @@ namespace NewWorld.Battlefield.Units {
             if (ability == null) {
                 return false;
             }
-            return motionAbility == ability;
+            return motionAbility == ability || attackAbility == ability;
         }
 
 
@@ -123,7 +130,7 @@ namespace NewWorld.Battlefield.Units {
                 }
                 foreach (GameAction action in actions) {
                     if (!ProcessGameAction(action)) {
-                        exteriorActions.Add(action);
+                        actionsToReturn.Add(action);
                     }
                 }
             }
@@ -162,8 +169,8 @@ namespace NewWorld.Battlefield.Units {
                 CheckUsageAndProcessActions(actions);
             }
 
-            var unprocessedActions = exteriorActions;
-            exteriorActions = new List<GameAction>();
+            var unprocessedActions = actionsToReturn;
+            actionsToReturn = new List<GameAction>();
             return unprocessedActions;
         }
 
