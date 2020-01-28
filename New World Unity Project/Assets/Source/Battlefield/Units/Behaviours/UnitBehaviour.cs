@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Units.Abilities.Active.Motion;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Utilities;
+using NewWorld.Battlefield.Units.Abilities.Active.Motions;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 

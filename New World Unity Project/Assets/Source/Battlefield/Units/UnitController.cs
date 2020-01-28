@@ -6,8 +6,8 @@ using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Behaviours;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
-using NewWorld.Battlefield.Units.Abilities.Active.Motion;
 using NewWorld.Battlefield.Units.Abilities.Active;
+using NewWorld.Battlefield.Units.Abilities.Active.Motions;
 
 namespace NewWorld.Battlefield.Units {
 

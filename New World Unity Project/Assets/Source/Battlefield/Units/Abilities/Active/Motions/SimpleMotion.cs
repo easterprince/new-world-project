@@ -4,10 +4,9 @@ using NewWorld.Battlefield.Map;
 using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
-using NewWorld.Battlefield.Units;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
-namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
+namespace NewWorld.Battlefield.Units.Abilities.Active.Motions {
 
     public class SimpleMotion : MotionAbility {
 
@@ -107,7 +106,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
         override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
 
             var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
-            var actions = Enumerables.GetSingle<GameAction>(animationParameterUpdate); 
+            var actions = Enumerables.GetSingle<GameAction>(animationParameterUpdate);
 
             return actions;
         }
