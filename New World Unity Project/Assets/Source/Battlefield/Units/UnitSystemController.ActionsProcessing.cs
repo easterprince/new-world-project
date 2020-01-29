@@ -9,7 +9,7 @@ namespace NewWorld.Battlefield.Units {
     public partial class UnitSystemController {
 
         // Actions processing.
-        // Note: method have to return true if action has been successfully processed, and false otherwise.
+        // Note: method have to return true if action has been processed, and false otherwise.
 
         public bool ProcessGameAction(GameAction gameAction) {
             if (gameAction == null) {
@@ -62,14 +62,13 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(unitAddition));
             }
             UnitDescription description = unitAddition.Description;
-            if (!ValidateRelocation(description.ConnectedNode)) {
-                return false;
+            if (ValidateRelocation(description.ConnectedNode)) {
+                UnitController unit = UnitController.BuildUnit(transform, description, $"Unit {unusedUnitIndex++}");
+                unit.transform.parent = transform;
+                units.Add(unit);
+                positions[unit] = description.ConnectedNode;
+                onPositions[description.ConnectedNode] = unit;
             }
-            UnitController unit = UnitController.BuildUnit(transform, description, $"Unit {unusedUnitIndex++}");
-            unit.transform.parent = transform;
-            units.Add(unit);
-            positions[unit] = description.ConnectedNode;
-            onPositions[description.ConnectedNode] = unit;
             return true;
         }
 
@@ -78,13 +77,12 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(unitRemoval));
             }
             var unit = unitRemoval.RemovedUnit;
-            if (!units.Contains(unit)) {
-                return false;
+            if (units.Contains(unit)) {
+                onPositions.Remove(positions[unit]);
+                positions.Remove(unit);
+                units.Remove(unit);
+                Destroy(unit.gameObject);
             }
-            onPositions.Remove(positions[unit]);
-            positions.Remove(unit);
-            units.Remove(unit);
-            Destroy(unit.gameObject);
             return true;
         }
 
@@ -96,10 +94,9 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(unitUpdate));
             }
             UnitController unit = unitUpdate.UpdatedUnit;
-            if (!units.Contains(unit)) {
-                return false;
+            if (units.Contains(unit)) {
+                unit.ProcessGameAction(unitUpdate);
             }
-            unit.ProcessGameAction(unitUpdate);
             return true;
         }
 

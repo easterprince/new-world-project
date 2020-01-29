@@ -15,7 +15,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
 
         // Properties.
 
-        public override bool CanBeCancelled => throw new System.NotImplementedException();
+        public override bool CanBeCancelled => !attacked;
 
 
         // Fields.
@@ -25,6 +25,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
         private const float attackPower = 1;
 
         // Condition.
+        private bool attacked;
         private float damageTime;
         private float finishTime;
 
@@ -37,7 +38,10 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
         // Life cycle.
 
         protected override IEnumerable<GameAction> OnStart() {
+            attacked = false;
             if (Target == null) {
+                attacked = true;
+                finishTime = Time.time;
                 return Enumerables.GetNothing<GameAction>();
             }
 
@@ -55,15 +59,20 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
             completed = false;
             var actions = Enumerables.GetNothing<GameAction>();
 
-            if (Target == null) {
-                completed = true;
-            } else if (Time.time >= damageTime) {
-                var action = new DamageCausing(Target, attackPower);
-                actions = Enumerables.GetSingle(action);
-                damageTime = float.PositiveInfinity;
+            if (!attacked) {
+                if (Target == null) {
+                    completed = true;
+                } else if (Time.time >= damageTime) {
+                    var action = new DamageCausing(Target, attackPower);
+                    actions = Enumerables.GetSingle(action);
+                    attacked = true;
+                }
             }
-            if (Time.time >= finishTime) {
-                completed = true;
+
+            if (attacked) {
+                if (Time.time >= finishTime) {
+                    completed = true;
+                }
             }
 
             return actions;
