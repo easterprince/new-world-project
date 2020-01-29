@@ -1,6 +1,4 @@
-﻿using NewWorld.Battlefield.Units;
-using NewWorld.Battlefield.Units.Actions.UnitUpdates;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
 
@@ -8,17 +6,20 @@ namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
 
         // Fields.
 
+        private readonly UnitController updatedUnit;
         private readonly Vector2Int newConnectedNode;
 
 
         // Properties.
 
+        public UnitController UpdatedUnit => updatedUnit;
         public Vector2Int NewConnectedNode => newConnectedNode;
 
 
         // Constructor.
 
-        public ConnectedNodeUpdate(UnitController updatedUnit, Vector2Int newConnectedNode) : base(updatedUnit) {
+        public ConnectedNodeUpdate(UnitController updatedUnit, Vector2Int newConnectedNode) : base() {
+            this.updatedUnit = updatedUnit ?? throw new System.ArgumentNullException(nameof(updatedUnit));
             this.newConnectedNode = newConnectedNode;
         }
 

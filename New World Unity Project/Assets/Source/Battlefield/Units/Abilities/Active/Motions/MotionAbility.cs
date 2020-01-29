@@ -2,10 +2,8 @@
 using UnityEngine;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Utilities;
-using NewWorld.Battlefield.Units.Abilities.Active;
-using NewWorld.Battlefield.Units;
 
-namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
+namespace NewWorld.Battlefield.Units.Abilities.Active.Motions {
 
     public abstract class MotionAbility : ActiveAbility {
 
@@ -35,7 +33,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         sealed override protected IEnumerable<GameAction> OnStart(object parameterSet) {
             if (!(parameterSet is Vector2Int destination)) {
-                throw new System.ArgumentException($"Parameter must be of class {this.destination.GetType()}.");
+                throw new System.ArgumentException($"Parameter must be of class {typeof(Vector2Int)}.");
             }
             this.destination = destination;
             return OnMotionStart();

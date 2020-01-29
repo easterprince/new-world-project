@@ -4,12 +4,11 @@ using NewWorld.Battlefield.Map;
 using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
-using NewWorld.Battlefield.Units;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
-namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
+namespace NewWorld.Battlefield.Units.Abilities.Active.Motions {
 
-    public class SimpleMotion : MotionAbility {
+    public class BasicMotion : MotionAbility {
 
         // Static.
 
@@ -33,7 +32,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
         // Constructor.
 
-        public SimpleMotion(UnitController owner) : base(owner) { }
+        public BasicMotion(UnitController owner) : base(owner) { }
 
 
         // Inner methods.
@@ -47,7 +46,6 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
 
 
         override protected IEnumerable<GameAction> OnUpdate(out bool completed) {
-            completed = false;
             var actions = Enumerables.GetNothing<GameAction>();
 
             bool positionReached = false;
@@ -107,7 +105,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Motion {
         override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
 
             var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
-            var actions = Enumerables.GetSingle<GameAction>(animationParameterUpdate); 
+            var actions = Enumerables.GetSingle<GameAction>(animationParameterUpdate);
 
             return actions;
         }

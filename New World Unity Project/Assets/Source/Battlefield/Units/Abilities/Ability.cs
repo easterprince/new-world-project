@@ -4,23 +4,11 @@ using NewWorld.Battlefield.Units.Actions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability : IActing {
-
-        // Fields.
-
-        private readonly UnitController owner;
-
-
-        // Properties.
-
-        public UnitController Owner => owner;
-
+    public abstract class Ability : UnitModule, IActing {
 
         // Constructor.
 
-        public Ability(UnitController owner) {
-            this.owner = owner;
-        }
+        public Ability(UnitController owner) : base(owner) {}
 
 
         // Methods.
