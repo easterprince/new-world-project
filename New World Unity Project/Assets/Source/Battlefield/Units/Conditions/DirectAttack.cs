@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace NewWorld.Battlefield.Units.Conditions {
     
-    public class SimpleAttack : Condition {
+    public class DirectAttack : Condition {
 
         // Static.
 
@@ -34,7 +34,7 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Constructors.
 
-        public SimpleAttack(UnitController owner, UnitController target, float attackPower = 1, float attackSpeed = 1) : base(owner) {
+        public DirectAttack(UnitController owner, UnitController target, float attackPower = 1, float attackSpeed = 1) : base(owner) {
             this.target = target;
             this.attackPower = Mathf.Max(0, attackPower);
             this.attackSpeed = Mathf.Max(0, attackSpeed);
