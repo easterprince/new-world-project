@@ -31,7 +31,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
 
         // Constructors.
 
-        public BasicAttack(UnitController owner) : base(owner) { }
+        public BasicAttack(UnitController owner) : base(owner) {}
 
 
         // Life cycle.
@@ -60,6 +60,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Active.Attacks {
             } else if (Time.time >= damageTime) {
                 var action = new DamageCausing(Target, attackPower);
                 actions = Enumerables.GetSingle(action);
+                damageTime = float.PositiveInfinity;
             }
             if (Time.time >= finishTime) {
                 completed = true;

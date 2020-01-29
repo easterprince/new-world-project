@@ -16,21 +16,25 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
-        private float durabilityLimit;
-        private float durability;
+        private float durabilityLimit = minimumDurabilityLimit;
+        private float durability = minimumDurabilityLimit;
 
 
         // Properties.
 
         public float DurabilityLimit {
             get => durabilityLimit;
-            set {
+            protected set {
                 durabilityLimit = Mathf.Clamp(value, minimumDurabilityLimit, maximumDurabilityLimit);
-                durability = Mathf.Max(durability, durabilityLimit);
+                durability = Mathf.Min(durability, durabilityLimit);
             }
         }
 
-        public float Durability => Mathf.Max(0, durability);
+        public float Durability {
+            get => Mathf.Max(0, durability);
+            protected set => durability = Mathf.Min(value, durabilityLimit);
+        }
+
         public bool Broken => durability <= 0;
 
 
@@ -38,13 +42,14 @@ namespace NewWorld.Battlefield.Units {
 
         public UnitDurability(UnitController owner, float durabilityLimit) : base(owner) {
             DurabilityLimit = durabilityLimit;
+            Durability = durabilityLimit;
         }
 
 
         // Interactions.
 
         public void TakeDamage(DamageCausing damage) {
-            durability -= damage.DamageValue;
+            Durability -= damage.DamageValue;
         }
 
 

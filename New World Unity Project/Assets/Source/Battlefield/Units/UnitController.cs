@@ -31,7 +31,7 @@ namespace NewWorld.Battlefield.Units {
             unitController.behaviour = new UnitBehaviour(unitController);
             unitController.motionAbility = new BasicMotion(unitController);
             unitController.attackAbility = new BasicAttack(unitController);
-            unitController.durability = new UnitDurability(unitController, 3);
+            unitController.durability = new UnitDurability(unitController, 5);
             return unitController;
         }
 
