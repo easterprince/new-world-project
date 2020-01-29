@@ -6,6 +6,7 @@ using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Behaviours;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Units.Abilities.Active;
 using NewWorld.Battlefield.Units.Abilities.Active.Motions;
 using NewWorld.Battlefield.Units.Abilities.Active.Attacks;
@@ -20,17 +21,17 @@ namespace NewWorld.Battlefield.Units {
         private const string defaultGameObjectName = "Unit";
         private static GameObject prefab;
 
-        public static UnitController BuildUnit(UnitDescription description, string name = defaultGameObjectName) {
+        public static UnitController BuildUnit(Transform parent, UnitDescription description, string name = defaultGameObjectName) {
             if (prefab == null) {
                 prefab = Resources.Load<GameObject>(prefabPath);
             }
-            GameObject unit = Instantiate(prefab, new Vector3(-1, -1, -1), Quaternion.identity);
+            GameObject unit = Instantiate(prefab, new Vector3(-1, -1, -1), Quaternion.identity, parent);
             unit.name = name ?? defaultGameObjectName;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
             unitController.motionAbility = new BasicMotion(unitController);
             unitController.attackAbility = new BasicAttack(unitController);
-            unitController.durability = new UnitDurability(unitController, 100);
+            unitController.durability = new UnitDurability(unitController, 3);
             return unitController;
         }
 
@@ -64,21 +65,9 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
-        public UnitBehaviour Behaviour {
-            get => behaviour;
-        }
-
-        public BasicMotion MotionAbility {
-            get => motionAbility;
-        }
-
-        public BasicAttack AttackAbility {
-            get => attackAbility;
-        }
-
-        public Ability UsedAbility {
-            get => usedAbility;
-        }
+        public BasicMotion MotionAbility => motionAbility;
+        public BasicAttack AttackAbility => attackAbility;
+        public Ability UsedAbility => usedAbility;
 
         public bool Broken {
             get {
@@ -119,15 +108,9 @@ namespace NewWorld.Battlefield.Units {
             SetDefaultLocation();
         }
 
+        private void Update() {
 
-        // Actions management and used ability update.
-
-        public IEnumerable<GameAction> ReceiveActions() {
-
-            void CheckUsageAndProcessActions(IEnumerable<GameAction> actions) {
-                if (!usedAbility.IsUsed) {
-                    usedAbility = null;
-                }
+            void ProcessActions(IEnumerable<GameAction> actions) {
                 foreach (GameAction action in actions) {
                     if (!ProcessGameAction(action)) {
                         actionsToReturn.Add(action);
@@ -135,43 +118,63 @@ namespace NewWorld.Battlefield.Units {
                 }
             }
 
-            // Ask behaviour for orders.
-            if (behaviour != null) {
-                behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
-                if (abilityCancellation != null) {
-                    ProcessUnitUpdate(abilityCancellation);
+            if (!Broken) {
+
+                // Ask behaviour for orders.
+                if (behaviour != null) {
+                    behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
+                    if (abilityCancellation != null) {
+                        ProcessUnitUpdate(abilityCancellation);
+                    }
+                    if (abilityUsage != null) {
+                        ProcessUnitUpdate(abilityUsage);
+                    }
                 }
-                if (abilityUsage != null) {
-                    ProcessUnitUpdate(abilityUsage);
+
+                // Update used ability.
+                if (plannedAbilityStop != null) {
+                    if (plannedAbilityStop.Ability == usedAbility) {
+                        var actions = usedAbility.Stop(plannedAbilityStop.ForceStop);
+                        if (!usedAbility.IsUsed) {
+                            usedAbility = null;
+                        }
+                        ProcessActions(actions);
+                    }
+                    plannedAbilityStop = null;
                 }
+                if (plannedAbilityUsage != null) {
+                    if (usedAbility == null && HasAbility(plannedAbilityUsage.Ability)) {
+                        usedAbility = plannedAbilityUsage.Ability;
+                        var actions = usedAbility.Use(plannedAbilityUsage.ParameterSet);
+                        ProcessActions(actions);
+                    }
+                    plannedAbilityUsage = null;
+                }
+
+                // Receive and process actions from used ability.
+                if (usedAbility != null) {
+                    var actions = usedAbility.ReceiveActions();
+                    ProcessActions(actions);
+                    if (!usedAbility.IsUsed) {
+                        usedAbility = null;
+                    }
+                }
+
+            }
+            if (Broken) {
+                var action = new UnitRemoval(this);
+                actionsToReturn.Add(action);
             }
 
-            // Update used ability.
-            if (plannedAbilityStop != null) {
-                if (plannedAbilityStop.Ability == usedAbility) {
-                    var actions = usedAbility.Stop(plannedAbilityStop.ForceStop);
-                    CheckUsageAndProcessActions(actions);
-                }
-                plannedAbilityStop = null;
-            }
-            if (plannedAbilityUsage != null) {
-                if (HasAbility(plannedAbilityUsage.Ability)) {
-                    usedAbility = plannedAbilityUsage.Ability;
-                    var actions = usedAbility.Use(plannedAbilityUsage.ParameterSet);
-                    CheckUsageAndProcessActions(actions);
-                }
-                plannedAbilityUsage = null;
-            }
+        }
 
-            // Receive and process actions from used ability.
-            if (usedAbility != null) {
-                var actions = usedAbility.ReceiveActions();
-                CheckUsageAndProcessActions(actions);
-            }
 
-            var unprocessedActions = actionsToReturn;
+        // Actions management and used ability update.
+
+        public IEnumerable<GameAction> ReceiveActions() {
+            var actions = actionsToReturn;
             actionsToReturn = new List<GameAction>();
-            return unprocessedActions;
+            return actions;
         }
 
 

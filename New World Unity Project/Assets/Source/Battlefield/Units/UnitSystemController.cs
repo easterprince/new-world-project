@@ -30,7 +30,19 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private void Update() {
-            ProcessActions();
+            var collectedActions = new List<GameAction>();
+
+            foreach (UnitController actingUnit in units) {
+                IEnumerable<GameAction> actions = actingUnit.ReceiveActions();
+                collectedActions.AddRange(actions);
+            }
+
+            foreach (GameAction action in collectedActions) {
+                if (!ProcessGameAction(action)) {
+                    Debug.LogWarning($"Action { action.GetType() } has not been processed. Is it redundant?");
+                }
+            }
+
         }
 
 
@@ -45,20 +57,6 @@ namespace NewWorld.Battlefield.Units {
                 return null;
             }
             return unit;
-        }
-
-
-        // Actions collecting and applying.
-
-        private void ProcessActions() {
-            foreach (UnitController actingUnit in units) {
-                IEnumerable<GameAction> actions = actingUnit.ReceiveActions();
-                foreach (GameAction action in actions) {
-                    if (!ProcessGameAction(action)) {
-                        Debug.LogWarning($"Action { action.GetType() } has not been processed. Is it redundant?");
-                    }
-                }
-            }
         }
 
 

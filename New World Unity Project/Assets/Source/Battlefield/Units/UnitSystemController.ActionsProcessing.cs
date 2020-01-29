@@ -65,7 +65,7 @@ namespace NewWorld.Battlefield.Units {
             if (!ValidateRelocation(description.ConnectedNode)) {
                 return false;
             }
-            UnitController unit = UnitController.BuildUnit(description, $"Unit {unusedUnitIndex++}");
+            UnitController unit = UnitController.BuildUnit(transform, description, $"Unit {unusedUnitIndex++}");
             unit.transform.parent = transform;
             units.Add(unit);
             positions[unit] = description.ConnectedNode;
@@ -84,8 +84,7 @@ namespace NewWorld.Battlefield.Units {
             onPositions.Remove(positions[unit]);
             positions.Remove(unit);
             units.Remove(unit);
-            unit.transform.parent = null;
-            Destroy(unit);
+            Destroy(unit.gameObject);
             return true;
         }
 
