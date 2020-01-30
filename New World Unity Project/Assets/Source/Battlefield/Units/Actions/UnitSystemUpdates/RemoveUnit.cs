@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
-
-    public class UnitUpdate : GameAction {
+namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
+    
+    public class RemoveUnit : UnitSystemUpdate {
 
         // Fields.
 
@@ -16,11 +16,11 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Constructor.
 
-        public UnitUpdate(UnitController unit) {
+        public RemoveUnit(UnitController unit) : base() {
             this.unit = unit ?? throw new System.ArgumentNullException(nameof(unit));
         }
 
-
+    
     }
 
 }

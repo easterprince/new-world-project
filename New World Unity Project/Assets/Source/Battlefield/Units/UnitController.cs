@@ -5,11 +5,10 @@ using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Behaviours;
-using NewWorld.Battlefield.Units.Actions.UnitUpdates;
-using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
-using NewWorld.Battlefield.Units.Abilities.Active;
-using NewWorld.Battlefield.Units.Abilities.Active.Motions;
-using NewWorld.Battlefield.Units.Abilities.Active.Attacks;
+using NewWorld.Battlefield.Units.Abilities.Motions;
+using NewWorld.Battlefield.Units.Abilities.Attacks;
+using NewWorld.Battlefield.Units.Conditions;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -29,9 +28,9 @@ namespace NewWorld.Battlefield.Units {
             unit.name = name ?? defaultGameObjectName;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
-            unitController.motionAbility = new BasicMotion(unitController);
-            unitController.attackAbility = new BasicAttack(unitController);
-            unitController.durability = new UnitDurability(unitController, 5);
+            unitController.motionAbility = new BasicMotion(unitController, 2);
+            unitController.attackAbility = new BasicAttack(unitController, 20, 2);
+            unitController.durability = new UnitDurability(unitController, 100);
             return unitController;
         }
 
@@ -51,23 +50,23 @@ namespace NewWorld.Battlefield.Units {
         // Game logic components.
         private UnitBehaviour behaviour = null;
         private UnitDurability durability = null;
-        private BasicMotion motionAbility = null;
-        private BasicAttack attackAbility = null;
+        private MotionAbility motionAbility = null;
+        private AttackAbility attackAbility = null;
 
         // Actions.
         private List<GameAction> actionsToReturn = new List<GameAction>();
 
-        // Ability using.
-        private ActiveAbility usedAbility = null;
-        private AbilityUsage plannedAbilityUsage = null;
-        private AbilityStop plannedAbilityStop = null;
+        // Conditions.
+        private Condition currentCondition = null;
+        private StopCondition stopCondition = null;
+        private ForceCondition forceCondition = null;
 
 
         // Properties.
 
-        public BasicMotion MotionAbility => motionAbility;
-        public BasicAttack AttackAbility => attackAbility;
-        public Ability UsedAbility => usedAbility;
+        public MotionAbility MotionAbility => motionAbility;
+        public AttackAbility AttackAbility => attackAbility;
+        public Condition CurrentCondition => currentCondition;
 
         public bool Broken {
             get {
@@ -162,7 +161,7 @@ namespace NewWorld.Battlefield.Units {
 
             }
             if (Broken) {
-                var action = new UnitRemoval(this);
+                var action = new RemoveUnit(this);
                 actionsToReturn.Add(action);
             }
 

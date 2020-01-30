@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
-    public class AnimatorParameterUpdate<ParameterType> : InternalUpdate
+    public class UpdateAnimatorParameter<ParameterType> : InternalUnitUpdate
         where ParameterType : struct {
 
         // Fields.
@@ -19,7 +19,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
         // Constructor.
 
-        public AnimatorParameterUpdate(UnitController updatedUnit, int animationParameterHash, ParameterType newValue) : base(updatedUnit) {
+        public UpdateAnimatorParameter(UnitController updatedUnit, int animationParameterHash, ParameterType newValue) : base(updatedUnit) {
             this.animationParameterHash = animationParameterHash;
             this.newValue = newValue;
         }

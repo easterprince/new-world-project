@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
-    public class DamageCausing : UnitUpdate {
+    public class CauseDamage : GeneralUnitUpdate {
 
         // Fields.
 
@@ -16,7 +16,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
 
         // Constructor.
 
-        public DamageCausing(UnitController updatedUnit, float damageValue) : base(updatedUnit) {
+        public CauseDamage(UnitController updatedUnit, float damageValue) : base(updatedUnit) {
             this.damageValue = damageValue;
         }
 

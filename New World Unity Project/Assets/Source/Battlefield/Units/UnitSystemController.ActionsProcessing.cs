@@ -31,23 +31,23 @@ namespace NewWorld.Battlefield.Units {
             if (unitSystemUpdate == null) {
                 throw new System.ArgumentNullException(nameof(unitSystemUpdate));
             }
-            if (unitSystemUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
+            if (unitSystemUpdate is UpdateConnectedNode connectedNodeUpdate) {
                 return ProcessUnitSystemUpdate(connectedNodeUpdate);
             }
-            if (unitSystemUpdate is UnitAddition unitAddition) {
+            if (unitSystemUpdate is AddUnit unitAddition) {
                 return ProcessUnitSystemUpdate(unitAddition);
             }
-            if (unitSystemUpdate is UnitRemoval unitRemoval) {
+            if (unitSystemUpdate is RemoveUnit unitRemoval) {
                 return ProcessUnitSystemUpdate(unitRemoval);
             }
             return false;
         }
 
-        private bool ProcessUnitSystemUpdate(ConnectedNodeUpdate connectedNodeUpdate) {
+        private bool ProcessUnitSystemUpdate(UpdateConnectedNode connectedNodeUpdate) {
             if (connectedNodeUpdate == null) {
                 throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
             }
-            UnitController updatedUnit = connectedNodeUpdate.UpdatedUnit;
+            UnitController updatedUnit = connectedNodeUpdate.Unit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
             if (ValidateRelocation(newConnectedNode, updatedUnit)) {
                 onPositions.Remove(positions[updatedUnit]);
@@ -57,7 +57,7 @@ namespace NewWorld.Battlefield.Units {
             return true;
         }
 
-        private bool ProcessUnitSystemUpdate(UnitAddition unitAddition) {
+        private bool ProcessUnitSystemUpdate(AddUnit unitAddition) {
             if (unitAddition == null) {
                 throw new System.ArgumentNullException(nameof(unitAddition));
             }
@@ -72,11 +72,11 @@ namespace NewWorld.Battlefield.Units {
             return true;
         }
 
-        private bool ProcessUnitSystemUpdate(UnitRemoval unitRemoval) {
+        private bool ProcessUnitSystemUpdate(RemoveUnit unitRemoval) {
             if (unitRemoval == null) {
                 throw new System.ArgumentNullException(nameof(unitRemoval));
             }
-            var unit = unitRemoval.RemovedUnit;
+            var unit = unitRemoval.Unit;
             if (units.Contains(unit)) {
                 onPositions.Remove(positions[unit]);
                 positions.Remove(unit);
@@ -93,7 +93,7 @@ namespace NewWorld.Battlefield.Units {
             if (unitUpdate == null) {
                 throw new System.ArgumentNullException(nameof(unitUpdate));
             }
-            UnitController unit = unitUpdate.UpdatedUnit;
+            UnitController unit = unitUpdate.Unit;
             if (units.Contains(unit)) {
                 unit.ProcessGameAction(unitUpdate);
             }

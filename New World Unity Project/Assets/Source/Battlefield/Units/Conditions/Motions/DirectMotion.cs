@@ -39,7 +39,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         override protected IEnumerable<GameAction> OnEnter() {
             lastTime = Time.time;
             destinationNode = Vector2Int.RoundToInt(Destination);
-            var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, Speed);
+            var animationParameterUpdate = new UpdateAnimatorParameter<float>(Owner, motionSpeedAnimatorHash, Speed);
             return Enumerables.GetSingle(animationParameterUpdate);
         }
 
@@ -71,7 +71,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
             Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
             float nodeDistance = (connectedNode - newPosition2D).magnitude;
             if (nodeDistance < nodeDistanceLimit) {
-                var unitMoving = new UnitMoving(Owner, positionChange, Quaternion.identity);
+                var unitMoving = new MoveUnit(Owner, positionChange, Quaternion.identity);
                 actions = Enumerables.Unite(actions, unitMoving);
             }
 
@@ -81,7 +81,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
             } else {
                 var currentNode = Vector2Int.RoundToInt(newPosition2D);
                 if (currentNode != connectedNode) {
-                    var connectedNodeUpdate = new ConnectedNodeUpdate(Owner, currentNode);
+                    var connectedNodeUpdate = new UpdateConnectedNode(Owner, currentNode);
                     actions = Enumerables.Unite(actions, connectedNodeUpdate);
                 }
             }
@@ -92,7 +92,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         }
 
         override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
-            var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, 0);
+            var animationParameterUpdate = new UpdateAnimatorParameter<float>(Owner, motionSpeedAnimatorHash, 0);
             return Enumerables.GetSingle<GameAction>(animationParameterUpdate);
         }
 

@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
-    public class UnitMoving : InternalUpdate {
+    public class MoveUnit : InternalUnitUpdate {
 
         // Fields.
 
@@ -18,7 +18,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
         // Constructors.
 
-        public UnitMoving(UnitController owner, Vector2? positionChange, Quaternion? rotationFromForward) : base(owner) {
+        public MoveUnit(UnitController owner, Vector2? positionChange, Quaternion? rotationFromForward) : base(owner) {
             this.positionChange = positionChange;
             this.rotationFromForward = rotationFromForward;
         }

@@ -49,8 +49,8 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
             damageTime = currentTime + AttackTime * attackPeriod;
             finishTime = currentTime + attackPeriod;
 
-            var unitMoving = new UnitMoving(Owner, null, Quaternion.LookRotation(Target.Position - Owner.Position));
-            var animatorParameterUpdate = new AnimatorParameterUpdate<float>(Owner, attackSpeedAnimatorHash, AttackSpeed);
+            var unitMoving = new MoveUnit(Owner, null, Quaternion.LookRotation(Target.Position - Owner.Position));
+            var animatorParameterUpdate = new UpdateAnimatorParameter<float>(Owner, attackSpeedAnimatorHash, AttackSpeed);
             return new GameAction[] { unitMoving, animatorParameterUpdate };
         }
 
@@ -78,7 +78,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         }
 
         protected override IEnumerable<GameAction> OnFinish(StopType stopType) {
-            var action = new AnimatorParameterUpdate<float>(Owner, attackSpeedAnimatorHash, 0);
+            var action = new UpdateAnimatorParameter<float>(Owner, attackSpeedAnimatorHash, 0);
             return Enumerables.GetSingle(action);
         }
 

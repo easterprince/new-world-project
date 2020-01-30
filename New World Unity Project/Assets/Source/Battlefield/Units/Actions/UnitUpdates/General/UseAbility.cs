@@ -1,25 +1,25 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Units.Abilities.Active;
+using NewWorld.Battlefield.Units.Abilities;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
-    public class AbilityUsage : UnitUpdate {
+    public class UseAbility : GeneralUnitUpdate {
 
         // Fields.
 
-        private readonly ActiveAbility ability;
+        private readonly Ability ability;
         private readonly object parameterSet;
 
 
         // Properties.
 
-        public ActiveAbility Ability => ability;
+        public Ability Ability => ability;
         public object ParameterSet => parameterSet;
 
 
         // Constructor.
 
-        public AbilityUsage(ActiveAbility ability, object parameterSet) : base(ability.Owner) {
+        public UseAbility(Ability ability, object parameterSet) : base(ability.Owner) {
             this.ability = ability ?? throw new System.ArgumentNullException(nameof(ability));
             this.parameterSet = parameterSet;
         }

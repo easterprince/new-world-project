@@ -7,63 +7,78 @@ using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 
 namespace NewWorld.Battlefield.Units {
 
     public partial class UnitController {
 
         // Actions processing.
-        // Note: method have to return true if action should not be sent to UnitSystemController to be processed, and false otherwise.
+        // Note: method have to return true if action has been processed, and false otherwise.
 
-        public bool ProcessGameAction(GameAction gameAction) {
+        public void ProcessGameAction(GameAction gameAction, bool external = true) {
             if (gameAction == null) {
                 throw new System.ArgumentNullException(nameof(gameAction));
             }
-            if (gameAction is UnitUpdate unitUpdate) {
-                return ProcessUnitUpdate(unitUpdate);
+            bool processed = false;
+            
+            if (gameAction is UnitUpdate unitUpdate && unitUpdate.Unit == this) {
+                if (unitUpdate is GeneralUnitUpdate generalUnitUpdate) {
+                    processed = ProcessGeneralUnitUpdate(unitSystemUpdate);
+                } else if (unitUpdate is InternalUnitUpdate internalUnitUpdate) {
+                    if (!external) {
+                        processed = ProcessInternalUnitUpdate(internalUnitUpdate);
+                    }
+                }
+            } else if (gameAction is UnitSystemUpdate unitSystemUpdate) {
+                if (!external) {
+                    processed = ProcessUnitSystemUpdate(unitSystemUpdate);
+                }
+            } else if (!external) {
+                actionsToReturn.Add(gameAction);
             }
-            if (gameAction is UnitSystemUpdate unitSystemUpdate) {
-                return ProcessUnitSystemUpdate(unitSystemUpdate);
+
+            if (!processed) {
+                Debug.LogWarning($"Action of type {gameAction.GetType()} was not processed!", this);
+            }
+        }
+
+
+        // General unit updates.
+
+        private bool ProcessGeneralUnitUpdate(GeneralUnitUpdate generalUnitUpdate) {
+            if (generalUnitUpdate is CauseDamage causeDamage) {
+                return ProcessGeneralUnitUpdate(causeDamage);
+            }
+            if (generalUnitUpdate is StopCondition stopCondition) {
+                return ProcessGeneralUnitUpdate(stopCondition);
+            }
+            if (generalUnitUpdate is ForceCondition forceCondition) {
+                return ProcessGeneralUnitUpdate(forceCondition);
+            }
+        }
+
+
+        // Internal unit updates.
+
+        private bool ProcessInternalUnitUpdate(InternalUnitUpdate internalUnitUpdate) {
+            if (internalUnitUpdate is UpdateTransform transformUpdate) {
+                return ProcessInternalUnitUpdate(transformUpdate);
+            }
+            if (internalUnitUpdate is UpdateAnimatorParameter<float> animatorParameterUpdate) {
+                return ProcessInternalUnitUpdate(animatorParameterUpdate);
+            }
+            if (internalUnitUpdate is ApplyAnimatorTrigger animatorTriggerApplication) {
+                return ProcessInternalUnitUpdate(animatorTriggerApplication);
             }
             return false;
         }
 
-
-        // Unit updates.
-
-        private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
-            if (unitUpdate == null) {
-                throw new System.ArgumentNullException(nameof(unitUpdate));
-            }
-            if (unitUpdate.UpdatedUnit != this) {
-                return false;
-            }
-            if (unitUpdate is TransformUpdate transformUpdate) {
-                return ProcessUnitUpdate(transformUpdate);
-            }
-            if (unitUpdate is AnimatorParameterUpdate<float> animatorParameterUpdate) {
-                return ProcessUnitUpdate(animatorParameterUpdate);
-            }
-            if (unitUpdate is AnimatorTriggerApplication animatorTriggerApplication) {
-                return ProcessUnitUpdate(animatorTriggerApplication);
-            }
-            if (unitUpdate is AbilityUsage abilityUsage) {
-                return ProcessUnitUpdate(abilityUsage);
-            }
-            if (unitUpdate is AbilityStop abilityStop) {
-                return ProcessUnitUpdate(abilityStop);
-            }
-            if (unitUpdate is DamageCausing damageCausing) {
-                return ProcessUnitUpdate(damageCausing);
-            }
-            return false;
-        }
-
-        private bool ProcessUnitUpdate(TransformUpdate transformUpdate) {
+        private bool ProcessUnitUpdate(UpdateTransform transformUpdate) {
             if (transformUpdate == null) {
                 throw new System.ArgumentNullException(nameof(transformUpdate));
             }
-            if (transformUpdate.UpdatedUnit != this) {
+            if (transformUpdate.Unit != this) {
                 return false;
             }
             if (transformUpdate.NewPosition != null) {
@@ -79,22 +94,22 @@ namespace NewWorld.Battlefield.Units {
             return true;
         }
 
-        private bool ProcessUnitUpdate(AnimatorParameterUpdate<float> animatorParameterUpdate) {
+        private bool ProcessUnitUpdate(UpdateAnimatorParameter<float> animatorParameterUpdate) {
             if (animatorParameterUpdate == null) {
                 throw new System.ArgumentNullException(nameof(animatorParameterUpdate));
             }
-            if (animatorParameterUpdate.UpdatedUnit != this) {
+            if (animatorParameterUpdate.Unit != this) {
                 return false;
             }
             animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
             return true;
         }
 
-        private bool ProcessUnitUpdate(AnimatorTriggerApplication animatorTriggerApplication) {
+        private bool ProcessUnitUpdate(ApplyAnimatorTrigger animatorTriggerApplication) {
             if (animatorTriggerApplication == null) {
                 throw new System.ArgumentNullException(nameof(animatorTriggerApplication));
             }
-            if (animatorTriggerApplication.UpdatedUnit != this) {
+            if (animatorTriggerApplication.Unit != this) {
                 return false;
             }
             animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
@@ -147,17 +162,17 @@ namespace NewWorld.Battlefield.Units {
             if (unitSystemUpdate == null) {
                 throw new System.ArgumentNullException(nameof(unitSystemUpdate));
             }
-            if (unitSystemUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
+            if (unitSystemUpdate is UpdateConnectedNode connectedNodeUpdate) {
                 return ProcessUnitSystemUpdate(connectedNodeUpdate);
             }
             return false;
         }
 
-        private bool ProcessUnitSystemUpdate(ConnectedNodeUpdate connectedNodeUpdate) {
+        private bool ProcessUnitSystemUpdate(UpdateConnectedNode connectedNodeUpdate) {
             if (connectedNodeUpdate == null) {
                 throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
             }
-            if (connectedNodeUpdate.UpdatedUnit != this) {
+            if (connectedNodeUpdate.Unit != this) {
                 return false;
             }
             Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);

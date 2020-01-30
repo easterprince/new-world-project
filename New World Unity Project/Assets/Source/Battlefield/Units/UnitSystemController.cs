@@ -68,7 +68,7 @@ namespace NewWorld.Battlefield.Units {
             }
 
             foreach (UnitDescription unitDescription in unitDescriptions) {
-                ProcessUnitSystemUpdate(new UnitAddition(unitDescription));
+                ProcessUnitSystemUpdate(new AddUnit(unitDescription));
             }
 
             yield break;

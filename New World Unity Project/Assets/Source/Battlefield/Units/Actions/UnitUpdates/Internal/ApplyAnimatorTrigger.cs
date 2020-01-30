@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
-    public class AnimatorTriggerApplication : InternalUpdate {
+    public class ApplyAnimatorTrigger : InternalUnitUpdate {
 
         // Fields.
 
@@ -16,7 +16,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
         // Constructor.
 
-        public AnimatorTriggerApplication(UnitController updatedUnit, int animationTriggerHash) : base(updatedUnit) {
+        public ApplyAnimatorTrigger(UnitController updatedUnit, int animationTriggerHash) : base(updatedUnit) {
             this.animationTriggerHash = animationTriggerHash;
         }
 

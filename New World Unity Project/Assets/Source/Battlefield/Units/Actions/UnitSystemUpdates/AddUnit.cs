@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
 
-    public class UnitAddition : UnitSystemUpdate {
+    public class AddUnit : UnitSystemUpdate {
 
         // Fields.
 
@@ -16,7 +16,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
 
         // Constructor.
 
-        public UnitAddition(UnitDescription description) : base() {
+        public AddUnit(UnitDescription description) : base() {
             this.description = description ?? throw new System.ArgumentNullException(nameof(description));
         }
 
