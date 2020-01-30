@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
-    public class AnimatorTriggerApplication : UnitUpdate {
+    public class AnimatorTriggerApplication : InternalUpdate {
 
         // Fields.
 

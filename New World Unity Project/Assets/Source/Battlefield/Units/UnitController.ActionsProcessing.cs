@@ -6,6 +6,7 @@ using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 
 namespace NewWorld.Battlefield.Units {
 

@@ -1,12 +1,13 @@
 ﻿using NewWorld;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 using NewWorld.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Battlefield.Units.Conditions {
-    
+
     public class DirectAttack : Condition {
 
         // Static.
@@ -22,9 +23,9 @@ namespace NewWorld.Battlefield.Units.Conditions {
         // Fields.
 
         // Parameters.
-        private UnitController target;
-        private float attackPower = 1;
-        private float attackSpeed = 1;
+        private readonly UnitController target;
+        private readonly float attackPower = 1;
+        private readonly float attackSpeed = 1;
 
         // Condition.
         private bool attacked;

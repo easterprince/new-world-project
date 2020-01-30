@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
 
-    public class AnimatorParameterUpdate<ParameterType> : UnitUpdate
+    public class AnimatorParameterUpdate<ParameterType> : InternalUpdate
         where ParameterType : struct {
 
         // Fields.

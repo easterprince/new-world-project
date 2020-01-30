@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
-    
-    public class UnitMoving : UnitUpdate {
+namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal {
+
+    public class UnitMoving : InternalUpdate {
 
         // Fields.
 
@@ -23,7 +23,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates {
             this.rotationFromForward = rotationFromForward;
         }
 
-    
+
     }
 
 
