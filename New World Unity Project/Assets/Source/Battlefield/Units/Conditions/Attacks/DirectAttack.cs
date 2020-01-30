@@ -1,14 +1,13 @@
-﻿using NewWorld;
-using NewWorld.Battlefield.Units.Actions;
+﻿using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 using NewWorld.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.Battlefield.Units.Conditions {
+namespace NewWorld.Battlefield.Units.Conditions.Attacks {
 
-    public class DirectAttack : Condition {
+    public class DirectAttack : AttackCondition {
 
         // Static.
 
@@ -22,12 +21,6 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Fields.
 
-        // Parameters.
-        private readonly UnitController target;
-        private readonly float attackPower = 1;
-        private readonly float attackSpeed = 1;
-
-        // Condition.
         private bool attacked;
         private float damageTime;
         private float finishTime;
@@ -35,30 +28,29 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Constructors.
 
-        public DirectAttack(UnitController owner, UnitController target, float attackPower = 1, float attackSpeed = 1) : base(owner) {
-            this.target = target;
-            this.attackPower = Mathf.Max(0, attackPower);
-            this.attackSpeed = Mathf.Max(0, attackSpeed);
-        }
+        public DirectAttack(
+            UnitController owner, UnitController target,
+            float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f
+        ) : base(owner, target, attackPower, attackSpeed, attackTime) {}
 
 
         // Life cycle.
 
         protected override IEnumerable<GameAction> OnEnter() {
             attacked = false;
-            if (target == null) {
+            if (Target == null) {
                 attacked = true;
                 finishTime = Time.time;
                 return Enumerables.GetNothing<GameAction>();
             }
 
             float currentTime = Time.time;
-            float attackPeriod = 1 / attackSpeed;
-            damageTime = currentTime + attackPeriod / 2;
+            float attackPeriod = 1 / AttackSpeed;
+            damageTime = currentTime + AttackTime * attackPeriod;
             finishTime = currentTime + attackPeriod;
 
-            var unitMoving = new UnitMoving(Owner, null, Quaternion.LookRotation(target.Position - Owner.Position));
-            var animatorParameterUpdate = new AnimatorParameterUpdate<float>(Owner, attackSpeedAnimatorHash, attackSpeed);
+            var unitMoving = new UnitMoving(Owner, null, Quaternion.LookRotation(Target.Position - Owner.Position));
+            var animatorParameterUpdate = new AnimatorParameterUpdate<float>(Owner, attackSpeedAnimatorHash, AttackSpeed);
             return new GameAction[] { unitMoving, animatorParameterUpdate };
         }
 
@@ -67,10 +59,10 @@ namespace NewWorld.Battlefield.Units.Conditions {
             var actions = Enumerables.GetNothing<GameAction>();
 
             if (!attacked) {
-                if (target == null) {
+                if (Target == null) {
                     completed = true;
                 } else if (Time.time >= damageTime) {
-                    var action = new DamageCausing(target, attackPower);
+                    var action = new DamageCausing(Target, AttackPower);
                     actions = Enumerables.GetSingle(action);
                     attacked = true;
                 }

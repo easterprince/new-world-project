@@ -5,9 +5,9 @@ using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 
-namespace NewWorld.Battlefield.Units.Conditions {
+namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
-    public class DirectMotion : Condition {
+    public class DirectMotion : MotionCondition {
 
         // Static.
 
@@ -16,10 +16,6 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
 
         // Fields.
-
-        // Parameters.
-        private readonly Vector2 destination;
-        private readonly float speed;
 
         // Updating.
         private float lastTime;
@@ -35,18 +31,15 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Constructor.
 
-        public DirectMotion(UnitController owner, Vector2 destination, float speed = 1) : base(owner) {
-            this.destination = destination;
-            this.speed = Mathf.Max(0, speed);
-        }
+        public DirectMotion(UnitController owner, Vector2 destination, float speed = 1) : base(owner, destination, speed) {}
 
 
         // Inner methods.
 
-        protected override IEnumerable<GameAction> OnEnter() {
+        override protected IEnumerable<GameAction> OnEnter() {
             lastTime = Time.time;
-            destinationNode = Vector2Int.RoundToInt(destination);
-            var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, speed);
+            destinationNode = Vector2Int.RoundToInt(Destination);
+            var animationParameterUpdate = new AnimatorParameterUpdate<float>(Owner, motionSpeedAnimatorHash, Speed);
             return Enumerables.GetSingle(animationParameterUpdate);
         }
 
@@ -65,8 +58,8 @@ namespace NewWorld.Battlefield.Units.Conditions {
             // Calculate new x and z components.
             Vector3 lastPosition = Owner.Position;
             Vector2 lastPosition2D = new Vector2(lastPosition.x, lastPosition.z);
-            float deltaDistance = speed * deltaTime;
-            Vector2 positionChange = destination - lastPosition2D;
+            float deltaDistance = Speed * deltaTime;
+            Vector2 positionChange = Destination - lastPosition2D;
             if (positionChange.magnitude <= deltaDistance) {
                 positionReached = true;
             } else {

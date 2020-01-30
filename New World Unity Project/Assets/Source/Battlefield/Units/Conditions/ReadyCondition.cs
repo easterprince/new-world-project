@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Conditions {
     
-    public class ReadyCondition {
+    public struct ReadyCondition {
 
         // Fields.
 
@@ -17,6 +17,9 @@ namespace NewWorld.Battlefield.Units.Conditions {
         // Constructor.
 
         public ReadyCondition(Condition condition) {
+            if (condition == null) {
+                throw new System.ArgumentNullException(nameof(condition));
+            }
             if (!condition.Ready) {
                 throw new System.ArgumentException("Condition must be ready.");
             }

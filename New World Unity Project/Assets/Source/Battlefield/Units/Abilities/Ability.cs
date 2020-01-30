@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Battlefield.Units.Actions;
+using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability : UnitModule, IActing {
+    public abstract class Ability : UnitModule {
 
         // Constructor.
 
@@ -13,7 +14,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Methods.
 
-        public abstract IEnumerable<GameAction> ReceiveActions();
+        public abstract ReadyCondition Use(object parameterSet);
 
 
     }
