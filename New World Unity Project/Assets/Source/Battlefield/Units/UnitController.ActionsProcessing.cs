@@ -156,7 +156,7 @@ namespace NewWorld.Battlefield.Units {
             }
             if (moveUnit.RotationFromForward != null) {
                 Quaternion newRotation = transform.rotation;
-                if (moveUnit.PositionChange != null) {
+                if (positionChange != Vector3.zero) {
                     newRotation = Quaternion.LookRotation(positionChange);
                 }
                 newRotation *= moveUnit.RotationFromForward.Value;

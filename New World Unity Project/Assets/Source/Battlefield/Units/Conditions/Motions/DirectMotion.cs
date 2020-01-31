@@ -71,8 +71,8 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
             Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
             float nodeDistance = (connectedNode - newPosition2D).magnitude;
             if (nodeDistance < nodeDistanceLimit) {
-                var unitMoving = new MoveUnit(Owner, positionChange, Quaternion.identity);
-                actions = Enumerables.Unite(actions, unitMoving);
+                var moveUnit = new MoveUnit(Owner, positionChange, Quaternion.identity);
+                actions = Enumerables.Unite(actions, moveUnit);
             }
 
             // Add connected node update.
@@ -81,8 +81,8 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
             } else {
                 var currentNode = Vector2Int.RoundToInt(newPosition2D);
                 if (currentNode != connectedNode) {
-                    var connectedNodeUpdate = new UpdateConnectedNode(Owner, currentNode);
-                    actions = Enumerables.Unite(actions, connectedNodeUpdate);
+                    var updateConnectedNode = new UpdateConnectedNode(Owner, currentNode);
+                    actions = Enumerables.Unite(actions, updateConnectedNode);
                 }
             }
 
