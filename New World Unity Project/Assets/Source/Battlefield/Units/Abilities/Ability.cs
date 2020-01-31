@@ -14,7 +14,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Methods.
 
-        public abstract ReadyCondition Use(object parameterSet);
+        public abstract Condition Use(object parameterSet);
 
 
     }

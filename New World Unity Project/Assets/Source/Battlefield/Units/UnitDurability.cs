@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 
 namespace NewWorld.Battlefield.Units {
     
@@ -48,8 +47,8 @@ namespace NewWorld.Battlefield.Units {
 
         // Interactions.
 
-        public void TakeDamage(DamageCausing damage) {
-            Durability -= damage.DamageValue;
+        public void TakeDamage(float damageValue) {
+            Durability -= damageValue;
         }
 
 

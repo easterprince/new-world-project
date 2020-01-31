@@ -13,12 +13,12 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         // Methods.
 
-        sealed override public ReadyCondition Use(object parameterSet) {
+        sealed override public Condition Use(object parameterSet) {
             if (!(parameterSet is Vector2 destination)) {
-                throw new System.ArgumentException($"Parameter set must be of type {typeof(UnitController)}.");
+                throw new System.ArgumentException($"Parameter set must be of type {typeof(Vector2)}.");
             }
             var condition = new DirectMotion(Owner, destination, Speed);
-            return new ReadyCondition(condition);
+            return condition;
         }
 
 

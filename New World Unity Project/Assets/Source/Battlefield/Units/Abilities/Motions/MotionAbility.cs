@@ -6,7 +6,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         // Static.
 
-        public static object FormParameterSet(Vector2Int destination) {
+        public static object FormParameterSet(Vector2 destination) {
             return destination;
         }
 

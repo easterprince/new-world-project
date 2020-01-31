@@ -16,12 +16,12 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
         // Methods.
 
-        sealed override public ReadyCondition Use(object parameterSet) {
+        sealed override public Condition Use(object parameterSet) {
             if (!(parameterSet is UnitController target)) {
                 throw new System.ArgumentException($"Parameter set must be of type {typeof(UnitController)}.");
             }
             var condition = new DirectAttack(Owner, target, AttackPower, AttackSpeed, AttackTime);
-            return new ReadyCondition(condition);
+            return condition;
         }
 
 

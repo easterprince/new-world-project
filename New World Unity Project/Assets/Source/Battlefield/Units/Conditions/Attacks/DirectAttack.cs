@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 using NewWorld.Utilities;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
                 if (Target == null) {
                     completed = true;
                 } else if (Time.time >= damageTime) {
-                    var action = new DamageCausing(Target, AttackPower);
+                    var action = new CauseDamage(Target, AttackPower);
                     actions = Enumerables.GetSingle(action);
                     attacked = true;
                 }

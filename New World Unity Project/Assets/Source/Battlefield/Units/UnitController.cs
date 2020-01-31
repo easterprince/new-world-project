@@ -9,6 +9,7 @@ using NewWorld.Battlefield.Units.Abilities.Motions;
 using NewWorld.Battlefield.Units.Abilities.Attacks;
 using NewWorld.Battlefield.Units.Conditions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
+using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -58,8 +59,6 @@ namespace NewWorld.Battlefield.Units {
 
         // Conditions.
         private Condition currentCondition = null;
-        private StopCondition stopCondition = null;
-        private ForceCondition forceCondition = null;
 
 
         // Properties.
@@ -109,60 +108,41 @@ namespace NewWorld.Battlefield.Units {
 
         private void Update() {
 
-            void ProcessActions(IEnumerable<GameAction> actions) {
-                foreach (GameAction action in actions) {
-                    if (!ProcessGameAction(action)) {
-                        actionsToReturn.Add(action);
-                    }
-                }
-            }
-
             if (!Broken) {
 
                 // Ask behaviour for orders.
                 if (behaviour != null) {
-                    behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
-                    if (abilityCancellation != null) {
-                        ProcessUnitUpdate(abilityCancellation);
+                    behaviour.Act(out CancelCondition cancelCondition, out UseAbility useAbility);
+                    if (cancelCondition != null) {
+                        ProcessGameAction(cancelCondition, false);
                     }
-                    if (abilityUsage != null) {
-                        ProcessUnitUpdate(abilityUsage);
+                    if (useAbility != null) {
+                        ProcessGameAction(useAbility, false);
                     }
-                }
-
-                // Update used ability.
-                if (plannedAbilityStop != null) {
-                    if (plannedAbilityStop.Ability == usedAbility) {
-                        var actions = usedAbility.Stop(plannedAbilityStop.ForceStop);
-                        if (!usedAbility.IsUsed) {
-                            usedAbility = null;
-                        }
-                        ProcessActions(actions);
-                    }
-                    plannedAbilityStop = null;
-                }
-                if (plannedAbilityUsage != null) {
-                    if (usedAbility == null && HasAbility(plannedAbilityUsage.Ability)) {
-                        usedAbility = plannedAbilityUsage.Ability;
-                        var actions = usedAbility.Use(plannedAbilityUsage.ParameterSet);
-                        ProcessActions(actions);
-                    }
-                    plannedAbilityUsage = null;
                 }
 
                 // Receive and process actions from used ability.
-                if (usedAbility != null) {
-                    var actions = usedAbility.ReceiveActions();
-                    ProcessActions(actions);
-                    if (!usedAbility.IsUsed) {
-                        usedAbility = null;
+                if (currentCondition != null) {
+                    var actions = currentCondition.Update();
+                    if (currentCondition.Exited) {
+                        currentCondition = null;
                     }
+                    ProcessGameActions(actions, false);
                 }
 
             }
             if (Broken) {
-                var action = new RemoveUnit(this);
-                actionsToReturn.Add(action);
+
+                // Stop any activities.
+                if (currentCondition != null) {
+                    var stopCondition = new StopCondition(currentCondition, true);
+                    ProcessGameAction(stopCondition, false);
+                }
+
+                // Commit you-know-what.
+                var removeUnit = new RemoveUnit(this);
+                ProcessGameAction(removeUnit, false);
+
             }
 
         }
