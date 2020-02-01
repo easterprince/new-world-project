@@ -136,6 +136,9 @@ namespace NewWorld.Battlefield.Units {
             if (internalUnitUpdate is MoveUnit moveUnit) {
                 return ProcessInternalUnitUpdate(moveUnit);
             }
+            if (internalUnitUpdate is SetRotation setRotation) {
+                return ProcessInternalUnitUpdate(setRotation);
+            }
             if (internalUnitUpdate is UpdateAnimatorParameter<float> updateAnimatorParameter) {
                 return ProcessInternalUnitUpdate(updateAnimatorParameter);
             }
@@ -146,22 +149,21 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessInternalUnitUpdate(MoveUnit moveUnit) {
-            Vector3 positionChange = Vector3.zero;
-            if (moveUnit.PositionChange != null) {
-                Vector2 newPosition2D = new Vector2(transform.position.x, transform.position.z) + moveUnit.PositionChange.Value;
-                float newY = MapController.Instance.GetSurfaceHeight(newPosition2D);
-                Vector3 newPosition = new Vector3(newPosition2D.x, newY, newPosition2D.y);
-                positionChange = newPosition - transform.position;
-                transform.position = newPosition;
-            }
+            Vector2 newPosition2D = new Vector2(transform.position.x, transform.position.z) + moveUnit.PositionChange;
+            float newY = MapController.Instance.GetSurfaceHeight(newPosition2D);
+            Vector3 newPosition = new Vector3(newPosition2D.x, newY, newPosition2D.y);
+            Vector3 positionChange = newPosition - transform.position;
+            transform.position = newPosition;
             if (moveUnit.RotationFromForward != null) {
-                Quaternion newRotation = transform.rotation;
-                if (positionChange != Vector3.zero) {
-                    newRotation = Quaternion.LookRotation(positionChange);
-                }
+                Quaternion newRotation = (positionChange == Vector3.zero ? transform.rotation : Quaternion.LookRotation(positionChange));
                 newRotation *= moveUnit.RotationFromForward.Value;
                 transform.rotation = newRotation;
             }
+            return true;
+        }
+
+        private bool ProcessInternalUnitUpdate(SetRotation setRotation) {
+            transform.rotation = setRotation.Rotation;
             return true;
         }
 
