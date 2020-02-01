@@ -45,12 +45,18 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private void ProcessGameActions(IEnumerable<GameAction> gameActions, bool external) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
             foreach (var gameAction in gameActions) {
                 ProcessGameAction(gameAction, external);
             }
         }
 
         public void ProcessGameAction(GameAction gameAction) {
+            if (gameAction == null) {
+                throw new System.ArgumentNullException(nameof(gameAction));
+            }
             if (this == null) {
                 return;
             }
@@ -58,6 +64,9 @@ namespace NewWorld.Battlefield.Units {
         }
 
         public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
             if (this == null) {
                 return;
             }
@@ -181,14 +190,7 @@ namespace NewWorld.Battlefield.Units {
         // Unit System updates.
 
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
-            if (unitSystemUpdate is UpdateConnectedNode updateConnectedNode) {
-                return ProcessUnitSystemUpdate(updateConnectedNode);
-            }
-            return false;
-        }
-
-        private bool ProcessUnitSystemUpdate(UpdateConnectedNode updateConnectedNode) {
-            actionsToReturn.Add(updateConnectedNode);
+            actionsToReturn.Add(unitSystemUpdate);
             return true;
         }
 

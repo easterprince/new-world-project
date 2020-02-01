@@ -3,6 +3,7 @@ using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Map;
+using System.Collections.Generic;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -11,26 +12,36 @@ namespace NewWorld.Battlefield.Units {
         // Actions processing.
         // Note: method have to return true if action has been processed, and false otherwise.
 
-        public bool ProcessGameAction(GameAction gameAction) {
+        public void ProcessGameAction(GameAction gameAction) {
             if (gameAction == null) {
                 throw new System.ArgumentNullException(nameof(gameAction));
             }
+            bool processed = false;
+
             if (gameAction is UnitSystemUpdate unitSystemUpdate) {
-                return ProcessUnitSystemUpdate(unitSystemUpdate);
+                processed = ProcessUnitSystemUpdate(unitSystemUpdate);
+            } else if (gameAction is UnitUpdate unitUpdate) {
+                processed = ProcessUnitUpdate(unitUpdate);
             }
-            if (gameAction is UnitUpdate unitUpdate) {
-                return ProcessUnitUpdate(unitUpdate);
+
+            if (!processed) {
+                Debug.LogWarning($"Action of type {gameAction.GetType()} was not processed!", this);
             }
-            return false;
+        }
+
+        public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
+            foreach (GameAction gameAction in gameActions) {
+                ProcessGameAction(gameAction);
+            }
         }
 
 
         // Unit System updates.
 
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
-            if (unitSystemUpdate == null) {
-                throw new System.ArgumentNullException(nameof(unitSystemUpdate));
-            }
             if (unitSystemUpdate is UpdateConnectedNode connectedNodeUpdate) {
                 return ProcessUnitSystemUpdate(connectedNodeUpdate);
             }
@@ -44,9 +55,6 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitSystemUpdate(UpdateConnectedNode connectedNodeUpdate) {
-            if (connectedNodeUpdate == null) {
-                throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
-            }
             UnitController updatedUnit = connectedNodeUpdate.Unit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
             if (ValidateRelocation(newConnectedNode, updatedUnit)) {
@@ -58,9 +66,6 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitSystemUpdate(AddUnit unitAddition) {
-            if (unitAddition == null) {
-                throw new System.ArgumentNullException(nameof(unitAddition));
-            }
             UnitDescription description = unitAddition.Description;
             if (ValidateRelocation(description.ConnectedNode)) {
                 UnitController unit = UnitController.BuildUnit(transform, description, $"Unit {unusedUnitIndex++}");
@@ -73,9 +78,6 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessUnitSystemUpdate(RemoveUnit unitRemoval) {
-            if (unitRemoval == null) {
-                throw new System.ArgumentNullException(nameof(unitRemoval));
-            }
             var unit = unitRemoval.Unit;
             if (units.Contains(unit)) {
                 onPositions.Remove(positions[unit]);
@@ -87,12 +89,9 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
-        // Unit System updates.
+        // Unit updates.
 
         private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
-            if (unitUpdate == null) {
-                throw new System.ArgumentNullException(nameof(unitUpdate));
-            }
             UnitController unit = unitUpdate.Unit;
             if (units.Contains(unit)) {
                 unit.ProcessGameAction(unitUpdate);

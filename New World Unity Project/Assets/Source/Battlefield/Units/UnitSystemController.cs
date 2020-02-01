@@ -38,9 +38,7 @@ namespace NewWorld.Battlefield.Units {
             }
 
             foreach (GameAction action in collectedActions) {
-                if (!ProcessGameAction(action)) {
-                    Debug.LogWarning($"Action { action.GetType() } has not been processed. Is it redundant?");
-                }
+                ProcessGameAction(action);
             }
 
         }
