@@ -35,7 +35,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                         var currentNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                         var otherNode = currentNode + nodeDifference;
                         var otherUnit = UnitSystemController.Instance.GetUnitOnPosition(otherNode);
-                        if (otherUnit != null && otherUnit != Owner) {
+                        if (otherUnit != null && !otherUnit.Collapsed && otherUnit != Owner) {
                             var parameterSet = AttackAbility.FormParameterSet(otherUnit);
                             useAbility = new UseAbility(Owner.AttackAbility, parameterSet);
                         }
