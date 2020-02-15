@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NewWorld.Battlefield.Units.Conditions.Collapses;
+using UnityEngine;
 
 namespace NewWorld.Battlefield.Units {
     
@@ -34,7 +35,7 @@ namespace NewWorld.Battlefield.Units {
             protected set => durability = Mathf.Min(value, durabilityLimit);
         }
 
-        public bool Broken => durability <= 0;
+        public bool Collapsed => durability <= 0;
 
 
         // Constructor.

@@ -67,10 +67,10 @@ namespace NewWorld.Battlefield.Units {
         public AttackAbility AttackAbility => attackAbility;
         public Condition CurrentCondition => currentCondition;
 
-        public bool Broken {
+        public bool Collapsed {
             get {
                 if (durability != null) {
-                    return durability.Broken;
+                    return durability.Collapsed;
                 }
                 return false;
             }
@@ -108,7 +108,7 @@ namespace NewWorld.Battlefield.Units {
 
         private void Update() {
 
-            if (!Broken) {
+            if (!Collapsed) {
 
                 // Ask behaviour for orders.
                 if (behaviour != null) {
@@ -131,7 +131,7 @@ namespace NewWorld.Battlefield.Units {
                 }
 
             }
-            if (Broken) {
+            if (Collapsed) {
 
                 // Stop any activities.
                 if (currentCondition != null) {
