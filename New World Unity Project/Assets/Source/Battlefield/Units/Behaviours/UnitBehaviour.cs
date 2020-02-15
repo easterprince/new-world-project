@@ -6,6 +6,8 @@ using NewWorld.Utilities;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 using NewWorld.Battlefield.Units.Abilities.Attacks;
 using NewWorld.Battlefield.Units.Abilities.Motions;
+using NewWorld.Battlefield.Units.Conditions.Attacks;
+using NewWorld.Battlefield.Units.Conditions.Motions;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 
@@ -28,7 +30,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
 
             // Fight around.
             if (Owner.AttackAbility != null) {
-                if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled) {
+                if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled && !(Owner.CurrentCondition is AttackCondition)) {
                     foreach (Vector2Int nodeDifference in Enumerables.InSegment2(-1, 1)) {
                         var currentNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                         var otherNode = currentNode + nodeDifference;
