@@ -94,12 +94,8 @@ namespace NewWorld.Battlefield.Units {
         // Life cycle.
 
         private void Awake() {
-            if (UnitSystemController.Instance == null) {
-                throw new MissingSingletonException<UnitSystemController>(this);
-            }
-            if (MapController.Instance == null) {
-                throw new MissingSingletonException<MapController>(this);
-            }
+            UnitSystemController.EnsureInstance(this);
+            MapController.EnsureInstance(this);
             animator = GetComponent<Animator>();
         }
 

@@ -17,9 +17,6 @@ namespace NewWorld.Battlefield.Map {
         [SerializeField]
         private TerrainController terrain;
 
-        [SerializeField]
-        private NodeGridController nodeGrid;
-
 #pragma warning restore IDE0044, CS0414, CS0649
 
 
@@ -42,7 +39,6 @@ namespace NewWorld.Battlefield.Map {
         public IEnumerator Load(MapDescription description) {
             this.description = description ?? throw new System.ArgumentNullException(nameof(description));
             yield return StartCoroutine(terrain.Load(description));
-            yield return StartCoroutine(nodeGrid.Load(description));
         }
 
 

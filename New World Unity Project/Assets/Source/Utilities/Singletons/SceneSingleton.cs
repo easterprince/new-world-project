@@ -12,11 +12,17 @@ namespace NewWorld.Utilities.Singletones {
         private static T instance;
 
 
-        // Properties.
+        // Static.
 
         public static T Instance {
             get => instance;
             protected set => instance = value;
+        }
+
+        public static void EnsureInstance(object userClass) {
+            if (Instance == null) {
+                throw new MissingSingletonException<T>(userClass);
+            }
         }
 
 
@@ -29,6 +35,7 @@ namespace NewWorld.Utilities.Singletones {
                 Instance = null;
             }
         }
+
 
     }
 
