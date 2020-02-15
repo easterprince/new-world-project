@@ -10,6 +10,7 @@ using NewWorld.Battlefield.Units.Abilities.Attacks;
 using NewWorld.Battlefield.Units.Conditions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
+using NewWorld.Battlefield.Units.Conditions.Collapses;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -134,14 +135,11 @@ namespace NewWorld.Battlefield.Units {
             if (Collapsed) {
 
                 // Stop any activities.
-                if (currentCondition != null) {
-                    var stopCondition = new StopCondition(currentCondition, true);
-                    ProcessGameAction(stopCondition, false);
+                if (!(currentCondition is CollapseCondition)) {
+                    var collapseCondition = new SimpleCollapse(this, 1);
+                    var forceCondition = new ForceCondition(collapseCondition);
+                    ProcessGameAction(forceCondition, false);
                 }
-
-                // Commit you-know-what.
-                var removeUnit = new RemoveUnit(this);
-                ProcessGameAction(removeUnit, false);
 
             }
 
