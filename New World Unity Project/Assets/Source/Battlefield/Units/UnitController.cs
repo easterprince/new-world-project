@@ -122,21 +122,22 @@ namespace NewWorld.Battlefield.Units {
                     }
                 }
 
-                // Receive and process actions from used ability.
-                if (currentCondition != null) {
-                    var actions = currentCondition.Update();
-                    if (currentCondition.Exited) {
-                        currentCondition = null;
-                    }
-                    ProcessGameActions(actions, false);
-                }
-
             }
+
+            // Receive and process actions from used ability.
+            if (currentCondition != null) {
+                var actions = currentCondition.Update();
+                if (currentCondition.Exited) {
+                    currentCondition = null;
+                }
+                ProcessGameActions(actions, false);
+            }
+
             if (Collapsed) {
 
-                // Stop any activities.
+                // Change condition to collapse.
                 if (!(currentCondition is CollapseCondition)) {
-                    var collapseCondition = new SimpleCollapse(this, 1);
+                    var collapseCondition = new SimpleCollapse(this, 2);
                     var forceCondition = new ForceCondition(collapseCondition);
                     ProcessGameAction(forceCondition, false);
                 }

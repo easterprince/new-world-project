@@ -11,7 +11,8 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         // Static.
 
-        private static readonly int collapsedAnimatorHash = Animator.StringToHash("Collapsed");
+        private static readonly int collapseAnimatorHash = Animator.StringToHash("Collapse");
+        private static readonly int riseAnimatorHash = Animator.StringToHash("Rise");
 
 
         // Fields.
@@ -28,7 +29,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         override protected IEnumerable<GameAction> OnEnter() {
             vanishingTime = Time.time + VanishingPeriod;
-            var action = new UpdateAnimatorParameter<bool>(Owner, collapsedAnimatorHash, true);
+            var action = new ApplyAnimatorTrigger(Owner, collapseAnimatorHash);
             return Enumerables.GetSingle<GameAction>(action);
         }
 
@@ -42,7 +43,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
             if (stopType == StopType.Completed) {
                 action = new RemoveUnit(Owner);
             } else {
-                action = new UpdateAnimatorParameter<bool>(Owner, collapsedAnimatorHash, false);
+                action = new ApplyAnimatorTrigger(Owner, riseAnimatorHash);
             }
             return Enumerables.GetSingle(action);
         }
