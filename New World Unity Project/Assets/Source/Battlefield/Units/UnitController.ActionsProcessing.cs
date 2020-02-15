@@ -148,8 +148,11 @@ namespace NewWorld.Battlefield.Units {
             if (internalUnitUpdate is SetRotation setRotation) {
                 return ProcessInternalUnitUpdate(setRotation);
             }
-            if (internalUnitUpdate is UpdateAnimatorParameter<float> updateAnimatorParameter) {
-                return ProcessInternalUnitUpdate(updateAnimatorParameter);
+            if (internalUnitUpdate is UpdateAnimatorParameter<float> updateFloatAnimatorParameter) {
+                return ProcessInternalUnitUpdate(updateFloatAnimatorParameter);
+            }
+            if (internalUnitUpdate is UpdateAnimatorParameter<bool> updateBoolAnimatorParameter) {
+                return ProcessInternalUnitUpdate(updateBoolAnimatorParameter);
             }
             if (internalUnitUpdate is ApplyAnimatorTrigger applyAnimatorTrigger) {
                 return ProcessInternalUnitUpdate(applyAnimatorTrigger);
@@ -178,6 +181,11 @@ namespace NewWorld.Battlefield.Units {
 
         private bool ProcessInternalUnitUpdate(UpdateAnimatorParameter<float> animatorParameterUpdate) {
             animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
+            return true;
+        }
+
+        private bool ProcessInternalUnitUpdate(UpdateAnimatorParameter<bool> animatorParameterUpdate) {
+            animator.SetBool(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
             return true;
         }
 
