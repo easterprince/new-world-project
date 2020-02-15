@@ -6,136 +6,191 @@ using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 
 namespace NewWorld.Battlefield.Units {
 
     public partial class UnitController {
 
         // Actions processing.
-        // Note: method have to return true if action should not be sent to UnitSystemController to be processed, and false otherwise.
+        // Note: method have to return true if action has been processed, and false otherwise.
 
-        public bool ProcessGameAction(GameAction gameAction) {
+        private void ProcessGameAction(GameAction gameAction, bool external) {
             if (gameAction == null) {
                 throw new System.ArgumentNullException(nameof(gameAction));
             }
-            if (gameAction is UnitUpdate unitUpdate) {
-                return ProcessUnitUpdate(unitUpdate);
-            }
-            if (gameAction is UnitSystemUpdate unitSystemUpdate) {
-                return ProcessUnitSystemUpdate(unitSystemUpdate);
-            }
-            return false;
-        }
-
-
-        // Unit updates.
-
-        private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
-            if (unitUpdate == null) {
-                throw new System.ArgumentNullException(nameof(unitUpdate));
-            }
-            if (unitUpdate.UpdatedUnit != this) {
-                return false;
-            }
-            if (unitUpdate is TransformUpdate transformUpdate) {
-                return ProcessUnitUpdate(transformUpdate);
-            }
-            if (unitUpdate is AnimatorParameterUpdate<float> animatorParameterUpdate) {
-                return ProcessUnitUpdate(animatorParameterUpdate);
-            }
-            if (unitUpdate is AnimatorTriggerApplication animatorTriggerApplication) {
-                return ProcessUnitUpdate(animatorTriggerApplication);
-            }
-            if (unitUpdate is AbilityUsage abilityUsage) {
-                return ProcessUnitUpdate(abilityUsage);
-            }
-            if (unitUpdate is AbilityStop abilityStop) {
-                return ProcessUnitUpdate(abilityStop);
-            }
-            if (unitUpdate is DamageCausing damageCausing) {
-                return ProcessUnitUpdate(damageCausing);
-            }
-            return false;
-        }
-
-        private bool ProcessUnitUpdate(TransformUpdate transformUpdate) {
-            if (transformUpdate == null) {
-                throw new System.ArgumentNullException(nameof(transformUpdate));
-            }
-            if (transformUpdate.UpdatedUnit != this) {
-                return false;
-            }
-            if (transformUpdate.NewPosition != null) {
-                Vector3 newPosition = transformUpdate.NewPosition.Value;
-                Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
-                if (PositionIsAllowed(newPosition, connectedNode)) {
-                    transform.position = newPosition;
+            bool processed = false;
+            
+            if (gameAction is UnitUpdate unitUpdate && unitUpdate.Unit == this) {
+                if (unitUpdate is GeneralUnitUpdate generalUnitUpdate) {
+                    processed = ProcessGeneralUnitUpdate(generalUnitUpdate);
+                } else if (unitUpdate is InternalUnitUpdate internalUnitUpdate) {
+                    if (!external) {
+                        processed = ProcessInternalUnitUpdate(internalUnitUpdate);
+                    }
                 }
+            } else if (gameAction is UnitSystemUpdate unitSystemUpdate) {
+                if (!external) {
+                    processed = ProcessUnitSystemUpdate(unitSystemUpdate);
+                }
+            } else if (!external) {
+                actionsToReturn.Add(gameAction);
+                processed = true;
             }
-            if (transformUpdate.NewRotation != null) {
-                transform.rotation = transformUpdate.NewRotation.Value;
+
+            if (!processed) {
+                Debug.LogWarning($"{(external ? "External" : "Internal")} action of type {gameAction.GetType()} was not processed!", this);
+            }
+        }
+
+        private void ProcessGameActions(IEnumerable<GameAction> gameActions, bool external) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
+            foreach (var gameAction in gameActions) {
+                ProcessGameAction(gameAction, external);
+            }
+        }
+
+        public void ProcessGameAction(GameAction gameAction) {
+            if (gameAction == null) {
+                throw new System.ArgumentNullException(nameof(gameAction));
+            }
+            if (this == null) {
+                return;
+            }
+            ProcessGameAction(gameAction, true);
+        }
+
+        public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
+            if (this == null) {
+                return;
+            }
+            foreach (var gameAction in gameActions) {
+                ProcessGameAction(gameAction, true);
+            }
+        }
+
+
+        // General unit updates.
+
+        private bool ProcessGeneralUnitUpdate(GeneralUnitUpdate generalUnitUpdate) {
+            if (generalUnitUpdate is CauseDamage causeDamage) {
+                return ProcessGeneralUnitUpdate(causeDamage);
+            }
+            if (generalUnitUpdate is StopCondition stopCondition) {
+                return ProcessGeneralUnitUpdate(stopCondition);
+            }
+            if (generalUnitUpdate is ForceCondition forceCondition) {
+                return ProcessGeneralUnitUpdate(forceCondition);
+            }
+            if (generalUnitUpdate is UseAbility useAbility) {
+                return ProcessGeneralUnitUpdate(useAbility);
+            }
+            return false;
+        }
+
+        private bool ProcessGeneralUnitUpdate(CauseDamage causeDamage) {
+            if (durability != null) {
+                durability.TakeDamage(causeDamage.DamageValue);
             }
             return true;
         }
 
-        private bool ProcessUnitUpdate(AnimatorParameterUpdate<float> animatorParameterUpdate) {
-            if (animatorParameterUpdate == null) {
-                throw new System.ArgumentNullException(nameof(animatorParameterUpdate));
+        private bool ProcessGeneralUnitUpdate(StopCondition stopCondition) {
+            if (stopCondition.Condition == currentCondition) {
+                var actions = currentCondition.Stop(stopCondition.ForceStop);
+                if (currentCondition.Exited) {
+                    currentCondition = null;
+                }
+                ProcessGameActions(actions, false);
             }
-            if (animatorParameterUpdate.UpdatedUnit != this) {
-                return false;
+            return true;
+        }
+
+        private bool ProcessGeneralUnitUpdate(ForceCondition forceCondition) {
+            if (currentCondition != null) {
+                var stopCondition = new StopCondition(currentCondition, true);
+                ProcessGeneralUnitUpdate(stopCondition);
             }
+            currentCondition = forceCondition.Condition;
+            var actions = currentCondition.Enter();
+            ProcessGameActions(actions, false);
+            return true;
+        }
+
+        private bool ProcessGeneralUnitUpdate(UseAbility useAbility) {
+            if (HasAbility(useAbility.Ability)) {
+                if (currentCondition != null) {
+                    var cancelCondition = new CancelCondition(currentCondition);
+                    ProcessGeneralUnitUpdate(cancelCondition);
+                }
+                if (currentCondition == null) {
+                    var newCondition = useAbility.Ability.Use(useAbility.ParameterSet);
+                    var forceCondition = new ForceCondition(newCondition);
+                    ProcessGeneralUnitUpdate(forceCondition);
+                }
+            }
+            return true;
+        }
+
+
+        // Internal unit updates.
+
+        private bool ProcessInternalUnitUpdate(InternalUnitUpdate internalUnitUpdate) {
+            if (internalUnitUpdate is MoveUnit moveUnit) {
+                return ProcessInternalUnitUpdate(moveUnit);
+            }
+            if (internalUnitUpdate is SetRotation setRotation) {
+                return ProcessInternalUnitUpdate(setRotation);
+            }
+            if (internalUnitUpdate is UpdateAnimatorParameter<float> updateFloatAnimatorParameter) {
+                return ProcessInternalUnitUpdate(updateFloatAnimatorParameter);
+            }
+            if (internalUnitUpdate is UpdateAnimatorParameter<bool> updateBoolAnimatorParameter) {
+                return ProcessInternalUnitUpdate(updateBoolAnimatorParameter);
+            }
+            if (internalUnitUpdate is ApplyAnimatorTrigger applyAnimatorTrigger) {
+                return ProcessInternalUnitUpdate(applyAnimatorTrigger);
+            }
+            return false;
+        }
+
+        private bool ProcessInternalUnitUpdate(MoveUnit moveUnit) {
+            Vector2 newPosition2D = new Vector2(transform.position.x, transform.position.z) + moveUnit.PositionChange;
+            float newY = MapController.Instance.GetSurfaceHeight(newPosition2D);
+            Vector3 newPosition = new Vector3(newPosition2D.x, newY, newPosition2D.y);
+            Vector3 positionChange = newPosition - transform.position;
+            transform.position = newPosition;
+            if (moveUnit.RotationFromForward != null) {
+                Quaternion newRotation = (positionChange == Vector3.zero ? transform.rotation : Quaternion.LookRotation(positionChange));
+                newRotation *= moveUnit.RotationFromForward.Value;
+                transform.rotation = newRotation;
+            }
+            return true;
+        }
+
+        private bool ProcessInternalUnitUpdate(SetRotation setRotation) {
+            transform.rotation = setRotation.Rotation;
+            return true;
+        }
+
+        private bool ProcessInternalUnitUpdate(UpdateAnimatorParameter<float> animatorParameterUpdate) {
             animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
             return true;
         }
 
-        private bool ProcessUnitUpdate(AnimatorTriggerApplication animatorTriggerApplication) {
-            if (animatorTriggerApplication == null) {
-                throw new System.ArgumentNullException(nameof(animatorTriggerApplication));
-            }
-            if (animatorTriggerApplication.UpdatedUnit != this) {
-                return false;
-            }
+        private bool ProcessInternalUnitUpdate(UpdateAnimatorParameter<bool> animatorParameterUpdate) {
+            animator.SetBool(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
+            return true;
+        }
+
+        private bool ProcessInternalUnitUpdate(ApplyAnimatorTrigger animatorTriggerApplication) {
             animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
-            return true;
-        }
-
-        private bool ProcessUnitUpdate(AbilityUsage abilityUsage) {
-            if (abilityUsage == null) {
-                throw new System.ArgumentNullException(nameof(abilityUsage));
-            }
-            if (abilityUsage.UpdatedUnit != this) {
-                return false;
-            }
-            if (plannedAbilityUsage == null || plannedAbilityUsage.Ability == usedAbility) {
-                plannedAbilityUsage = abilityUsage;
-            }
-            return true;
-        }
-
-        private bool ProcessUnitUpdate(AbilityStop abilityStop) {
-            if (abilityStop == null) {
-                throw new System.ArgumentNullException(nameof(abilityStop));
-            }
-            if (abilityStop.UpdatedUnit != this) {
-                return false;
-            }
-            if (plannedAbilityStop == null || plannedAbilityStop.Ability != usedAbility || !plannedAbilityStop.ForceStop && abilityStop.ForceStop) {
-                plannedAbilityStop = abilityStop;
-            }
-            return true;
-        }
-
-        private bool ProcessUnitUpdate(DamageCausing damageCausing) {
-            if (damageCausing == null) {
-                throw new System.ArgumentNullException(nameof(damageCausing));
-            }
-            if (damageCausing.UpdatedUnit != this) {
-                return false;
-            }
-            if (durability != null) {
-                durability.TakeDamage(damageCausing);
-            }
             return true;
         }
 
@@ -143,35 +198,8 @@ namespace NewWorld.Battlefield.Units {
         // Unit System updates.
 
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
-            if (unitSystemUpdate == null) {
-                throw new System.ArgumentNullException(nameof(unitSystemUpdate));
-            }
-            if (unitSystemUpdate is ConnectedNodeUpdate connectedNodeUpdate) {
-                return ProcessUnitSystemUpdate(connectedNodeUpdate);
-            }
-            return false;
-        }
-
-        private bool ProcessUnitSystemUpdate(ConnectedNodeUpdate connectedNodeUpdate) {
-            if (connectedNodeUpdate == null) {
-                throw new System.ArgumentNullException(nameof(connectedNodeUpdate));
-            }
-            if (connectedNodeUpdate.UpdatedUnit != this) {
-                return false;
-            }
-            Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(this);
-            if (PositionIsAllowed(transform.position, connectedNode)) {
-                actionsToReturn.Add(connectedNodeUpdate);
-            }
+            actionsToReturn.Add(unitSystemUpdate);
             return true;
-        }
-
-
-        // Support methods.
-
-        private static bool PositionIsAllowed(Vector3 position, Vector2Int connectedNode) {
-            Vector2 position2D = new Vector2(position.x, position.z);
-            return MaximumMetric.GetNorm(position2D - connectedNode) <= nodeDistanceLimit;
         }
 
 

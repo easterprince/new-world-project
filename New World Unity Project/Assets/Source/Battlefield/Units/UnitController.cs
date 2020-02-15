@@ -5,11 +5,12 @@ using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Units.Behaviours;
-using NewWorld.Battlefield.Units.Actions.UnitUpdates;
+using NewWorld.Battlefield.Units.Abilities.Motions;
+using NewWorld.Battlefield.Units.Abilities.Attacks;
+using NewWorld.Battlefield.Units.Conditions;
+using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
-using NewWorld.Battlefield.Units.Abilities.Active;
-using NewWorld.Battlefield.Units.Abilities.Active.Motions;
-using NewWorld.Battlefield.Units.Abilities.Active.Attacks;
+using NewWorld.Battlefield.Units.Conditions.Collapses;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -29,9 +30,9 @@ namespace NewWorld.Battlefield.Units {
             unit.name = name ?? defaultGameObjectName;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
-            unitController.motionAbility = new BasicMotion(unitController);
-            unitController.attackAbility = new BasicAttack(unitController);
-            unitController.durability = new UnitDurability(unitController, 5);
+            unitController.motionAbility = new BasicMotion(unitController, 2);
+            unitController.attackAbility = new BasicAttack(unitController, 20, 2);
+            unitController.durability = new UnitDurability(unitController, 100);
             return unitController;
         }
 
@@ -51,28 +52,26 @@ namespace NewWorld.Battlefield.Units {
         // Game logic components.
         private UnitBehaviour behaviour = null;
         private UnitDurability durability = null;
-        private BasicMotion motionAbility = null;
-        private BasicAttack attackAbility = null;
+        private MotionAbility motionAbility = null;
+        private AttackAbility attackAbility = null;
 
         // Actions.
         private List<GameAction> actionsToReturn = new List<GameAction>();
 
-        // Ability using.
-        private ActiveAbility usedAbility = null;
-        private AbilityUsage plannedAbilityUsage = null;
-        private AbilityStop plannedAbilityStop = null;
+        // Conditions.
+        private Condition currentCondition = null;
 
 
         // Properties.
 
-        public BasicMotion MotionAbility => motionAbility;
-        public BasicAttack AttackAbility => attackAbility;
-        public Ability UsedAbility => usedAbility;
+        public MotionAbility MotionAbility => motionAbility;
+        public AttackAbility AttackAbility => attackAbility;
+        public Condition CurrentCondition => currentCondition;
 
-        public bool Broken {
+        public bool Collapsed {
             get {
                 if (durability != null) {
-                    return durability.Broken;
+                    return durability.Collapsed;
                 }
                 return false;
             }
@@ -110,60 +109,39 @@ namespace NewWorld.Battlefield.Units {
 
         private void Update() {
 
-            void ProcessActions(IEnumerable<GameAction> actions) {
-                foreach (GameAction action in actions) {
-                    if (!ProcessGameAction(action)) {
-                        actionsToReturn.Add(action);
-                    }
-                }
-            }
-
-            if (!Broken) {
+            if (!Collapsed) {
 
                 // Ask behaviour for orders.
                 if (behaviour != null) {
-                    behaviour.Act(out AbilityCancellation abilityCancellation, out AbilityUsage abilityUsage);
-                    if (abilityCancellation != null) {
-                        ProcessUnitUpdate(abilityCancellation);
+                    behaviour.Act(out CancelCondition cancelCondition, out UseAbility useAbility);
+                    if (cancelCondition != null) {
+                        ProcessGameAction(cancelCondition, false);
                     }
-                    if (abilityUsage != null) {
-                        ProcessUnitUpdate(abilityUsage);
-                    }
-                }
-
-                // Update used ability.
-                if (plannedAbilityStop != null) {
-                    if (plannedAbilityStop.Ability == usedAbility) {
-                        var actions = usedAbility.Stop(plannedAbilityStop.ForceStop);
-                        if (!usedAbility.IsUsed) {
-                            usedAbility = null;
-                        }
-                        ProcessActions(actions);
-                    }
-                    plannedAbilityStop = null;
-                }
-                if (plannedAbilityUsage != null) {
-                    if (usedAbility == null && HasAbility(plannedAbilityUsage.Ability)) {
-                        usedAbility = plannedAbilityUsage.Ability;
-                        var actions = usedAbility.Use(plannedAbilityUsage.ParameterSet);
-                        ProcessActions(actions);
-                    }
-                    plannedAbilityUsage = null;
-                }
-
-                // Receive and process actions from used ability.
-                if (usedAbility != null) {
-                    var actions = usedAbility.ReceiveActions();
-                    ProcessActions(actions);
-                    if (!usedAbility.IsUsed) {
-                        usedAbility = null;
+                    if (useAbility != null) {
+                        ProcessGameAction(useAbility, false);
                     }
                 }
 
             }
-            if (Broken) {
-                var action = new UnitRemoval(this);
-                actionsToReturn.Add(action);
+
+            // Receive and process actions from used ability.
+            if (currentCondition != null) {
+                var actions = currentCondition.Update();
+                if (currentCondition.Exited) {
+                    currentCondition = null;
+                }
+                ProcessGameActions(actions, false);
+            }
+
+            if (Collapsed) {
+
+                // Change condition to collapse.
+                if (!(currentCondition is CollapseCondition)) {
+                    var collapseCondition = new SimpleCollapse(this, 2);
+                    var forceCondition = new ForceCondition(collapseCondition);
+                    ProcessGameAction(forceCondition, false);
+                }
+
             }
 
         }
