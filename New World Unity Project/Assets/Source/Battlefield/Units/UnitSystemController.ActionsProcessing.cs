@@ -57,7 +57,7 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(UpdateConnectedNode connectedNodeUpdate) {
             UnitController updatedUnit = connectedNodeUpdate.Unit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
-            if (ValidateRelocation(newConnectedNode, updatedUnit)) {
+            if (CheckRelocation(newConnectedNode, updatedUnit)) {
                 onPositions.Remove(positions[updatedUnit]);
                 onPositions[newConnectedNode] = updatedUnit;
                 positions[updatedUnit] = newConnectedNode;
@@ -67,7 +67,7 @@ namespace NewWorld.Battlefield.Units {
 
         private bool ProcessUnitSystemUpdate(AddUnit unitAddition) {
             UnitDescription description = unitAddition.Description;
-            if (ValidateRelocation(description.ConnectedNode)) {
+            if (CheckRelocation(description.ConnectedNode)) {
                 UnitController unit = UnitController.BuildUnit(transform, description, $"Unit {unusedUnitIndex++}");
                 unit.transform.parent = transform;
                 units.Add(unit);
@@ -102,9 +102,9 @@ namespace NewWorld.Battlefield.Units {
 
         // Support methods.
 
-        private bool ValidateRelocation(Vector2Int newConnectedNode, UnitController unit = null) {
-            NodeDescription node = MapController.Instance.GetSurfaceNode(newConnectedNode);
-            if (node == null) {
+        private bool CheckRelocation(Vector2Int newConnectedNode, UnitController unit = null) {
+            NodeDescription node = MapController.Instance[newConnectedNode];
+            if (node.Type == NodeDescription.NodeType.Abyss) {
                 return false;
             }
             if (onPositions.TryGetValue(newConnectedNode, out UnitController otherUnit) && otherUnit != unit) {

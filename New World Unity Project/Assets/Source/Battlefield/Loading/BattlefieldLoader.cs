@@ -88,7 +88,7 @@ namespace NewWorld.Battlefield.Loading {
                             break;
                         }
                     }
-                } while (repeat || mapDescription.GetSurfaceNode(position) == null);
+                } while (repeat || mapDescription[position].Type == NodeDescription.NodeType.Abyss);
                 unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
             return new BattlefieldDescription(mapDescription, unitDescriptions);
