@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities;
-using NewWorld.Utilities.Singletones;
+using NewWorld.Utilities.Singletons;
 
 namespace NewWorld.Battlefield {
 
@@ -49,7 +49,7 @@ namespace NewWorld.Battlefield {
 
         // Life cycle.
 
-        protected override void Awake() {
+        override private protected void Awake() {
             base.Awake();
             Instance = this;
             defaultPosition = transform.position;

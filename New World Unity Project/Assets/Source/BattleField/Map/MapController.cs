@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
-using NewWorld.Utilities.Singletones;
+using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Loading;
 using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Map {
 
-    public class MapController : SceneSingleton<MapController> {
+    public class MapController : LoadableSingleton<MapController, MapDescription> {
 
         // Fields.
 
@@ -38,7 +38,7 @@ namespace NewWorld.Battlefield.Map {
 
         // Life cycle.
 
-        override protected void Awake() {
+        override private protected void Awake() {
             base.Awake();
             Instance = this;
         }
@@ -46,9 +46,9 @@ namespace NewWorld.Battlefield.Map {
 
         // Initialization.
 
-        public IEnumerator Load(MapDescription description) {
+        override protected IEnumerator OnReload(MapDescription description) {
             if (description == null) {
-                yield break;
+                throw new System.ArgumentNullException(nameof(description));
             }
             surface = new NodeDescription[description.Size.x, description.Size.y];
             foreach (var position in Enumerables.InRange2(Size)) {

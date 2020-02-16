@@ -2,7 +2,7 @@
 using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units;
-using NewWorld.Utilities.Singletones;
+using NewWorld.Utilities.Singletons;
 using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units {

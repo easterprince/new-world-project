@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.Utilities.Singletones {
+namespace NewWorld.Utilities.Singletons {
 
     public class GameSingleton<T> : SceneSingleton<T>
         where T : GameSingleton<T> {
 
-        override protected void Awake() {
+        override private protected void Awake() {
             base.Awake();
             DontDestroyOnLoad(this);
         }
