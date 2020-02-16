@@ -11,13 +11,16 @@ namespace NewWorld.Battlefield.Units {
         private const string prefabPath = "Prefabs/Node";
         private static GameObject prefab;
 
-        public static NodeController BuildNode(Vector2Int position) {
+        public static NodeController BuildNode(Vector2Int position, Transform parent = null) {
             if (prefab == null) {
                 prefab = Resources.Load<GameObject>(prefabPath);
             }
             GameObject nodeObject = Instantiate(prefab);
             NodeController node = nodeObject.GetComponent<NodeController>();
             node.Position = position;
+            if (parent != null) {
+                node.transform.parent = parent;
+            }
             return node;
         }
 

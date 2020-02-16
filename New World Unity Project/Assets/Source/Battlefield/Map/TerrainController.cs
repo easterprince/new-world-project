@@ -34,6 +34,7 @@ namespace NewWorld.Battlefield.Map {
 
         private TerrainLayer terrainLayer;
 
+        private bool loaded = true;
         private Terrain[,] clusters;
 
 
@@ -63,8 +64,10 @@ namespace NewWorld.Battlefield.Map {
 
         public IEnumerator Load(MapDescription description) {
             if (description == null) {
-                throw new System.ArgumentNullException(nameof(description));
-            } 
+                yield break;
+            }
+
+            loaded = false;
 
             Vector2Int clustersCount = new Vector2Int(
                     Mathf.CeilToInt((description.Size.x - 1 + 2 * flatBorder) / clusterSize),
@@ -117,7 +120,7 @@ namespace NewWorld.Battlefield.Map {
                 );
             }
 
-            yield break;
+            loaded = true;
         }
 
         private float[,][,] CalculateHeightMaps(MapDescription description) {
@@ -202,7 +205,7 @@ namespace NewWorld.Battlefield.Map {
             float weightSum = 0;
             foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
                 NodeDescription node = description[mainTile + tileDifference];
-                float nodeHeight = (node.Type == NodeDescription.NodeType.Abyss ? node.Height : abyssLevel);
+                float nodeHeight = (node.Type != NodeDescription.NodeType.Abyss ? node.Height : abyssLevel);
                 heightSum += nodeHeight * weights[tileDifference.x, tileDifference.y];
                 weightSum += weights[tileDifference.x, tileDifference.y];
             }
@@ -218,7 +221,7 @@ namespace NewWorld.Battlefield.Map {
         }
 
         public float GetSurfaceHeight(Vector3 position) {
-            if (clusters.Length == 0) {
+            if (clusters.Length == 0 || loaded == false) {
                 return abyssLevel;
             }
             Vector2Int clusterPosition = GetNearestClusterPosition(position);
