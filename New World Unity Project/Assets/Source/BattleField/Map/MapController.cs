@@ -6,7 +6,7 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Map {
 
-    public class MapController : LoadableSingleton<MapController, MapDescription> {
+    public class MapController : ReloadableSingleton<MapController, MapDescription> {
 
         // Fields.
 
@@ -46,15 +46,18 @@ namespace NewWorld.Battlefield.Map {
 
         // Initialization.
 
-        override protected IEnumerator OnReload(MapDescription description) {
-            if (description == null) {
-                throw new System.ArgumentNullException(nameof(description));
+        override public void StartReloading(MapDescription description) {
+            Loaded = false;
+
+            if (description != null) {
+                surface = new NodeDescription[description.Size.x, description.Size.y];
+                foreach (var position in Enumerables.InRange2(Size)) {
+                    surface[position.x, position.y] = description[position];
+                }
+            } else {
+                surface = new NodeDescription[0, 0];
             }
-            surface = new NodeDescription[description.Size.x, description.Size.y];
-            foreach (var position in Enumerables.InRange2(Size)) {
-                surface[position.x, position.y] = description[position];
-            }
-            yield return StartCoroutine(terrain.Load(description));
+            terrain.StartReconstruction(description, () => Loaded = true);
         }
 
 

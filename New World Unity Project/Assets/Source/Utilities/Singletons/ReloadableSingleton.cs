@@ -4,14 +4,14 @@ using UnityEngine.Events;
 
 namespace NewWorld.Utilities.Singletons {
     
-    public abstract class LoadableSingleton<T, Description> : SceneSingleton<T>
-        where T : LoadableSingleton<T, Description> {
+    public abstract class ReloadableSingleton<T, Description> : SceneSingleton<T>
+        where T : ReloadableSingleton<T, Description> {
 
         // Fields.
 
-        private bool loaded;
-        private UnityEvent unloadedEvent;
-        private UnityEvent reloadedEvent;
+        private bool loaded = true;
+        private UnityEvent unloadedEvent = new UnityEvent();
+        private UnityEvent loadedEvent = new UnityEvent();
 
 
         // Properties.
@@ -24,7 +24,7 @@ namespace NewWorld.Utilities.Singletons {
                 }
                 loaded = value;
                 if (loaded) {
-                    reloadedEvent.Invoke();
+                    loadedEvent.Invoke();
                 } else {
                     unloadedEvent.Invoke();
                 }
@@ -32,16 +32,7 @@ namespace NewWorld.Utilities.Singletons {
         }
 
         public UnityEvent UnloadedEvent => unloadedEvent;
-        public UnityEvent ReloadedEvent => reloadedEvent;
-
-
-        // Life cycle.
-
-        override private protected void Awake() {
-            base.Awake();
-            unloadedEvent = new UnityEvent();
-            reloadedEvent = new UnityEvent();
-        }
+        public UnityEvent LoadedEvent => loadedEvent;
 
 
         // Public methods.

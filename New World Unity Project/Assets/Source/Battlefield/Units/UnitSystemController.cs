@@ -9,7 +9,7 @@ using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 
 namespace NewWorld.Battlefield.Units {
 
-    public partial class UnitSystemController : LoadableSingleton<UnitSystemController, List<UnitDescription>> {
+    public partial class UnitSystemController : ReloadableSingleton<UnitSystemController, List<UnitDescription>> {
 
         // Fields.
 
@@ -24,6 +24,11 @@ namespace NewWorld.Battlefield.Units {
         override private protected void Awake() {
             base.Awake();
             Instance = this;
+        }
+
+        private void Start() {
+            MapController.EnsureInstance(this);
+            MapController.Instance.UnloadedEvent.AddListener(() => StartReloading(null));
         }
 
         private void Update() {
@@ -58,20 +63,16 @@ namespace NewWorld.Battlefield.Units {
         // External control.
 
         override public void StartReloading(List<UnitDescription> unitDescriptions) {
-            if (unitDescriptions == null) {
-                throw new System.ArgumentNullException(nameof(unitDescriptions));
-            }
-
             Loaded = false;
-
-            sweet jesus
 
             var removeUnits = new List<UnitController>(units);
             foreach (UnitController unit in removeUnits) {
                 ProcessGameAction(new RemoveUnit(unit));
             }
-            foreach (UnitDescription unitDescription in unitDescriptions) {
-                ProcessGameAction(new AddUnit(unitDescription));
+            if (unitDescriptions != null) {
+                foreach (UnitDescription unitDescription in unitDescriptions) {
+                    ProcessGameAction(new AddUnit(unitDescription));
+                }
             }
 
             Loaded = true;
