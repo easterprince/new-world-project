@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.Battlefield.Units {
+namespace NewWorld.Battlefield.NodeGrid {
 
     public class NodeController : MonoBehaviour {
 
@@ -31,6 +31,11 @@ namespace NewWorld.Battlefield.Units {
 
 
         // Properties.
+
+        public bool Shown {
+            get => gameObject.activeSelf;
+            set => gameObject.SetActive(value);
+        }
 
         public Vector2Int Position {
             get => position;

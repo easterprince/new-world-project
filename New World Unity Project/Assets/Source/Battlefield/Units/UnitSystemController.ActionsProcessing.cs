@@ -108,6 +108,9 @@ namespace NewWorld.Battlefield.Units {
         // Support methods.
 
         private bool CheckRelocation(Vector2Int newConnectedNode, UnitController unit = null) {
+            if (!MapController.Instance.IsRealNodePosition(newConnectedNode)) {
+                return false;
+            }
             NodeDescription node = MapController.Instance[newConnectedNode];
             if (node.Type == NodeDescription.NodeType.Abyss) {
                 return false;

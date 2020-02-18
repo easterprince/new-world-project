@@ -71,14 +71,11 @@ namespace NewWorld.Battlefield.Map {
             return terrain.GetSurfaceHeight(position);
         }
 
-
-        // Support.
-
-        private bool IsRealNodePosition(Vector2Int position) {
+        public bool IsRealNodePosition(Vector2Int position) {
             return position.x >= 0 && position.x < Size.x && position.y >= 0 && position.y < Size.y;
         }
         
-        private Vector2Int GetNearestRealNodePosition(Vector2 position) {
+        public Vector2Int GetNearestRealNodePosition(Vector2 position) {
             position.x = Mathf.Clamp(position.x, 0, Size.x - 1);
             position.y = Mathf.Clamp(position.y, 0, Size.y - 1);
             return Vector2Int.RoundToInt(position);

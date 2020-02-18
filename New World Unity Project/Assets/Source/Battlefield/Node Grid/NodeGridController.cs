@@ -5,7 +5,7 @@ using NewWorld.Battlefield.Units;
 using NewWorld.Utilities.Singletons;
 using NewWorld.Utilities;
 
-namespace NewWorld.Battlefield.Units {
+namespace NewWorld.Battlefield.NodeGrid {
 
     public class NodeGridController : MonoBehaviour {
 
@@ -21,6 +21,10 @@ namespace NewWorld.Battlefield.Units {
             MapController.EnsureInstance(this);
             UnitSystemController.Instance.UnloadedEvent.AddListener(RemoveNodes);
             UnitSystemController.Instance.LoadedEvent.AddListener(PlaceNodes);
+            UnitSystemController.Instance.UnitAddedEvent.AddListener(HideNode);
+            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => HideNode(unit));
+            UnitSystemController.Instance.UnitRemovedEvent.AddListener((unit, position) => ShowNode(position));
+            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => ShowNode(position));
         }
 
 
@@ -41,6 +45,18 @@ namespace NewWorld.Battlefield.Units {
                 NodeController node = NodeController.BuildNode(position, transform);
                 nodes[position.x, position.y] = node;
             }
+            foreach (UnitController unit in UnitSystemController.Instance) {
+                HideNode(unit);
+            }
+        }
+
+        private void HideNode(UnitController unit) {
+            Vector2Int position = UnitSystemController.Instance.GetConnectedNode(unit);
+            nodes[position.x, position.y].Shown = false;
+        }
+
+        private void ShowNode(Vector2Int position) {
+            nodes[position.x, position.y].Shown = true;
         }
 
 

@@ -11,7 +11,7 @@ using NewWorld.Utilities.Events;
 
 namespace NewWorld.Battlefield.Units {
 
-    public partial class UnitSystemController : ReloadableSingleton<UnitSystemController, List<UnitDescription>> {
+    public partial class UnitSystemController : ReloadableSingleton<UnitSystemController, List<UnitDescription>>, IEnumerable<UnitController> {
 
         // Fields.
 
@@ -33,6 +33,17 @@ namespace NewWorld.Battlefield.Units {
         public UnityEvent<UnitController, Vector2Int> ConnectedNodeUpdatedEvent => connectedNodeUpdatedEvent;
         public UnityEvent<UnitController> UnitAddedEvent => unitAddedEvent;
         public UnityEvent<UnitController, Vector2Int> UnitRemovedEvent => unitRemovedEvent;
+
+
+        // Enumerables.
+
+        public IEnumerator<UnitController> GetEnumerator() {
+            return ((IEnumerable<UnitController>) units).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return ((IEnumerable) units).GetEnumerator();
+        }
 
 
         // Life cycle.
