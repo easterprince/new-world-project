@@ -58,9 +58,11 @@ namespace NewWorld.Battlefield.Units {
             UnitController updatedUnit = connectedNodeUpdate.Unit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
             if (CheckRelocation(newConnectedNode, updatedUnit)) {
-                onPositions.Remove(positions[updatedUnit]);
+                Vector2Int oldConnectedNode = positions[updatedUnit];
+                onPositions.Remove(oldConnectedNode);
                 onPositions[newConnectedNode] = updatedUnit;
                 positions[updatedUnit] = newConnectedNode;
+                connectedNodeUpdatedEvent.TryInvoke(updatedUnit, oldConnectedNode);
             }
             return true;
         }
@@ -73,6 +75,7 @@ namespace NewWorld.Battlefield.Units {
                 units.Add(unit);
                 positions[unit] = description.ConnectedNode;
                 onPositions[description.ConnectedNode] = unit;
+                unitAddedEvent.TryInvoke(unit);
             }
             return true;
         }
@@ -80,10 +83,12 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(RemoveUnit unitRemoval) {
             var unit = unitRemoval.Unit;
             if (units.Contains(unit)) {
-                onPositions.Remove(positions[unit]);
+                Vector2Int position = positions[unit];
+                onPositions.Remove(position);
                 positions.Remove(unit);
                 units.Remove(unit);
                 Destroy(unit.gameObject);
+                unitRemovedEvent.TryInvoke(unit, position);
             }
             return true;
         }

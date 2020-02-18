@@ -6,6 +6,8 @@ using NewWorld.Battlefield.Units.Actions;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
+using UnityEngine.Events;
+using NewWorld.Utilities.Events;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -13,10 +15,24 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
+        // Structure.
         private long unusedUnitIndex = 0;
         private HashSet<UnitController> units = new HashSet<UnitController>();
         private Dictionary<UnitController, Vector2Int> positions = new Dictionary<UnitController, Vector2Int>();
         private Dictionary<Vector2Int, UnitController> onPositions = new Dictionary<Vector2Int, UnitController>();
+
+        // Events.
+        private ConditionalEvent<UnitController, Vector2Int> connectedNodeUpdatedEvent;
+        private ConditionalEvent<UnitController> unitAddedEvent;
+        private ConditionalEvent<UnitController, Vector2Int> unitRemovedEvent;
+
+
+        // Properties.
+
+        // Events.
+        public UnityEvent<UnitController, Vector2Int> ConnectedNodeUpdatedEvent => connectedNodeUpdatedEvent;
+        public UnityEvent<UnitController> UnitAddedEvent => unitAddedEvent;
+        public UnityEvent<UnitController, Vector2Int> UnitRemovedEvent => unitRemovedEvent;
 
 
         // Life cycle.
@@ -24,6 +40,9 @@ namespace NewWorld.Battlefield.Units {
         override private protected void Awake() {
             base.Awake();
             Instance = this;
+            connectedNodeUpdatedEvent = new WhenLoadedEvent<UnitController, Vector2Int>(this);
+            unitAddedEvent = new WhenLoadedEvent<UnitController>(this);
+            unitRemovedEvent = new WhenLoadedEvent<UnitController, Vector2Int>(this);
         }
 
         private void Start() {

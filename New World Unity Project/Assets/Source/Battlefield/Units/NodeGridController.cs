@@ -19,8 +19,8 @@ namespace NewWorld.Battlefield.Units {
         private void Start() {
             UnitSystemController.EnsureInstance(this);
             MapController.EnsureInstance(this);
-            MapController.Instance.UnloadedEvent.AddListener(RemoveNodes);
-            MapController.Instance.LoadedEvent.AddListener(PlaceNodes);
+            UnitSystemController.Instance.UnloadedEvent.AddListener(RemoveNodes);
+            UnitSystemController.Instance.LoadedEvent.AddListener(PlaceNodes);
         }
 
 

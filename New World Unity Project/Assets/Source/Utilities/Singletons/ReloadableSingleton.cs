@@ -4,14 +4,14 @@ using UnityEngine.Events;
 
 namespace NewWorld.Utilities.Singletons {
     
-    public abstract class ReloadableSingleton<T, Description> : SceneSingleton<T>
+    public abstract class ReloadableSingleton<T, Description> : SceneSingleton<T>, ILoadable
         where T : ReloadableSingleton<T, Description> {
 
         // Fields.
 
         private bool loaded = true;
-        private UnityEvent unloadedEvent = new UnityEvent();
-        private UnityEvent loadedEvent = new UnityEvent();
+        private readonly UnityEvent unloadedEvent = new UnityEvent();
+        private readonly UnityEvent loadedEvent = new UnityEvent();
 
 
         // Properties.
