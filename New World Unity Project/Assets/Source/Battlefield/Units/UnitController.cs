@@ -28,6 +28,7 @@ namespace NewWorld.Battlefield.Units {
             }
             GameObject unit = Instantiate(prefab, new Vector3(-1, -1, -1), Quaternion.identity, parent);
             unit.name = name ?? defaultGameObjectName;
+            unit.layer = parent.gameObject.layer;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
             unitController.motionAbility = new BasicMotion(unitController, 2);
@@ -35,13 +36,6 @@ namespace NewWorld.Battlefield.Units {
             unitController.durability = new UnitDurability(unitController, 100);
             return unitController;
         }
-
-
-        // Static.
-
-        private const float nodeDistanceLimit = 0.6f;
-
-        public static float NodeDistanceLimit => nodeDistanceLimit;
 
 
         // Fields.

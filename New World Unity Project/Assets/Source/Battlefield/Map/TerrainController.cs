@@ -116,6 +116,7 @@ namespace NewWorld.Battlefield.Map {
                             abyssLevel,
                             clusterIndex.y * clusterSize - flatBorder
                     );
+                    terrainObject.layer = gameObject.layer;
                     terrainObject.name = "Cluster " + terrainObject.transform.position;
                     Terrain terrain = terrainObject.GetComponent<Terrain>();
                     clusters[clusterIndex.x, clusterIndex.y] = terrain;
