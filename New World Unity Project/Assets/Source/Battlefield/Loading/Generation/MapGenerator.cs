@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using NewWorld.Battlefield.Map;
+using UnityEngine;
 
-namespace NewWorld.Battlefield.Map.Generation {
+namespace NewWorld.Battlefield.Loading.Generation {
 
     public abstract class MapGenerator {
 

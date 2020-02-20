@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Map.Generation;
+using NewWorld.Battlefield.Loading.Generation;
 using NewWorld.Battlefield.Units;
 
 namespace NewWorld.Battlefield.Loading {

@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using Unity.Mathematics;
+using NewWorld.Battlefield.Map;
 
-namespace NewWorld.Battlefield.Map.Generation {
+namespace NewWorld.Battlefield.Loading.Generation {
 
     public class FullOfHolesMapGenerator : MapGenerator {
 

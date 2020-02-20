@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battlefield.Map.Generation {
+namespace NewWorld.Battlefield.Loading.Generation {
 
     public class ExperimentalMapGenerator : FullOfHolesMapGenerator {}
 
