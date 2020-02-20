@@ -28,6 +28,10 @@ namespace NewWorld.Battlefield {
             battleStarted = false;
         }
 
+        private void Start() {
+            Time.timeScale = 0;
+        }
+
 
         // Loading
 
@@ -59,6 +63,7 @@ namespace NewWorld.Battlefield {
         }
 
         public void StartBattle() {
+            Time.timeScale = 1;
             battleStarted = true;
         }
 

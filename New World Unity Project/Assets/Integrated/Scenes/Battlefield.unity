@@ -481,7 +481,7 @@ GameObject:
   - component: {fileID: 1084804794}
   - component: {fileID: 1084804793}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Gameplay Caption
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -787,9 +787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   readyTextPanel: {fileID: 518500406}
-  logo: {fileID: 1646141951}
-  rotatingSprite: {fileID: 21300000, guid: 36bc3b96fece7c54c9c67a78d6da6e34, type: 3}
-  stoppedSprite: {fileID: 21300000, guid: 63c2c355b9a0a3c4da710b7cdebee05c, type: 3}
+  logo: {fileID: 1646141955}
 --- !u!1 &1646141951
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,6 +799,7 @@ GameObject:
   - component: {fileID: 1646141952}
   - component: {fileID: 1646141954}
   - component: {fileID: 1646141953}
+  - component: {fileID: 1646141955}
   m_Layer: 5
   m_Name: Logo
   m_TagString: Untagged
@@ -845,7 +844,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 36bc3b96fece7c54c9c67a78d6da6e34, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd07d7552e9611b48991951472936243, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -863,6 +862,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1646141951}
   m_CullTransparentMesh: 0
+--- !u!114 &1646141955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646141951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0dd929f4315db043b9f829107d0f072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waitingSprite: {fileID: 21300000, guid: bd07d7552e9611b48991951472936243, type: 3}
+  loadingSprite: {fileID: 21300000, guid: ce9545fae0ef7704896ceeb6b6ba9a6a, type: 3}
+  readySprite: {fileID: 21300000, guid: 4b1e32c502bada54488d0086d43d7660, type: 3}
 --- !u!1 &1730747702
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,8 +889,9 @@ GameObject:
   - component: {fileID: 1730747705}
   - component: {fileID: 1730747704}
   - component: {fileID: 1730747703}
+  - component: {fileID: 1730747707}
   m_Layer: 5
-  m_Name: Battle UI
+  m_Name: Gameplay UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -962,6 +977,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1730747707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730747702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40cdc31e3f37a5f4a8bb42f2c93c6f81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1757643679
 GameObject:
   m_ObjectHideFlags: 0
