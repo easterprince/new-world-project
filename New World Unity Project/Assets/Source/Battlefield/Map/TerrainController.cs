@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using NewWorld.Utilities;
+using UnityEngine.Events;
 
 namespace NewWorld.Battlefield.Map {
 
@@ -34,8 +35,8 @@ namespace NewWorld.Battlefield.Map {
 
         private TerrainLayer terrainLayer;
 
-        private Vector2Int clustersCount;
-        private Terrain[,] clusters;
+        private bool constructed = true;
+        private Terrain[,] clusters = new Terrain[0, 0];
 
 
         private void OnValidate() {
@@ -48,6 +49,11 @@ namespace NewWorld.Battlefield.Map {
         }
 
 
+        // Properties.
+
+        public Vector2Int ClustersCount => new Vector2Int(clusters.GetLength(0), clusters.GetLength(1));
+
+
         // Life cycle.
 
         void Awake() {
@@ -57,72 +63,91 @@ namespace NewWorld.Battlefield.Map {
 
         // Loading.
 
-        public IEnumerator Load(MapDescription description) {
-            if (description == null) {
-                throw new System.ArgumentNullException(nameof(description));
-            } 
-
-            clustersCount = new Vector2Int(
-                    Mathf.CeilToInt((description.Size.x - 1 + 2 * flatBorder) / clusterSize),
-                    Mathf.CeilToInt((description.Size.y - 1 + 2 * flatBorder) / clusterSize)
-            );
-            clusters = new Terrain[clustersCount.x, clustersCount.y];
-
-            // TODO. For each cluster make its own task to achieve maximal cpu usage.
-            Task<float[,][,]> heightMapCalculating = Task.Run(() => CalculateHeightMaps(description));
-            Task<float[,][,,]> alphaMapCalculating = Task.Run(() => CalculateAlphaMaps(description));
-            while (!heightMapCalculating.IsCompleted || !alphaMapCalculating.IsCompleted) {
-                yield return null;
+        public void StartReconstruction(MapDescription description, UnityAction afterAction = null) {
+            // TODO. Make it possible to abort current reconstruction and begin new one.
+            if (constructed == false) {
+                throw new System.NotImplementedException();
             }
-            float[,][,] heightMaps = heightMapCalculating.Result;
-            float[,][,,] alphaMaps = alphaMapCalculating.Result;
+            constructed = false;
+            StartCoroutine(Reconstruct(description, afterAction));
+        }
 
-            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
-                float[,] heightMap = heightMaps[clusterIndex.x, clusterIndex.y];
-                float[,,] alphaMap = alphaMaps[clusterIndex.x, clusterIndex.y];
+        private IEnumerator Reconstruct(MapDescription description, UnityAction afterAction = null) {
 
-                TerrainData terrainData = new TerrainData();
-                terrainData.heightmapResolution = heightMapResolution;
-                terrainData.alphamapResolution = alphaMapResolution;
-                terrainData.baseMapResolution = 1024;
-                terrainData.SetDetailResolution(1024, 16);
-                terrainData.size = new Vector3(clusterSize, description.HeightLimit - abyssLevel, clusterSize);
-                terrainData.SetHeights(0, 0, heightMap);
-                terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
-                terrainData.SetAlphamaps(0, 0, alphaMap);
+            foreach (Terrain cluster in clusters) {
+                Destroy(cluster.gameObject);
+            }
 
-                GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
-                terrainObject.transform.parent = transform;
-                terrainObject.transform.position = new Vector3(
-                        clusterIndex.x * clusterSize- flatBorder,
-                        abyssLevel,
-                        clusterIndex.y * clusterSize - flatBorder
+            if (description != null) {
+
+                Vector2Int clustersCount = new Vector2Int(
+                        Mathf.CeilToInt((description.Size.x - 1 + 2 * flatBorder) / clusterSize),
+                        Mathf.CeilToInt((description.Size.y - 1 + 2 * flatBorder) / clusterSize)
                 );
-                terrainObject.name = "Cluster " + terrainObject.transform.position;
-                Terrain terrain = terrainObject.GetComponent<Terrain>();
-                clusters[clusterIndex.x, clusterIndex.y] = terrain;
+                clusters = new Terrain[clustersCount.x, clustersCount.y];
+
+                // TODO. For each cluster make its own task to achieve maximal cpu usage.
+                Task<float[,][,]> heightMapCalculating = Task.Run(() => CalculateHeightMaps(description));
+                Task<float[,][,,]> alphaMapCalculating = Task.Run(() => CalculateAlphaMaps(description));
+                while (!heightMapCalculating.IsCompleted || !alphaMapCalculating.IsCompleted) {
+                    yield return null;
+                }
+                float[,][,] heightMaps = heightMapCalculating.Result;
+                float[,][,,] alphaMaps = alphaMapCalculating.Result;
+
+                foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+                    float[,] heightMap = heightMaps[clusterIndex.x, clusterIndex.y];
+                    float[,,] alphaMap = alphaMaps[clusterIndex.x, clusterIndex.y];
+
+                    var terrainData = new TerrainData();
+                    terrainData.heightmapResolution = heightMapResolution;
+                    terrainData.alphamapResolution = alphaMapResolution;
+                    terrainData.baseMapResolution = 1024;
+                    terrainData.SetDetailResolution(1024, 16);
+                    terrainData.size = new Vector3(clusterSize, description.HeightLimit - abyssLevel, clusterSize);
+                    terrainData.SetHeights(0, 0, heightMap);
+                    terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
+                    terrainData.SetAlphamaps(0, 0, alphaMap);
+
+                    GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
+                    terrainObject.transform.parent = transform;
+                    terrainObject.transform.position = new Vector3(
+                            clusterIndex.x * clusterSize - flatBorder,
+                            abyssLevel,
+                            clusterIndex.y * clusterSize - flatBorder
+                    );
+                    terrainObject.name = "Cluster " + terrainObject.transform.position;
+                    Terrain terrain = terrainObject.GetComponent<Terrain>();
+                    clusters[clusterIndex.x, clusterIndex.y] = terrain;
+
+                }
+
+                foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+                    clusters[clusterIndex.x, clusterIndex.y].SetNeighbors(
+                        (clusterIndex.x == 0 ? null : clusters[clusterIndex.x - 1, clusterIndex.y]),
+                        (clusterIndex.y == 0 ? null : clusters[clusterIndex.x, clusterIndex.y - 1]),
+                        (clusterIndex.x == clustersCount.x - 1 ? null : clusters[clusterIndex.x + 1, clusterIndex.y]),
+                        (clusterIndex.y == clustersCount.y - 1 ? null : clusters[clusterIndex.x, clusterIndex.y + 1])
+                    );
+                }
+
+            } else {
+
+                clusters = new Terrain[0, 0];
 
             }
 
-            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
-                clusters[clusterIndex.x, clusterIndex.y].SetNeighbors(
-                    (clusterIndex.x == 0 ? null : clusters[clusterIndex.x - 1, clusterIndex.y]),
-                    (clusterIndex.y == 0 ? null : clusters[clusterIndex.x, clusterIndex.y - 1]),
-                    (clusterIndex.x == clustersCount.x - 1 ? null : clusters[clusterIndex.x + 1, clusterIndex.y]),
-                    (clusterIndex.y == clustersCount.y - 1 ? null : clusters[clusterIndex.x, clusterIndex.y + 1])
-                );
-            }
-
-            yield break;
+            constructed = true;
+            afterAction?.Invoke();
         }
 
         private float[,][,] CalculateHeightMaps(MapDescription description) {
-            float[,][,] heightMaps = new float[clustersCount.x, clustersCount.y][,];
+            float[,][,] heightMaps = new float[ClustersCount.x, ClustersCount.y][,];
 
             int heightMapResolutionPerUnit = (heightMapResolution - 1) / clusterSize;
-            Vector2Int lastHeightPoint = clustersCount * (heightMapResolution - 1);
+            Vector2Int lastHeightPoint = ClustersCount * (heightMapResolution - 1);
 
-            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+            foreach (Vector2Int clusterIndex in Enumerables.InRange2(ClustersCount)) {
 
                 float[,] heightMap = new float[heightMapResolution, heightMapResolution];
                 Vector2Int startPoint = clusterIndex * (heightMapResolution - 1);
@@ -144,12 +169,12 @@ namespace NewWorld.Battlefield.Map {
 
         // TODO. Make abyss white.
         private float[,][,,] CalculateAlphaMaps(MapDescription description) {
-            float[,][,,] alphaMaps = new float[clustersCount.x, clustersCount.y][,,];
+            float[,][,,] alphaMaps = new float[ClustersCount.x, ClustersCount.y][,,];
 
             int alphaMapResolutionPerUnit = alphaMapResolution / clusterSize;
-            Vector2Int lastAlphaPoint = clustersCount * alphaMapResolution - Vector2Int.one;
+            Vector2Int lastAlphaPoint = ClustersCount * alphaMapResolution - Vector2Int.one;
 
-            foreach (Vector2Int clusterIndex in Enumerables.InRange2(clustersCount)) {
+            foreach (Vector2Int clusterIndex in Enumerables.InRange2(ClustersCount)) {
 
                 float[,,] alphaMap = new float[alphaMapResolution, alphaMapResolution, 1];
                 Vector2Int startPoint = clusterIndex * alphaMapResolution;
@@ -197,7 +222,8 @@ namespace NewWorld.Battlefield.Map {
             float heightSum = 0;
             float weightSum = 0;
             foreach (Vector2Int tileDifference in Enumerables.InSegment2(1)) {
-                float nodeHeight = description.GetClosestSurfaceNode(mainTile + tileDifference)?.Height ?? abyssLevel;
+                NodeDescription node = description[mainTile + tileDifference];
+                float nodeHeight = (node.Type != NodeDescription.NodeType.Abyss ? node.Height : abyssLevel);
                 heightSum += nodeHeight * weights[tileDifference.x, tileDifference.y];
                 weightSum += weights[tileDifference.x, tileDifference.y];
             }
@@ -208,11 +234,14 @@ namespace NewWorld.Battlefield.Map {
 
         // Information.
 
-        public float GetSurfaceHeight(Vector2 position, float maximumRadius = 0) {
-            return GetSurfaceHeight(new Vector3(position.x, 0, position.y), maximumRadius);
+        public float GetSurfaceHeight(Vector2 position) {
+            return GetSurfaceHeight(new Vector3(position.x, 0, position.y));
         }
 
-        public float GetSurfaceHeight(Vector3 position, float maximumRadius = 0) {
+        public float GetSurfaceHeight(Vector3 position) {
+            if (clusters.Length == 0 || constructed == false) {
+                return abyssLevel;
+            }
             Vector2Int clusterPosition = GetNearestClusterPosition(position);
             Terrain cluster = clusters[clusterPosition.x, clusterPosition.y];
             return cluster.SampleHeight(position) + cluster.transform.position.y;
@@ -224,8 +253,8 @@ namespace NewWorld.Battlefield.Map {
         private Vector2Int GetNearestClusterPosition(Vector3 position) {
             Vector3Int clusterPosition3 = Vector3Int.FloorToInt((position - clusters[0, 0].transform.position) / clusterSize);
             Vector2Int clusterPosition = new Vector2Int(clusterPosition3.x, clusterPosition3.z);
-            clusterPosition.x = Mathf.Clamp(clusterPosition.x, 0, clustersCount.x - 1);
-            clusterPosition.y = Mathf.Clamp(clusterPosition.y, 0, clustersCount.y - 1);
+            clusterPosition.x = Mathf.Clamp(clusterPosition.x, 0, ClustersCount.x - 1);
+            clusterPosition.y = Mathf.Clamp(clusterPosition.y, 0, ClustersCount.y - 1);
             return clusterPosition;
         }
 

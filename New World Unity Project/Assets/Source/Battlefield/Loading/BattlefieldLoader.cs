@@ -19,18 +19,13 @@ namespace NewWorld.Battlefield.Loading {
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
-        private bool readyToLoad;
-        private bool readyToStart;
+        private bool readyToLoad = false;
+        private bool readyToStart = false;
 
         private BattlefieldDescription battlefieldDescription;
 
 
         // Life cycle.
-
-        private void Awake() {
-            readyToLoad = false;
-            readyToStart = false;
-        }
 
         private void Start() {
             StartCoroutine(PlanBattlefield());
@@ -38,7 +33,7 @@ namespace NewWorld.Battlefield.Loading {
 
         private void Update() {
             if (readyToLoad) {
-                StartCoroutine(LoadBattlefield());
+                LoadBattlefield();
                 readyToLoad = false;
             }
             if (readyToStart) {
@@ -88,15 +83,21 @@ namespace NewWorld.Battlefield.Loading {
                             break;
                         }
                     }
-                } while (repeat || mapDescription.GetSurfaceNode(position) == null);
+                } while (repeat || mapDescription[position].Type == NodeDescription.NodeType.Abyss);
                 unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
             return new BattlefieldDescription(mapDescription, unitDescriptions);
         }
 
-        private IEnumerator LoadBattlefield() {
-            yield return StartCoroutine(BattlefieldController.Instance.Load(battlefieldDescription));
-            readyToStart = true;
+        private void LoadBattlefield() {
+
+            void AfterBattlefieldLoad() {
+                BattlefieldController.Instance.LoadedEvent.RemoveListener(AfterBattlefieldLoad);
+                readyToStart = true;
+            }
+
+            BattlefieldController.Instance.LoadedEvent.AddListener(AfterBattlefieldLoad);
+            BattlefieldController.Instance.StartReloading(battlefieldDescription);
         }
 
 

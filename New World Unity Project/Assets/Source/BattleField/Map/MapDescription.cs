@@ -3,81 +3,64 @@ using UnityEngine;
 
 namespace NewWorld.Battlefield.Map {
 
-    public partial class MapDescription {
+    public class MapDescription {
 
         // Fields.
 
-        private readonly Vector2Int size;
-        private readonly float heightLimit;
-        private readonly NodeDescription[,] surface;
+        private readonly float heightLimit = 0;
+        private readonly NodeDescription[,] surface = new NodeDescription[0, 0];
 
 
         // Properties.
 
-        public Vector2Int Size => size;
+        public Vector2Int Size => new Vector2Int(surface.GetLength(0), surface.GetLength(1));
         public float HeightLimit => heightLimit;
+
+        public NodeDescription this[Vector2Int position] {
+            get {
+                if (surface.Length == 0) {
+                    return new NodeDescription();
+                }
+                position = GetNearestRealNodePosition(position);
+                return surface[position.x, position.y];
+            }
+            set {
+                ValidateRealNodePosition(position, nameof(value));
+                value.Height = Mathf.Clamp(value.Height, 0, heightLimit);
+                surface[position.x, position.y] = value;
+            }
+        }
 
 
         // Constructor.
 
         public MapDescription(Vector2Int size, float heightLimit) {
-            if (size.x <= 0 || size.y <= 0) {
-                throw new System.ArgumentOutOfRangeException(nameof(size), size, $"Components of size must be positive.");
-            }
-            if (heightLimit < 0) {
-                throw new System.ArgumentOutOfRangeException(nameof(heightLimit), heightLimit, $"Height limit must be non-negative.");
-            }
-            this.size = size;
+            size = Vector2Int.Max(size, Vector2Int.zero);
+            heightLimit = Mathf.Max(heightLimit, 0);
             this.heightLimit = heightLimit;
             surface = new NodeDescription[size.x, size.y];
         }
 
 
-        // Node processing.
+        // Support.
 
-        public NodeDescription GetSurfaceNode(Vector2Int position) {
-            if (!IsPositionValid(position) || surface[position.x, position.y] == null) {
-                return null;
-            }
-            return new NodeDescription(surface[position.x, position.y]);
+        private bool IsRealNodePosition(in Vector2Int position) {
+            return position.x >= 0 && position.x < Size.x && position.y >= 0 && position.y < Size.y;
         }
 
-        public NodeDescription GetClosestSurfaceNode(Vector2 worldPosition) {
-            Vector2Int position = GetClosestPosition(worldPosition);
-            if (surface[position.x, position.y] == null) {
-                return null;
-            }
-            return new NodeDescription(surface[position.x, position.y]);
-        }
-
-        public void SetSurfaceNode(Vector2Int position, NodeDescription description) {
-            if (!IsPositionValid(position)) {
-                throw BuildInvalidPositionException(nameof(position), position);
-            }
-            if (description == null) {
-                surface[position.x, position.y] = null;
-            } else {
-                surface[position.x, position.y] = new NodeDescription(
-                    Mathf.Clamp(description.Height, 0, heightLimit)
+        private void ValidateRealNodePosition(in Vector2Int position, string parameterName) {
+            if (!IsRealNodePosition(position)) {
+                throw new System.ArgumentOutOfRangeException(
+                    parameterName,
+                    $"Node position must be real, i.e. in [0; {Size.x})x[0; {Size.y})."
                 );
             }
         }
 
-
-        // Support.
-
-        private bool IsPositionValid(Vector2Int position) {
-            return position.x >= 0 && position.x < size.x && position.y >= 0 && position.y < size.y;
-        }
-
-        private Vector2Int GetClosestPosition(Vector2 worldPosition) {
-            worldPosition.x = Mathf.Clamp(worldPosition.x, 0, size.x - 1);
-            worldPosition.y = Mathf.Clamp(worldPosition.y, 0, size.y - 1);
-            return Vector2Int.RoundToInt(worldPosition);
-        }
-
-        private System.ArgumentOutOfRangeException BuildInvalidPositionException(string parameterName, Vector2Int position) {
-            return new System.ArgumentOutOfRangeException(parameterName, position, $"Position must be inside map (size: {size})");
+        private Vector2Int GetNearestRealNodePosition(Vector2 position) {
+            position.x = Mathf.Clamp(position.x, 0, Size.x - 1);
+            position.y = Mathf.Clamp(position.y, 0, Size.y - 1);
+            return Vector2Int.RoundToInt(position);
         }
 
 

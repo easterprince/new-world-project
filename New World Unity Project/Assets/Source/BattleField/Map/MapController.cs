@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
-using NewWorld.Utilities.Singletones;
+using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Loading;
+using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Map {
 
-    public partial class MapController : SceneSingleton<MapController> {
+    public class MapController : ReloadableSingleton<MapController, MapDescription> {
 
         // Fields.
 
-        private MapDescription description;
+        private NodeDescription[,] surface = new NodeDescription[0, 0];
 
 
 #pragma warning disable IDE0044, CS0414, CS0649
@@ -17,21 +18,27 @@ namespace NewWorld.Battlefield.Map {
         [SerializeField]
         private TerrainController terrain;
 
-        [SerializeField]
-        private NodeGridController nodeGrid;
-
 #pragma warning restore IDE0044, CS0414, CS0649
 
 
         // Properties.
 
-        public Vector2Int Size => description.Size;
-        public float HeightLimit => description.HeightLimit;
+        public Vector2Int Size => new Vector2Int(surface.GetLength(0), surface.GetLength(1));
+
+        public NodeDescription this[Vector2Int position] {
+            get {
+                if (surface.Length == 0) {
+                    return new NodeDescription();
+                }
+                position = GetNearestRealNodePosition(position);
+                return surface[position.x, position.y];
+            }
+        }
 
 
         // Life cycle.
 
-        override protected void Awake() {
+        override private protected void Awake() {
             base.Awake();
             Instance = this;
         }
@@ -39,46 +46,39 @@ namespace NewWorld.Battlefield.Map {
 
         // Initialization.
 
-        public IEnumerator Load(MapDescription description) {
-            this.description = description ?? throw new System.ArgumentNullException(nameof(description));
-            yield return StartCoroutine(terrain.Load(description));
-            yield return StartCoroutine(nodeGrid.Load(description));
+        override public void StartReloading(MapDescription description) {
+            Loaded = false;
+
+            if (description != null) {
+                surface = new NodeDescription[description.Size.x, description.Size.y];
+                foreach (var position in Enumerables.InRange2(Size)) {
+                    surface[position.x, position.y] = description[position];
+                }
+            } else {
+                surface = new NodeDescription[0, 0];
+            }
+            terrain.StartReconstruction(description, () => Loaded = true);
         }
 
 
         // Information.
 
-        public float GetSurfaceHeight(Vector2 position, float maximumRadius = 0) {
-            if (maximumRadius < 0) {
-                throw new System.ArgumentOutOfRangeException(nameof(maximumRadius), "Radius should be non-negative number.");
-            }
-            return terrain.GetSurfaceHeight(position, maximumRadius);
+        public float GetSurfaceHeight(Vector2 position) {
+            return terrain.GetSurfaceHeight(position);
         }
 
-        public float GetSurfaceHeight(Vector3 position, float maximumRadius = 0) {
-            if (maximumRadius < 0) {
-                throw new System.ArgumentOutOfRangeException(nameof(maximumRadius), "Radius should be non-negative number.");
-            }
-            return terrain.GetSurfaceHeight(position, maximumRadius);
+        public float GetSurfaceHeight(Vector3 position) {
+            return terrain.GetSurfaceHeight(position);
         }
 
-        public NodeDescription GetSurfaceNode(Vector2Int position) {
-            return description.GetSurfaceNode(position);
+        public bool IsRealNodePosition(Vector2Int position) {
+            return position.x >= 0 && position.x < Size.x && position.y >= 0 && position.y < Size.y;
         }
-
-
-        // Support.
-
-        private bool IsValidNodePosition(Vector2Int parameterValue) {
-            return parameterValue.x >= 0 && parameterValue.x < description.Size.x && parameterValue.y >= 0 && parameterValue.y < description.Size.y;
-        }
-
-        private System.ArgumentOutOfRangeException BuildInvalidNodePositionException(string parameterName, Vector2Int parameterValue) {
-            return new System.ArgumentOutOfRangeException(
-                parameterName,
-                parameterValue,
-                $"Position must be inside node array, which size is {description.Size}."
-            );
+        
+        public Vector2Int GetNearestRealNodePosition(Vector2 position) {
+            position.x = Mathf.Clamp(position.x, 0, Size.x - 1);
+            position.y = Mathf.Clamp(position.y, 0, Size.y - 1);
+            return Vector2Int.RoundToInt(position);
         }
 
 

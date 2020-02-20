@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Utilities.Singletones {
+namespace NewWorld.Utilities.Singletons {
     
     public class MissingSingletonException<Singleton> : System.Exception
         where Singleton : SceneSingleton<Singleton> {

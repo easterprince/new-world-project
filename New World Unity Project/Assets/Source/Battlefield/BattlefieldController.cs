@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Utilities.Singletones;
+using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units;
+using UnityEngine.Events;
 
 namespace NewWorld.Battlefield {
 
-    public class BattlefieldController : SceneSingleton<BattlefieldController> {
+    public class BattlefieldController : ReloadableSingleton<BattlefieldController, BattlefieldDescription> {
 
         // Variables.
 
@@ -21,21 +22,40 @@ namespace NewWorld.Battlefield {
 
         // Life cycle.
 
-        protected override void Awake() {
+        override private protected void Awake() {
             base.Awake();
             Instance = this;
             battleStarted = false;
         }
 
 
-        // Loading.
+        // Loading
 
-        public IEnumerator Load(BattlefieldDescription description) {
+        override public void StartReloading(BattlefieldDescription description) {
             if (description == null) {
                 throw new System.ArgumentNullException(nameof(description));
             }
-            yield return StartCoroutine(MapController.Instance.Load(description.MapDescription));
-            yield return StartCoroutine(UnitSystemController.Instance.Load(description.UnitDescriptions));
+
+            // TODO. Make it possible to abort current reloading and begin new one.
+            if (!Loaded) {
+                throw new System.NotImplementedException();
+            }
+            Loaded = false;
+
+            void afterUnitSystemLoaded() {
+                UnitSystemController.Instance.LoadedEvent.RemoveListener(afterUnitSystemLoaded);
+                Loaded = true;
+            }
+
+            void afterMapLoaded() {
+                MapController.Instance.LoadedEvent.RemoveListener(afterMapLoaded);
+                UnitSystemController.Instance.LoadedEvent.AddListener(afterUnitSystemLoaded);
+                UnitSystemController.Instance.StartReloading(description.UnitDescriptions);
+            }
+
+            MapController.Instance.LoadedEvent.AddListener(afterMapLoaded);
+            MapController.Instance.StartReloading(description.MapDescription);
+
         }
 
         public void StartBattle() {

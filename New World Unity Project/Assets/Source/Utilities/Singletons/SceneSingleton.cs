@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewWorld.Utilities.Singletones {
+namespace NewWorld.Utilities.Singletons {
 
     public class SceneSingleton<T> : MonoBehaviour
         where T : SceneSingleton<T> {
@@ -12,23 +12,30 @@ namespace NewWorld.Utilities.Singletones {
         private static T instance;
 
 
-        // Properties.
+        // Static.
 
         public static T Instance {
             get => instance;
             protected set => instance = value;
         }
 
+        public static void EnsureInstance(object userClass) {
+            if (Instance == null) {
+                throw new MissingSingletonException<T>(userClass);
+            }
+        }
+
 
         // Life cycle.
 
-        virtual protected void Awake() {}
+        virtual private protected void Awake() {}
 
         virtual protected void OnDestroy() {
             if (Instance == this) {
                 Instance = null;
             }
         }
+
 
     }
 

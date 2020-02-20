@@ -40,7 +40,8 @@ namespace NewWorld.Battlefield.Map.Generation {
                     float normalizedHeight = (noiseValue - 0.4f) / (1 - 0.4f);
                     if (normalizedHeight >= 0) {
                         float height = 2 * ShiftedErf(normalizedHeight);
-                        description.SetSurfaceNode(position, new NodeDescription(height));
+                        var node = new NodeDescription(NodeDescription.NodeType.Common, height);
+                        description[position] = node;
                     }
                 }
             }

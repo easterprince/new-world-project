@@ -2,35 +2,42 @@
 
 namespace NewWorld.Battlefield.Map {
 
-    public class NodeDescription {
+    public struct NodeDescription {
 
-        private readonly float height;
+        // Enumerator.
+
+        public enum NodeType {
+            Abyss = 0,
+            Common
+        }
+
+
+        // Fields.
+
+        private NodeType type;
+        private float height;
 
 
         // Properties.
 
-        public float Height => height;
+        public NodeType Type {
+            get => type;
+            set => type = value;
+        }
 
-
-        // ToString().
-
-        public override string ToString() {
-            return $"(Height: {height})";
+        public float Height {
+            get => height;
+            set => height = Mathf.Max(value, 0);
         }
 
 
         // Constructors.
 
-        public NodeDescription(float height = 0) {
+        public NodeDescription(NodeType type = NodeType.Abyss, float height = 0) {
+            this.type = type;
             this.height = height;
         }
 
-        public NodeDescription(NodeDescription other) {
-            if (other == null) {
-                throw new System.ArgumentNullException(nameof(other));
-            }
-            height = other.height;
-        }
 
     }
 

@@ -55,7 +55,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                         do {
                             newConnectedNode = curConnectedNode + new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
                         } while (
-                            MapController.Instance.GetSurfaceNode(newConnectedNode) == null ||
+                            MapController.Instance[newConnectedNode].Type == NodeDescription.NodeType.Abyss ||
                             UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
                         );
                         object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
