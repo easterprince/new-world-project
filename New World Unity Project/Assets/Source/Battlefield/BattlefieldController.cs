@@ -24,7 +24,6 @@ namespace NewWorld.Battlefield {
 
         override private protected void Awake() {
             base.Awake();
-            Instance = this;
             battleStarted = false;
         }
 

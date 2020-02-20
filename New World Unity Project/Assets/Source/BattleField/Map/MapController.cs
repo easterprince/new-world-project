@@ -40,7 +40,6 @@ namespace NewWorld.Battlefield.Map {
 
         override private protected void Awake() {
             base.Awake();
-            Instance = this;
         }
 
 

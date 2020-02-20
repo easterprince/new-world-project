@@ -51,7 +51,6 @@ namespace NewWorld.Battlefield {
 
         override private protected void Awake() {
             base.Awake();
-            Instance = this;
             defaultPosition = transform.position;
             defaultRotation = transform.rotation;
             //defaultSize = cameraComponent.orthographicSize;

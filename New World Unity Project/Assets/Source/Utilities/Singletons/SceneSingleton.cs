@@ -16,7 +16,6 @@ namespace NewWorld.Utilities.Singletons {
 
         public static T Instance {
             get => instance;
-            protected set => instance = value;
         }
 
         public static void EnsureInstance(object userClass) {
@@ -28,11 +27,17 @@ namespace NewWorld.Utilities.Singletons {
 
         // Life cycle.
 
-        virtual private protected void Awake() {}
+        private protected virtual void Awake() {
+            if (instance == null) {
+                instance = (T) this;
+            } else {
+                throw new System.Exception($"{typeof(T)} singleton has been already instantiated.");
+            }
+        }
 
-        virtual protected void OnDestroy() {
-            if (Instance == this) {
-                Instance = null;
+        private protected virtual void OnDestroy() {
+            if (instance == this) {
+                instance = null;
             }
         }
 

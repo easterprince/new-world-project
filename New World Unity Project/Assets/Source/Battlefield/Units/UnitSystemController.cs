@@ -56,7 +56,6 @@ namespace NewWorld.Battlefield.Units {
 
         override private protected void Awake() {
             base.Awake();
-            Instance = this;
             if (unitsGameObject == null) {
                 throw new MissingReferenceException($"Missing {unitsGameObject}.");
             }

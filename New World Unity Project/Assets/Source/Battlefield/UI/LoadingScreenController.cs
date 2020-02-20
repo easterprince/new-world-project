@@ -9,16 +9,15 @@ namespace NewWorld.Battlefield.UI {
 
         // Fields.
 
+        // Child references. 
 #pragma warning disable IDE0044, CS0414, CS0649
-
         [SerializeField]
         private GameObject readyTextPanel;
-
         [SerializeField]
         private LoadingLogoController logo;
-
 #pragma warning restore IDE0044, CS0414, CS0649
 
+        // Structure.
         bool ready = false;
         
 
