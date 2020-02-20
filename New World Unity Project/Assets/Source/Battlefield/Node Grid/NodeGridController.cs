@@ -21,10 +21,10 @@ namespace NewWorld.Battlefield.NodeGrid {
             MapController.EnsureInstance(this);
             UnitSystemController.Instance.UnloadedEvent.AddListener(RemoveNodes);
             UnitSystemController.Instance.LoadedEvent.AddListener(PlaceNodes);
-            UnitSystemController.Instance.UnitAddedEvent.AddListener(HideNode);
-            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => HideNode(unit));
-            UnitSystemController.Instance.UnitRemovedEvent.AddListener((unit, position) => ShowNode(position));
-            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => ShowNode(position));
+            UnitSystemController.Instance.UnitAddedEvent.AddListener(HighlightNode);
+            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => HighlightNode(unit));
+            UnitSystemController.Instance.UnitRemovedEvent.AddListener((unit, position) => DarkenNode(position));
+            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => DarkenNode(position));
         }
 
 
@@ -44,19 +44,20 @@ namespace NewWorld.Battlefield.NodeGrid {
                 }
                 NodeController node = NodeController.BuildNode(position, transform);
                 nodes[position.x, position.y] = node;
+                DarkenNode(position);
             }
             foreach (UnitController unit in UnitSystemController.Instance) {
-                HideNode(unit);
+                HighlightNode(unit);
             }
         }
 
-        private void HideNode(UnitController unit) {
+        private void HighlightNode(UnitController unit) {
             Vector2Int position = UnitSystemController.Instance.GetConnectedNode(unit);
-            nodes[position.x, position.y].Shown = false;
+            nodes[position.x, position.y].Color = Color.white;
         }
 
-        private void ShowNode(Vector2Int position) {
-            nodes[position.x, position.y].Shown = true;
+        private void DarkenNode(Vector2Int position) {
+            nodes[position.x, position.y].Color = Color.gray;
         }
 
 

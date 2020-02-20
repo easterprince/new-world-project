@@ -25,7 +25,19 @@ namespace NewWorld.Battlefield.NodeGrid {
         }
 
 
+        // Static.
+
+        private static MaterialPropertyBlock materialProperties;
+
+
         // Fields.
+
+#pragma warning disable IDE0044, CS0414, CS0649
+
+        [SerializeField]
+        private MeshRenderer meshRenderer;
+
+#pragma warning restore IDE0044, CS0414, CS0649
 
         private Vector2Int position;
 
@@ -48,8 +60,10 @@ namespace NewWorld.Battlefield.NodeGrid {
         }
 
         public Color Color {
-            get => throw new System.NotImplementedException();
-            set => throw new System.NotImplementedException();
+            set {
+                materialProperties.SetColor("_Color", value);
+                meshRenderer.SetPropertyBlock(materialProperties);
+            }
         }
 
 
@@ -57,6 +71,12 @@ namespace NewWorld.Battlefield.NodeGrid {
 
         private void Awake() {
             MapController.EnsureInstance(this);
+            if (materialProperties == null) {
+                materialProperties = new MaterialPropertyBlock();
+            }
+            if (meshRenderer == null) {
+                throw new MissingComponentException($"Need {typeof(MeshRenderer)}!");
+            }
         }
 
 
