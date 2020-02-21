@@ -15,6 +15,8 @@ namespace NewWorld.Battlefield.UI {
         private Text unitDescriptionText;
 #pragma warning restore IDE0044, CS0414, CS0649
 
+        UnitController selectedUnit;
+
 
         // Life cycle.
 
@@ -27,8 +29,20 @@ namespace NewWorld.Battlefield.UI {
         private void Start() {
             PointerInterceptorController.EnsureInstance(this);
             PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessClick);
-            SetDescription(null);
             BattlefieldCameraController.EnsureInstance(this);
+        }
+
+        private void Update() {
+            if (selectedUnit == null) {
+                unitDescriptionText.text = "Click on unit to get its description.";
+                return;
+            }
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Selected unit: {selectedUnit.name}");
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine($"Position: {selectedUnit.Position}");
+            stringBuilder.AppendLine($"Rotation: {selectedUnit.Rotation}");
+            unitDescriptionText.text = stringBuilder.ToString();
         }
 
         private void OnDestroy() {
@@ -44,27 +58,9 @@ namespace NewWorld.Battlefield.UI {
             var layerMask = LayerMask.GetMask("Units");
             Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
             var colliderHit = raycastHit.collider;
-            UnitController unit = null;
             if (colliderHit != null) {
-                unit = colliderHit.transform.gameObject.GetComponent<UnitController>();
+                selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
             }
-            SetDescription(unit);
-        }
-
-
-        // Support.
-
-        private void SetDescription(UnitController unit) {
-            if (unit == null) {
-                unitDescriptionText.text = "Click on unit to get its description.";
-                return;
-            }
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Selected unit: {unit.name}");
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"Position: {unit.Position}");
-            stringBuilder.AppendLine($"Rotation: {unit.Rotation}");
-            unitDescriptionText.text = stringBuilder.ToString();
         }
 
 
