@@ -21,6 +21,13 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         protected float Speed => speed;
 
 
+        // To string conversion.
+
+        override public string ToString() {
+            return $"Moving to {destination}";
+        }
+
+
         // Constructor.
 
         public MotionCondition(UnitController owner, Vector2 destination, float speed = 1) : base(owner) {

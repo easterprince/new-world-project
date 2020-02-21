@@ -39,6 +39,13 @@ namespace NewWorld.Battlefield.Units.Conditions {
         public Condition(UnitController owner) : base(owner) {}
 
 
+        // To string conversion.
+
+        override public string ToString() {
+            return "Unknown condition";
+        }
+
+
         // Interaction methods.
 
         public IEnumerable<GameAction> Enter() {

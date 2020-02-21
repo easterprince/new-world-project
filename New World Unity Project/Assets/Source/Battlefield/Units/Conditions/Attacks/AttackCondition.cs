@@ -20,6 +20,13 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         protected float AttackTime => attackTime;
 
 
+        // To string conversion.
+
+        override public string ToString() {
+            return $"Attacking traget {target}";
+        }
+
+
         // Constructors.
 
         public AttackCondition(
