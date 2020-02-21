@@ -1,15 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using NewWorld.Battlefield.Units;
 
 namespace NewWorld.Battlefield.UI {
 
     public class UnitPanelController : MonoBehaviour {
-
-        // Static.
-
-        private const string defaultText = "Click on unit to get its description.";
-
 
         // Fields.
 
@@ -30,7 +27,8 @@ namespace NewWorld.Battlefield.UI {
         private void Start() {
             PointerInterceptorController.EnsureInstance(this);
             PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessClick);
-            unitDescriptionText.text = defaultText;
+            SetDescription(null);
+            BattlefieldCameraController.EnsureInstance(this);
         }
 
         private void OnDestroy() {
@@ -41,7 +39,32 @@ namespace NewWorld.Battlefield.UI {
         // Triggered.
 
         private void ProcessClick(PointerEventData pointerEventData) {
-            unitDescriptionText.text = pointerEventData.ToString();
+            var pointerPosition = pointerEventData.position;
+            var pointerRay = BattlefieldCameraController.Instance.CameraComponent.ScreenPointToRay(pointerPosition);
+            var layerMask = LayerMask.GetMask("Units");
+            Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
+            var colliderHit = raycastHit.collider;
+            UnitController unit = null;
+            if (colliderHit != null) {
+                unit = colliderHit.transform.gameObject.GetComponent<UnitController>();
+            }
+            SetDescription(unit);
+        }
+
+
+        // Support.
+
+        private void SetDescription(UnitController unit) {
+            if (unit == null) {
+                unitDescriptionText.text = "Click on unit to get its description.";
+                return;
+            }
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Selected unit: {unit.name}");
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine($"Position: {unit.Position}");
+            stringBuilder.AppendLine($"Rotation: {unit.Rotation}");
+            unitDescriptionText.text = stringBuilder.ToString();
         }
 
 

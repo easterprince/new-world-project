@@ -47,6 +47,11 @@ namespace NewWorld.Battlefield {
         }
 
 
+        // Properties.
+
+        public Camera CameraComponent => cameraComponent;
+
+
         // Life cycle.
 
         override private protected void Awake() {
