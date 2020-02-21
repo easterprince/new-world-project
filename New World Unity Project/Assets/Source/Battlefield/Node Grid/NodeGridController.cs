@@ -22,9 +22,18 @@ namespace NewWorld.Battlefield.NodeGrid {
             UnitSystemController.Instance.UnloadedEvent.AddListener(RemoveNodes);
             UnitSystemController.Instance.LoadedEvent.AddListener(PlaceNodes);
             UnitSystemController.Instance.UnitAddedEvent.AddListener(HighlightNode);
-            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => HighlightNode(unit));
-            UnitSystemController.Instance.UnitRemovedEvent.AddListener((unit, position) => DarkenNode(position));
-            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener((unit, position) => DarkenNode(position));
+            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener(HighlightNodeStunt);
+            UnitSystemController.Instance.UnitRemovedEvent.AddListener(DarkenNodeStunt);
+            UnitSystemController.Instance.ConnectedNodeUpdatedEvent.AddListener(DarkenNodeStunt);
+        }
+
+        private void OnDestroy() {
+            UnitSystemController.Instance?.UnloadedEvent.RemoveListener(RemoveNodes);
+            UnitSystemController.Instance?.LoadedEvent.RemoveListener(PlaceNodes);
+            UnitSystemController.Instance?.UnitAddedEvent.RemoveListener(HighlightNode);
+            UnitSystemController.Instance?.ConnectedNodeUpdatedEvent.RemoveListener(HighlightNodeStunt);
+            UnitSystemController.Instance?.UnitRemovedEvent.RemoveListener(DarkenNodeStunt);
+            UnitSystemController.Instance?.ConnectedNodeUpdatedEvent.RemoveListener(DarkenNodeStunt);
         }
 
 
@@ -32,17 +41,17 @@ namespace NewWorld.Battlefield.NodeGrid {
 
         private void RemoveNodes() {
             foreach (var node in nodes) {
-                Destroy(node.gameObject);
+                Destroy(node);
             }
         }
 
         private void PlaceNodes() {
             nodes = new NodeController[MapController.Instance.Size.x, MapController.Instance.Size.y];
             foreach (Vector2Int position in Enumerables.InRange2(MapController.Instance.Size)) {
-                if (MapController.Instance[position].Type == NodeDescription.NodeType.Abyss) {
-                    continue;
-                }
                 NodeController node = NodeController.BuildNode(position, transform);
+                if (MapController.Instance[position].Type == NodeDescription.NodeType.Abyss) {
+                    node.Shown = false;
+                }
                 nodes[position.x, position.y] = node;
                 DarkenNode(position);
             }
@@ -51,13 +60,24 @@ namespace NewWorld.Battlefield.NodeGrid {
             }
         }
 
+
+        // Event handlers.
+
         private void HighlightNode(UnitController unit) {
             Vector2Int position = UnitSystemController.Instance.GetConnectedNode(unit);
             nodes[position.x, position.y].Color = Color.white;
         }
 
+        private void HighlightNodeStunt(UnitController unit, Vector2Int position) {
+            HighlightNode(unit);
+        }
+
         private void DarkenNode(Vector2Int position) {
             nodes[position.x, position.y].Color = Color.gray;
+        }
+
+        private void DarkenNodeStunt(UnitController unit, Vector2Int position) {
+            DarkenNode(position);
         }
 
 

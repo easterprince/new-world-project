@@ -2,6 +2,6 @@
 
 namespace NewWorld.Utilities {
 
-    public delegate bool Condition();
+    public delegate bool ConditionDelegate();
 
 }

@@ -13,6 +13,7 @@ namespace NewWorld.Battlefield {
         // Variables.
 
         private bool battleStarted;
+        private BattlefieldDescription loadedDescription;
 
 
         // Properties.
@@ -31,8 +32,14 @@ namespace NewWorld.Battlefield {
             Time.timeScale = 0;
         }
 
+        override private protected void OnDestroy() {
+            MapController.Instance?.LoadedEvent.RemoveListener(AfterMapLoaded);
+            UnitSystemController.Instance?.LoadedEvent.RemoveListener(AfterUnitSystemLoaded);
+            base.OnDestroy();
+        }
 
-        // Loading
+
+        // Loading.
 
         override public void StartReloading(BattlefieldDescription description) {
             if (description == null) {
@@ -44,26 +51,33 @@ namespace NewWorld.Battlefield {
                 throw new System.NotImplementedException();
             }
             Loaded = false;
+            loadedDescription = description;
 
-            void afterUnitSystemLoaded() {
-                UnitSystemController.Instance.LoadedEvent.RemoveListener(afterUnitSystemLoaded);
-                Loaded = true;
-            }
-
-            void afterMapLoaded() {
-                MapController.Instance.LoadedEvent.RemoveListener(afterMapLoaded);
-                UnitSystemController.Instance.LoadedEvent.AddListener(afterUnitSystemLoaded);
-                UnitSystemController.Instance.StartReloading(description.UnitDescriptions);
-            }
-
-            MapController.Instance.LoadedEvent.AddListener(afterMapLoaded);
+            MapController.Instance.LoadedEvent.AddListener(AfterMapLoaded);
             MapController.Instance.StartReloading(description.MapDescription);
 
         }
 
+
+        // Public methods.
+
         public void StartBattle() {
             Time.timeScale = 1;
             battleStarted = true;
+        }
+
+
+        // Event handlers.
+
+        private void AfterMapLoaded() {
+            MapController.Instance.LoadedEvent.RemoveListener(AfterMapLoaded);
+            UnitSystemController.Instance.LoadedEvent.AddListener(AfterUnitSystemLoaded);
+            UnitSystemController.Instance.StartReloading(loadedDescription.UnitDescriptions);
+        }
+
+        private void AfterUnitSystemLoaded() {
+            UnitSystemController.Instance.LoadedEvent.RemoveListener(AfterUnitSystemLoaded);
+            Loaded = true;
         }
 
 

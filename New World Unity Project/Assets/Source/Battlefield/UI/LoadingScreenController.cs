@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using NewWorld.Battlefield;
+using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.UI {
 
@@ -37,20 +39,7 @@ namespace NewWorld.Battlefield.UI {
             logo.CurrentCondition = LoadingLogoController.Condition.Waiting;
             
             BattlefieldController.EnsureInstance(this);
-            BattlefieldController.Instance.UnloadedEvent.AddListener(WhenUnloaded);
-
-            void WhenUnloaded() {
-                BattlefieldController.Instance.UnloadedEvent.RemoveListener(WhenUnloaded);
-                BattlefieldController.Instance.LoadedEvent.AddListener(WhenLoaded);
-                logo.CurrentCondition = LoadingLogoController.Condition.Loading;
-            }
-
-            void WhenLoaded() {
-                BattlefieldController.Instance.LoadedEvent.RemoveListener(WhenLoaded);
-                logo.CurrentCondition = LoadingLogoController.Condition.Ready;
-                readyTextPanel.SetActive(true);
-                ready = true;
-            }
+            BattlefieldController.Instance.UnloadedEvent.AddListener(WhenBattlefieldUnloaded);
 
         }
 
@@ -59,6 +48,27 @@ namespace NewWorld.Battlefield.UI {
                 gameObject.SetActive(false);
                 BattlefieldController.Instance.StartBattle();
             }
+        }
+
+        private void OnDestroy() {
+            BattlefieldController.Instance?.UnloadedEvent.RemoveListener(WhenBattlefieldUnloaded);
+            BattlefieldController.Instance?.LoadedEvent.RemoveListener(WhenBattlefieldLoaded);
+        }
+
+
+        // Event handlers.
+
+        private void WhenBattlefieldUnloaded() {
+            BattlefieldController.Instance.UnloadedEvent.RemoveListener(WhenBattlefieldUnloaded);
+            BattlefieldController.Instance.LoadedEvent.AddListener(WhenBattlefieldLoaded);
+            logo.CurrentCondition = LoadingLogoController.Condition.Loading;
+        }
+
+        private void WhenBattlefieldLoaded() {
+            BattlefieldController.Instance.LoadedEvent.RemoveListener(WhenBattlefieldLoaded);
+            logo.CurrentCondition = LoadingLogoController.Condition.Ready;
+            readyTextPanel.SetActive(true);
+            ready = true;
         }
 
 

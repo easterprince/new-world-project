@@ -35,6 +35,14 @@ namespace NewWorld.Utilities.Singletons {
         public UnityEvent LoadedEvent => loadedEvent;
 
 
+        // Life cycle.
+
+        override private protected void OnDestroy() {
+            Loaded = false;
+            base.OnDestroy();
+        }
+
+
         // Public methods.
 
         public abstract void StartReloading(Description description);

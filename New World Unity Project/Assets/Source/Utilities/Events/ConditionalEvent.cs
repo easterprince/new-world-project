@@ -7,12 +7,12 @@ namespace NewWorld.Utilities.Events {
 
         // Fields.
 
-        private readonly Condition condition;
+        private readonly ConditionDelegate condition;
 
 
         // Constructors.
 
-        public ConditionalEvent(Condition condition) : base() {
+        public ConditionalEvent(ConditionDelegate condition) : base() {
             this.condition = condition;
         }
 
@@ -39,12 +39,12 @@ namespace NewWorld.Utilities.Events {
 
         // Fields.
 
-        private readonly Condition condition;
+        private readonly ConditionDelegate condition;
 
 
         // Constructors.
 
-        public ConditionalEvent(Condition condition) : base() {
+        public ConditionalEvent(ConditionDelegate condition) : base() {
             this.condition = condition;
         }
 
@@ -71,12 +71,12 @@ namespace NewWorld.Utilities.Events {
 
         // Fields.
 
-        private readonly Condition condition;
+        private readonly ConditionDelegate condition;
 
 
         // Constructors.
 
-        public ConditionalEvent(Condition condition) : base() {
+        public ConditionalEvent(ConditionDelegate condition) : base() {
             this.condition = condition;
         }
 

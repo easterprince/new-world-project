@@ -34,7 +34,7 @@ namespace NewWorld.Battlefield.UI {
         }
 
         private void OnDestroy() {
-            PointerInterceptorController.Instance.ClickEvent.RemoveListener(ProcessClick);
+            PointerInterceptorController.Instance?.ClickEvent.RemoveListener(ProcessClick);
         }
 
 
