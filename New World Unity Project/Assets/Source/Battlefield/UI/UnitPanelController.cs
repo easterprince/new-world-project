@@ -12,6 +12,8 @@ namespace NewWorld.Battlefield.UI {
 
 #pragma warning disable IDE0044, CS0414, CS0649
         [SerializeField]
+        private Text unitNameText;
+        [SerializeField]
         private Text unitDescriptionText;
 #pragma warning restore IDE0044, CS0414, CS0649
 
@@ -20,13 +22,13 @@ namespace NewWorld.Battlefield.UI {
 
         // Life cycle.
 
-        private void Awake() {
+        private void Start() {
             if (unitDescriptionText == null) {
                 throw new MissingReferenceException($"Missing {nameof(unitDescriptionText)}.");
             }
-        }
-
-        private void Start() {
+            if (unitNameText == null) {
+                throw new MissingReferenceException($"Missing {nameof(unitNameText)}.");
+            }
             PointerInterceptorController.EnsureInstance(this);
             PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessClick);
             BattlefieldCameraController.EnsureInstance(this);
@@ -34,12 +36,12 @@ namespace NewWorld.Battlefield.UI {
 
         private void Update() {
             if (selectedUnit == null) {
+                unitNameText.text = "";
                 unitDescriptionText.text = "Click on unit to get its description.";
                 return;
             }
+            unitNameText.text = selectedUnit.name;
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Selected unit: {selectedUnit.name}");
-            stringBuilder.AppendLine();
             stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.ToString() ?? "Idle"}");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine($"Position: {selectedUnit.Position}");

@@ -23,7 +23,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         // To string conversion.
 
         override public string ToString() {
-            return $"Attacking traget {target}";
+            return $"Attacking traget {target.name}";
         }
 
 
