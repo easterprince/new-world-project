@@ -67,15 +67,15 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
             }
             Vector2 newPosition2D = lastPosition2D + positionChange;
 
-            // Add unit update.
+            // Check if unit will not be placed too far from connected node, and then add unit update.
             Vector2Int connectedNode = UnitSystemController.Instance.GetConnectedNode(Owner);
-            float nodeDistance = (connectedNode - newPosition2D).magnitude;
+            float nodeDistance = MaximumMetric.GetNorm(connectedNode - newPosition2D);
             if (nodeDistance < nodeDistanceLimit) {
                 var moveUnit = new MoveUnit(Owner, positionChange, Quaternion.identity);
                 actions = Enumerables.Unite(actions, moveUnit);
             }
 
-            // Add connected node update.
+            // Add connected node update if unit is closer to some another node.
             if (connectedNode == destinationNode) {
                 nodeReached = true;
             } else {
