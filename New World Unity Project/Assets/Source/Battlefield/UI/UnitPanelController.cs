@@ -64,6 +64,8 @@ namespace NewWorld.Battlefield.UI {
             var colliderHit = raycastHit.collider;
             if (colliderHit != null) {
                 selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
+            } else {
+                selectedUnit = null;
             }
         }
 
