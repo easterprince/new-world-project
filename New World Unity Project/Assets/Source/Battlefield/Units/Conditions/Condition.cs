@@ -5,7 +5,8 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Conditions {
  
-    public abstract class Condition : UnitModule<ConditionPresentation> {
+    public abstract class Condition<TPresentation> : UnitModule<TPresentation>, ICondition
+        where TPresentation : class, IConditionPresentation {
 
         // Enumerators.
 
@@ -25,19 +26,13 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         public bool Exited => exited;
         public virtual bool CanBeCancelled => false;
+        IConditionPresentation ICondition.Presentation => Presentation;
 
 
         // To string conversion.
 
         override public string ToString() {
             return "Unknown condition";
-        }
-
-
-        // Constructor.
-
-        protected Condition() {
-            Presentation = new ConditionPresentation(this);
         }
 
 

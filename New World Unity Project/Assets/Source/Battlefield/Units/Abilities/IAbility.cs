@@ -6,8 +6,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
     public interface IAbility : IUnitModule {
 
         // Methods.
-
-        Condition Use(object parameterSet);
+        ICondition Use(object parameterSet);
         void Connect(UnitController owner);
         new IAbilityPresentation Presentation { get; }
 

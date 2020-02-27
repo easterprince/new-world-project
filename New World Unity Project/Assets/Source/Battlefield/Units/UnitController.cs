@@ -48,8 +48,8 @@ namespace NewWorld.Battlefield.Units {
         // Modules.
         private UnitBehaviour behaviour = null;
         private UnitDurability durability = null;
-        private Condition currentCondition = null;
-        private Dictionary<IAbilityPresentation, IAbility> abilities = new Dictionary<IAbilityPresentation, IAbility>();
+        private ICondition currentCondition = null;
+        private readonly Dictionary<IAbilityPresentation, IAbility> abilities = new Dictionary<IAbilityPresentation, IAbility>();
 
         // Actions.
         private List<GameAction> actionsToReturn = new List<GameAction>();
@@ -86,7 +86,7 @@ namespace NewWorld.Battlefield.Units {
 
         public UnitBehaviourPresentation Behaviour => behaviour.Presentation;
         public UnitDurabilityPresentation Durability => durability.Presentation;
-        public ConditionPresentation CurrentCondition => currentCondition.Presentation;
+        public IConditionPresentation CurrentCondition => currentCondition.Presentation;
 
 
         // Informational methods.

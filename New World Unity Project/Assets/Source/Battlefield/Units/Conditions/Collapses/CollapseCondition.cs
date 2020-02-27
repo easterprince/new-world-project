@@ -2,11 +2,11 @@
 
 namespace NewWorld.Battlefield.Units.Conditions.Collapses {
     
-    public abstract class CollapseCondition : Condition {
+    public abstract class CollapseCondition : Condition<CollapseConditionPresentation> {
 
         // Fields.
 
-        private float vanishingPeriod;
+        private readonly float vanishingPeriod;
 
 
         // Properties.
@@ -25,6 +25,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         public CollapseCondition(float vanishingPeriod) : base() {
             this.vanishingPeriod = Mathf.Max(vanishingPeriod, 0);
+            Presentation = new CollapseConditionPresentation(this);
         }
 
 

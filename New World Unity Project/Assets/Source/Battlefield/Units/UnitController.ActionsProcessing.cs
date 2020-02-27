@@ -105,7 +105,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessGeneralUnitUpdate(StopCondition stopCondition) {
-            if (stopCondition.Condition == currentCondition) {
+            if (stopCondition.Condition.BelongsTo(currentCondition)) {
                 var actions = currentCondition.Stop(stopCondition.ForceStop);
                 if (currentCondition.Exited) {
                     currentCondition = null;
@@ -117,7 +117,7 @@ namespace NewWorld.Battlefield.Units {
 
         private bool ProcessGeneralUnitUpdate(ForceCondition forceCondition) {
             if (currentCondition != null) {
-                var stopCondition = new StopCondition(currentCondition, true);
+                var stopCondition = new StopCondition(CurrentCondition, true);
                 ProcessGeneralUnitUpdate(stopCondition);
             }
             currentCondition = forceCondition.Condition;
@@ -130,7 +130,7 @@ namespace NewWorld.Battlefield.Units {
             IAbility ability = FindAbility(useAbility.AbilityPresentation);
             if (ability != null) {
                 if (currentCondition != null) {
-                    var cancelCondition = new CancelCondition(currentCondition);
+                    var cancelCondition = new CancelCondition(CurrentCondition);
                     ProcessGeneralUnitUpdate(cancelCondition);
                 }
                 if (currentCondition == null) {

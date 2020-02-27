@@ -2,11 +2,19 @@
 
 namespace NewWorld.Battlefield.Units.Conditions {
     
-    public class ConditionPresentation : UnitModulePresentation<Condition, ConditionPresentation> {
-    
+    public class ConditionPresentation<TCondition, TPresentation> : UnitModulePresentation<TCondition, TPresentation>, IConditionPresentation
+        where TCondition : Condition<TPresentation>
+        where TPresentation : ConditionPresentation<TCondition, TPresentation> {
+
+        // Properties.
+
+        public bool Exited => Presented.Exited;
+        public bool CanBeCancelled => Presented.CanBeCancelled;
+
+
         // Constructor.
 
-        public ConditionPresentation(Condition presented) : base(presented) {}
+        public ConditionPresentation(TCondition presented) : base(presented) {}
 
 
     }

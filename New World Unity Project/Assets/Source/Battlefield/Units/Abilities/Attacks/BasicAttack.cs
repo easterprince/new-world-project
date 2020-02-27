@@ -13,7 +13,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
         // Methods.
 
-        sealed override protected Condition MakeCondition(object parameterSet) {
+        sealed override protected ICondition MakeCondition(object parameterSet) {
             if (!(parameterSet is UnitController target)) {
                 throw new System.ArgumentException($"Parameter set must be of type {typeof(UnitController)}.");
             }

@@ -7,7 +7,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 
 namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
-    public abstract class MotionCondition : Condition {
+    public abstract class MotionCondition : Condition<MotionConditionPresentation> {
 
         // Fields.
 

@@ -7,7 +7,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
         // Constructor.
 
-        public CancelCondition(Condition condition) : base(condition, false) {}
+        public CancelCondition(IConditionPresentation condition) : base(condition, false) {}
 
 
     }
