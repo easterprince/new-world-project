@@ -2,24 +2,24 @@
 
 namespace NewWorld.Battlefield.Units {
     
-    public abstract class UnitModulePresentation<ModuleType, PresentationType> : IUnitModulePresentation
-        where ModuleType : UnitModule<PresentationType>
-        where PresentationType : UnitModulePresentation<ModuleType, PresentationType> {
+    public abstract class UnitModulePresentation<TModule, TPresentation> : IUnitModulePresentation
+        where TModule : UnitModule<TPresentation>
+        where TPresentation : UnitModulePresentation<TModule, TPresentation> {
 
         // Fields.
 
-        private readonly ModuleType presented;
+        private readonly TModule presented;
 
 
         // Properties.
 
-        protected ModuleType Presented => presented;
+        protected TModule Presented => presented;
         public UnitController Owner => presented.Owner;
 
 
         // Constructor.
 
-        protected UnitModulePresentation(ModuleType presented) {
+        protected UnitModulePresentation(TModule presented) {
             this.presented = presented ?? throw new System.ArgumentNullException(nameof(presented));
         }
 

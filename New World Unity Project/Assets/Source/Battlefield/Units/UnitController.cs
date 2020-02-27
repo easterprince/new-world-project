@@ -91,11 +91,11 @@ namespace NewWorld.Battlefield.Units {
 
         // Informational methods.
 
-        public AbilityPresentationType GetAbility<AbilityPresentationType>()
-            where AbilityPresentationType : IAbilityPresentation {
+        public TAbilityPresentation GetAbility<TAbilityPresentation>()
+            where TAbilityPresentation : IAbilityPresentation {
 
             foreach (var pair in abilities) {
-                if (pair.Key is AbilityPresentationType found) {
+                if (pair.Key is TAbilityPresentation found) {
                     return found;
                 }
             }

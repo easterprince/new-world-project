@@ -5,8 +5,8 @@ using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability<PresentationType> : UnitModule<PresentationType>, IAbility
-        where PresentationType : class, IAbilityPresentation {
+    public abstract class Ability<TPresentation> : UnitModule<TPresentation>, IAbility
+        where TPresentation : class, IAbilityPresentation {
 
         // Properties.
 

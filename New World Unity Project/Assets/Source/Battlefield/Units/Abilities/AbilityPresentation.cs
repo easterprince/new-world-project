@@ -2,13 +2,13 @@
 
 namespace NewWorld.Battlefield.Units.Abilities {
     
-    public class AbilityPresentation<AbilityType, PresentationType> : UnitModulePresentation<AbilityType, PresentationType>, IAbilityPresentation
-        where AbilityType : Ability<PresentationType>
-        where PresentationType : AbilityPresentation<AbilityType, PresentationType> {
+    public class AbilityPresentation<TAbility, TPresentation> : UnitModulePresentation<TAbility, TPresentation>, IAbilityPresentation
+        where TAbility : Ability<TPresentation>
+        where TPresentation : AbilityPresentation<TAbility, TPresentation> {
 
         // Constructors.
 
-        protected AbilityPresentation(AbilityType presented) : base(presented) {}
+        protected AbilityPresentation(TAbility presented) : base(presented) {}
 
 
     }

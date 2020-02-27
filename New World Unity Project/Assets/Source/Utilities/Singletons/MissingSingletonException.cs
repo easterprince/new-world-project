@@ -2,13 +2,13 @@
 
 namespace NewWorld.Utilities.Singletons {
     
-    public class MissingSingletonException<Singleton> : System.Exception
-        where Singleton : SceneSingleton<Singleton> {
+    public class MissingSingletonException<TSingleton> : System.Exception
+        where TSingleton : SceneSingleton<TSingleton> {
 
         // Constructor.
 
         public MissingSingletonException(object source) :
-            base($"Object {source} of type {source.GetType()} needs instance of {typeof(Singleton)}.") {}
+            base($"Object {source} of type {source.GetType()} needs instance of {typeof(TSingleton)}.") {}
 
 
     }

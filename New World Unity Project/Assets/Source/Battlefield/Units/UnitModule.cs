@@ -2,13 +2,13 @@
 
 namespace NewWorld.Battlefield.Units {
     
-    public abstract class UnitModule<PresentationType> : IUnitModule
-        where PresentationType : class, IUnitModulePresentation {
+    public abstract class UnitModule<TPresentation> : IUnitModule
+        where TPresentation : class, IUnitModulePresentation {
 
         // Fields.
 
         private UnitController owner = null;
-        private PresentationType presentation;
+        private TPresentation presentation;
 
 
         // Properties.
@@ -16,7 +16,7 @@ namespace NewWorld.Battlefield.Units {
         public UnitController Owner => owner;
         public bool Connected => !(owner is null);
         
-        public PresentationType Presentation {
+        public TPresentation Presentation {
             get => presentation ?? throw new System.NullReferenceException("Presentation is not set.");
             protected set => presentation = value;
         }
