@@ -219,11 +219,10 @@ namespace NewWorld.Battlefield.Units {
         // Support.
 
         private IAbility FindAbility(IAbilityPresentation abilityPresentation) {
-            if (abilityPresentation.BelongsTo(motionAbility)) {
-                return motionAbility;
-            }
-            if (abilityPresentation.BelongsTo(attackAbility)) {
-                return attackAbility;
+            foreach (var pair in abilities) {
+                if (pair.Key == abilityPresentation) {
+                    return pair.Value;
+                }
             }
             return null;
         }
