@@ -23,7 +23,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         // Constructor.
 
-        public CollapseCondition(UnitController owner, float vanishingPeriod) : base(owner) {
+        public CollapseCondition(float vanishingPeriod) : base() {
             this.vanishingPeriod = Mathf.Max(vanishingPeriod, 0);
         }
 

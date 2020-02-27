@@ -29,10 +29,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
         // Constructor.
 
-        public AttackAbility(
-            UnitController owner,
-            float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f
-        ) : base(owner) {
+        public AttackAbility(float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f) : base() {
             this.attackPower = Mathf.Max(attackPower, 0);
             this.attackSpeed = Mathf.Max(attackSpeed, 0);
             this.attackTime = Mathf.Clamp(attackTime, 0f, 1f);

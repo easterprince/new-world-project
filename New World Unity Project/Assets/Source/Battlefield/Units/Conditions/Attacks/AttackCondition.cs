@@ -30,9 +30,9 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         // Constructors.
 
         public AttackCondition(
-            UnitController owner, UnitController target,
+            UnitController target,
             float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f
-        ) : base(owner) {
+        ) : base() {
             this.target = target;
             this.attackPower = Mathf.Max(0, attackPower);
             this.attackSpeed = Mathf.Max(0, attackSpeed);

@@ -15,7 +15,9 @@ namespace NewWorld.Battlefield.Units.Behaviours {
 
         // Constructor.
 
-        public UnitBehaviour(UnitController owner) {}
+        public UnitBehaviour(UnitController owner) {
+            Connect(owner);
+        }
 
 
         // Fields.

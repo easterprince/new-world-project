@@ -30,9 +30,9 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         // Constructors.
 
         public DirectAttack(
-            UnitController owner, UnitController target,
+            UnitController target,
             float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f
-        ) : base(owner, target, attackPower, attackSpeed, attackTime) {}
+        ) : base(target, attackPower, attackSpeed, attackTime) {}
 
 
         // Life cycle.

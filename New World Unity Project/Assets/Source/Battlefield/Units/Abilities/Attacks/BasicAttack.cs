@@ -8,10 +8,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
         // Constructors.
 
-        public BasicAttack(
-            UnitController owner,
-            float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f
-        ) : base(owner, attackPower, attackSpeed, attackTime) {}
+        public BasicAttack(float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f) : base(attackPower, attackSpeed, attackTime) {}
 
 
         // Methods.
@@ -20,7 +17,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
             if (!(parameterSet is UnitController target)) {
                 throw new System.ArgumentException($"Parameter set must be of type {typeof(UnitController)}.");
             }
-            var condition = new DirectAttack(Owner, target, AttackPower, AttackSpeed, AttackTime);
+            var condition = new DirectAttack(target, AttackPower, AttackSpeed, AttackTime);
             return condition;
         }
 

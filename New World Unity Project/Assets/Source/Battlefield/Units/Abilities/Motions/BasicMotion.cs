@@ -8,7 +8,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         // Constructor.
 
-        public BasicMotion(UnitController owner, float speed = 1) : base(owner, speed) {}
+        public BasicMotion(float speed = 1) : base(speed) {}
 
 
         // Methods.
@@ -17,7 +17,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
             if (!(parameterSet is Vector2 destination)) {
                 throw new System.ArgumentException($"Parameter set must be of type {typeof(Vector2)}.");
             }
-            var condition = new DirectMotion(Owner, destination, Speed);
+            var condition = new DirectMotion(destination, Speed);
             return condition;
         }
 

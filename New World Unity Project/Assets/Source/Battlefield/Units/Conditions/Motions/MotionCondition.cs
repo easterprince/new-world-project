@@ -30,7 +30,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
         // Constructor.
 
-        public MotionCondition(UnitController owner, Vector2 destination, float speed = 1) : base(owner) {
+        public MotionCondition(Vector2 destination, float speed = 1) : base() {
             this.destination = destination;
             this.speed = Mathf.Max(0, speed);
         }

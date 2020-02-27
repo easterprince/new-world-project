@@ -14,6 +14,10 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Methods.
 
+        new public void Connect(UnitController owner) {
+            base.Connect(owner);
+        }
+
         public abstract Condition Use(object parameterSet);
 
 

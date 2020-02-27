@@ -25,7 +25,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         // Constructor.
 
-        public MotionAbility(UnitController owner, float speed = 1) : base(owner) {
+        public MotionAbility(float speed = 1) : base() {
             this.speed = Mathf.Max(speed, 0f);
         }
 

@@ -31,9 +31,9 @@ namespace NewWorld.Battlefield.Units {
             unit.layer = parent.gameObject.layer;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
-            unitController.motionAbility = new BasicMotion(unitController, 2);
-            unitController.attackAbility = new BasicAttack(unitController, 20, 2);
             unitController.durability = new UnitDurability(unitController, 100);
+            unitController.MotionAbility = new BasicMotion(2);
+            unitController.AttackAbility = new BasicAttack(20, 2);
             return unitController;
         }
 
@@ -58,6 +58,10 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
+        public Vector3 Position => transform.position;
+
+        public Quaternion Rotation => transform.rotation;
+        
         public bool Collapsed {
             get {
                 if (durability != null) {
@@ -67,8 +71,25 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public Vector3 Position => transform.position;
-        public Quaternion Rotation => transform.rotation;
+        protected MotionAbility MotionAbility {
+            get => motionAbility;
+            set {
+                motionAbility = value;
+                if (motionAbility != null) {
+                    motionAbility.Connect(this);
+                }
+            }
+        }
+
+        protected AttackAbility AttackAbility {
+            get => attackAbility;
+            set {
+                attackAbility = value;
+                if (attackAbility != null) {
+                    attackAbility.Connect(this);
+                }
+            }
+        }
 
 
         // Life cycle.
@@ -113,7 +134,7 @@ namespace NewWorld.Battlefield.Units {
 
                 // Change condition to collapse.
                 if (!(currentCondition is CollapseCondition)) {
-                    var collapseCondition = new SimpleCollapse(this, 2);
+                    var collapseCondition = new SimpleCollapse(2);
                     var forceCondition = new ForceCondition(collapseCondition);
                     ProcessGameAction(forceCondition, false);
                 }
