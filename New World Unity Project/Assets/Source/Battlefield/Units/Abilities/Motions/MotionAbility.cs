@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
-    public abstract class MotionAbility : Ability {
+    public abstract class MotionAbility : Ability<MotionAbilityPresentation> {
 
         // Static.
 
@@ -17,6 +17,8 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
 
         // Properties.
+
+        override public MotionAbilityPresentation Presentation => new MotionAbilityPresentation(this);
 
         public float Speed => speed;
 

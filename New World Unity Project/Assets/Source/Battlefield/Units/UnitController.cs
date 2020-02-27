@@ -58,10 +58,6 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
-        public MotionAbility MotionAbility => motionAbility;
-        public AttackAbility AttackAbility => attackAbility;
-        public Condition CurrentCondition => currentCondition;
-
         public bool Collapsed {
             get {
                 if (durability != null) {
@@ -73,16 +69,6 @@ namespace NewWorld.Battlefield.Units {
 
         public Vector3 Position => transform.position;
         public Quaternion Rotation => transform.rotation;
-
-
-        // Informational methods.
-
-        public bool HasAbility(Ability ability) {
-            if (ability == null) {
-                return false;
-            }
-            return motionAbility == ability || attackAbility == ability;
-        }
 
 
         // Life cycle.

@@ -118,7 +118,7 @@ namespace NewWorld.Battlefield.Units {
                 ProcessGeneralUnitUpdate(stopCondition);
             }
             currentCondition = forceCondition.Condition;
-            var actions = currentCondition.Enter();
+            var actions = currentCondition.Enter(this);
             ProcessGameActions(actions, false);
             return true;
         }

@@ -5,15 +5,9 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Conditions {
  
-    public abstract class Condition : UnitModule {
+    public abstract class Condition : UnitModule<ConditionPresentation> {
 
         // Enumerators.
-
-        protected enum Status {
-            Ready,
-            Entered,
-            Exited
-        }
 
         protected enum StopType {
             Completed,
@@ -24,19 +18,14 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Fields.
 
-        private Status status;
+        private bool exited = false;
 
 
         // Properties.
 
-        public bool Ready => status == Status.Ready;
-        public bool Exited => status == Status.Exited;
+        public bool Exited => exited;
         public virtual bool CanBeCancelled => false;
-
-
-        // Constructor.
-
-        public Condition(UnitController owner) : base(owner) {}
+        public override ConditionPresentation Presentation => new ConditionPresentation(this);
 
 
         // To string conversion.
@@ -48,36 +37,38 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Interaction methods.
 
-        public IEnumerable<GameAction> Enter() {
-            if (status != Status.Ready) {
+        public IEnumerable<GameAction> Enter(UnitController owner) {
+            if (Connected) {
                 throw new System.InvalidOperationException("Condition has been entered already!");
             }
-            status = Status.Entered;
+            Connect(owner);
             return OnEnter();
         }
 
         public IEnumerable<GameAction> Update() {
-            if (status != Status.Entered) {
-                throw new System.InvalidOperationException("Condition is not active!");
+            if (!Connected) {
+                throw new System.InvalidOperationException("Condition is not connected!");
             }
-            var actions = OnUpdate(out bool exited);
+            if (exited) {
+                throw new System.InvalidOperationException("Condition is over!");
+            }
+            var actions = OnUpdate(out exited);
             if (exited) {
                 var otherActions = OnFinish(StopType.Completed);
                 actions = Enumerables.Unite(actions, otherActions);
-                status = Status.Exited;
             }
             return actions;
         }
 
         public IEnumerable<GameAction> Stop(bool forceStop) {
-            if (status != Status.Entered) {
-                throw new System.InvalidOperationException("Condition is not active!");
+            if (!Connected) {
+                throw new System.InvalidOperationException("Condition is not connected!");
             }
-            if (!forceStop && !CanBeCancelled) {
+            if (exited || !forceStop && !CanBeCancelled) {
                 return Enumerables.GetNothing<GameAction>();
             }
             var actions = OnFinish(forceStop ? StopType.Forced : StopType.Cancelled);
-            status = Status.Exited;
+            exited = true;
             return actions;
         }
 
@@ -86,7 +77,7 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         protected abstract IEnumerable<GameAction> OnEnter();
 
-        protected abstract IEnumerable<GameAction> OnUpdate(out bool exited);
+        protected abstract IEnumerable<GameAction> OnUpdate(out bool completed);
 
         protected abstract IEnumerable<GameAction> OnFinish(StopType stopType);
 

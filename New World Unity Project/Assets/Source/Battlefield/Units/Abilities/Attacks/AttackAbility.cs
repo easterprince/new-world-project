@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
-    public abstract class AttackAbility : Ability {
+    public abstract class AttackAbility : Ability<AttackAbilityPresentation> {
 
         // Static.
 
@@ -19,6 +19,8 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
 
         // Properties.
+
+        override public AttackAbilityPresentation Presentation => new AttackAbilityPresentation(this);
 
         public float AttackPower => attackPower;
         public float AttackSpeed => attackSpeed;

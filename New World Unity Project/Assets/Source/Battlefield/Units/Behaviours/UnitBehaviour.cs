@@ -11,18 +11,25 @@ using NewWorld.Battlefield.Units.Conditions.Motions;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 
-    public class UnitBehaviour : UnitModule {
+    public class UnitBehaviour : UnitModule<UnitBehaviourPresentation> {
 
         // Constructor.
 
-        public UnitBehaviour(UnitController owner) : base(owner) {}
+        public UnitBehaviour(UnitController owner) {}
 
 
-        // Behaviour.
-
+        // Fields.
 
         private float? nextMovementTime = null;
         private float? nextStopTime = null;
+
+
+        // Properties.
+
+        public override UnitBehaviourPresentation Presentation => new UnitBehaviourPresentation(this);
+
+
+        // Methods.
 
         public void Act(out CancelCondition cancelCondition, out UseAbility useAbility) {
             cancelCondition = null;

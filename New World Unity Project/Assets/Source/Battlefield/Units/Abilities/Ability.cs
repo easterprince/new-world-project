@@ -5,11 +5,11 @@ using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability : UnitModule {
+    public abstract class Ability<PresentationType> : UnitModule<PresentationType>, IAbility {
 
         // Constructor.
 
-        public Ability(UnitController owner) : base(owner) {}
+        protected Ability() : base() {}
 
 
         // Methods.

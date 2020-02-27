@@ -2,22 +2,35 @@
 
 namespace NewWorld.Battlefield.Units {
     
-    public class UnitModule {
+    public abstract class UnitModule<PresentationType> : IUnitModule {
 
         // Fields.
 
-        private readonly UnitController owner;
+        private UnitController owner = null;
 
 
         // Properties.
 
         public UnitController Owner => owner;
+        public bool Connected => !(owner is null);
+        public abstract PresentationType Presentation { get; }
 
 
         // Constructor.
 
-        public UnitModule(UnitController owner) {
-            this.owner = owner ?? throw new System.ArgumentNullException(nameof(owner));
+        protected UnitModule() {}
+
+
+        // Methods.
+
+        protected void Connect(UnitController owner) {
+            if (!(this.owner is null)) {
+                throw new System.InvalidOperationException("Module has been already connected, can't do it again.");
+            }
+            if (owner is null) {
+                throw new System.ArgumentNullException(nameof(owner));
+            }
+            this.owner = owner;
         }
 
 
