@@ -124,13 +124,14 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessGeneralUnitUpdate(UseAbility useAbility) {
-            if (HasAbility(useAbility.Ability)) {
+            IAbility ability = FindAbility(useAbility.AbilityPresentation);
+            if (ability != null) {
                 if (currentCondition != null) {
                     var cancelCondition = new CancelCondition(currentCondition);
                     ProcessGeneralUnitUpdate(cancelCondition);
                 }
                 if (currentCondition == null) {
-                    var newCondition = useAbility.Ability.Use(useAbility.ParameterSet);
+                    var newCondition = ability.Use(useAbility.ParameterSet);
                     var forceCondition = new ForceCondition(newCondition);
                     ProcessGeneralUnitUpdate(forceCondition);
                 }
@@ -200,6 +201,19 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
             actionsToReturn.Add(unitSystemUpdate);
             return true;
+        }
+
+
+        // Support.
+
+        private IAbility FindAbility(IAbilityPresentation abilityPresentation) {
+            if (abilityPresentation.BelongsTo(motionAbility)) {
+                return motionAbility;
+            }
+            if (abilityPresentation.BelongsTo(attackAbility)) {
+                return attackAbility;
+            }
+            return null;
         }
 
 

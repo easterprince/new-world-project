@@ -2,11 +2,16 @@
 
 namespace NewWorld.Battlefield.Units {
 
-    public interface IUnitModule {
+    public interface IUnitModulePresentation {
 
         // Properties.
 
         UnitController Owner { get; }
+
+
+        // Methods.
+
+        bool BelongsTo(IUnitModule unitModule);
 
 
     }
