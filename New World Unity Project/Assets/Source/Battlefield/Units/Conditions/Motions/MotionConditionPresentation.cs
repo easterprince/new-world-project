@@ -9,6 +9,11 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         public MotionConditionPresentation(MotionCondition presented) : base(presented) {}
 
 
+        // Properties.
+
+        override public string Description => $"Moving to {Presented.Destination}";
+
+
     }
 
 }

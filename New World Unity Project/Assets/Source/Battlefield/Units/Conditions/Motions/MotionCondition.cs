@@ -17,15 +17,8 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
         // Properties.
 
-        protected Vector2 Destination => destination;
-        protected float Speed => speed;
-
-
-        // To string conversion.
-
-        override public string ToString() {
-            return $"Moving to {destination}";
-        }
+        public Vector2 Destination => destination;
+        public float Speed => speed;
 
 
         // Constructor.
@@ -33,6 +26,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         public MotionCondition(Vector2 destination, float speed = 1) : base() {
             this.destination = destination;
             this.speed = Mathf.Max(0, speed);
+            Presentation = new MotionConditionPresentation(this);
         }
 
 

@@ -38,7 +38,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
 
             // Fight around.
             if (attackAbility != null) {
-                if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled && !(Owner.CurrentCondition is AttackCondition)) {
+                if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled && !(Owner.CurrentCondition is AttackConditionPresentation)) {
                     foreach (Vector2Int nodeDifference in Enumerables.InSegment2(-1, 1)) {
                         var currentNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                         var otherNode = currentNode + nodeDifference;

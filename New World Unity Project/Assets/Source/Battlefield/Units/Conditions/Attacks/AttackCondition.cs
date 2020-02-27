@@ -14,10 +14,10 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
 
         // Properties.
 
-        protected UnitController Target => target;
-        protected float AttackPower => attackPower;
-        protected float AttackSpeed => attackSpeed;
-        protected float AttackTime => attackTime;
+        public UnitController Target => target;
+        public float AttackPower => attackPower;
+        public float AttackSpeed => attackSpeed;
+        public float AttackTime => attackTime;
 
 
         // To string conversion.

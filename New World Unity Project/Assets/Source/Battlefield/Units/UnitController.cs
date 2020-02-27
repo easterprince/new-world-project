@@ -84,9 +84,9 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public UnitBehaviourPresentation Behaviour => behaviour.Presentation;
-        public UnitDurabilityPresentation Durability => durability.Presentation;
-        public IConditionPresentation CurrentCondition => currentCondition.Presentation;
+        public UnitBehaviourPresentation Behaviour => behaviour?.Presentation;
+        public UnitDurabilityPresentation Durability => durability?.Presentation;
+        public IConditionPresentation CurrentCondition => currentCondition?.Presentation;
 
 
         // Informational methods.
@@ -147,7 +147,7 @@ namespace NewWorld.Battlefield.Units {
                 // Change condition to collapse.
                 if (!(currentCondition is CollapseCondition)) {
                     var collapseCondition = new SimpleCollapse(2);
-                    var forceCondition = new ForceCondition(collapseCondition);
+                    var forceCondition = new ForceCondition(this, collapseCondition);
                     ProcessGameAction(forceCondition, false);
                 }
 
@@ -157,7 +157,7 @@ namespace NewWorld.Battlefield.Units {
 
 
         // Actions management and used ability update.
-
+        // TODO. Rework it, stop saving actions and send them for saving to unit system.
         public IEnumerable<GameAction> ReceiveActions() {
             var actions = actionsToReturn;
             actionsToReturn = new List<GameAction>();

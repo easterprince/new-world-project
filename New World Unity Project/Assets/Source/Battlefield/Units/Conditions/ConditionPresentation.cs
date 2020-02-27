@@ -10,6 +10,7 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         public bool Exited => Presented.Exited;
         public bool CanBeCancelled => Presented.CanBeCancelled;
+        public virtual string Description => "Unknown";
 
 
         // Constructor.

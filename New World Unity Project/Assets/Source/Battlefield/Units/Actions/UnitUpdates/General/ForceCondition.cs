@@ -17,7 +17,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
         // Constructor.
 
-        public ForceCondition(ICondition condition) : base(condition.Owner) {
+        public ForceCondition(UnitController unit, ICondition condition) : base(unit) {
             this.condition = condition ?? throw new System.ArgumentNullException(nameof(condition));
         }
 

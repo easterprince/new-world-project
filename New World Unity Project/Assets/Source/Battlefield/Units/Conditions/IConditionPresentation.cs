@@ -7,6 +7,7 @@ namespace NewWorld.Battlefield.Units.Conditions {
         // Properties.
         bool Exited { get; }
         bool CanBeCancelled { get; }
+        string Description { get; }
 
     }
 

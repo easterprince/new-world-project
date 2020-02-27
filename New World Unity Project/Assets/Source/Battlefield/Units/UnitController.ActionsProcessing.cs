@@ -135,7 +135,7 @@ namespace NewWorld.Battlefield.Units {
                 }
                 if (currentCondition == null) {
                     var newCondition = ability.Use(useAbility.ParameterSet);
-                    var forceCondition = new ForceCondition(newCondition);
+                    var forceCondition = new ForceCondition(this, newCondition);
                     ProcessGeneralUnitUpdate(forceCondition);
                 }
             }

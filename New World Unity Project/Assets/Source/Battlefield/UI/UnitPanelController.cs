@@ -42,7 +42,7 @@ namespace NewWorld.Battlefield.UI {
             }
             unitNameText.text = selectedUnit.name;
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.ToString() ?? "Idle"}");
+            stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.Description ?? "Idle"}");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine($"Position: {selectedUnit.Position}");
             stringBuilder.AppendLine($"Rotation: {selectedUnit.Rotation}");

@@ -8,6 +8,12 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         public CollapseConditionPresentation(CollapseCondition presented) : base(presented) {}
 
+
+        // Properties.
+
+        override public string Description => "Collapsing";
+
+
     }
 
 }

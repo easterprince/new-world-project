@@ -11,7 +11,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         // Properties.
 
-        protected float VanishingPeriod => vanishingPeriod;
+        public float VanishingPeriod => vanishingPeriod;
 
 
         // To string conversion.

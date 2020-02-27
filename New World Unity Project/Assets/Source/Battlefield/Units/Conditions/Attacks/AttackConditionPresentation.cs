@@ -9,6 +9,11 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         public AttackConditionPresentation(AttackCondition presented) : base(presented) {}
 
 
+        // Properties.
+
+        override public string Description => $"Attacking {Presented.Target.name}";
+
+
     }
 
 }
