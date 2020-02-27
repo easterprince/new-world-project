@@ -37,14 +37,13 @@ namespace NewWorld.Battlefield.Units {
 
         public bool Collapsed => durability <= 0;
 
-        public override UnitDurabilityPresentation Presentation => new UnitDurabilityPresentation(this);
-
 
         // Constructor.
 
         public UnitDurability(UnitController owner, float durabilityLimit) {
             DurabilityLimit = durabilityLimit;
             Durability = durabilityLimit;
+            Presentation = new UnitDurabilityPresentation(this);
             Connect(owner);
         }
 

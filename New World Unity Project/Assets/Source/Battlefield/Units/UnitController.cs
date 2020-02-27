@@ -43,17 +43,14 @@ namespace NewWorld.Battlefield.Units {
         // Gameobject components.
         private Animator animator;
 
-        // Game logic components.
+        // Modules.
         private UnitBehaviour behaviour = null;
         private UnitDurability durability = null;
-        private MotionAbility motionAbility = null;
-        private AttackAbility attackAbility = null;
+        private Condition currentCondition = null;
+        private Dictionary<IAbilityPresentation, IAbility> abilities = new Dictionary<IAbilityPresentation, IAbility>();
 
         // Actions.
         private List<GameAction> actionsToReturn = new List<GameAction>();
-
-        // Conditions.
-        private Condition currentCondition = null;
 
 
         // Properties.

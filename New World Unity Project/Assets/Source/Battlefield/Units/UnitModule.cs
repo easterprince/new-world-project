@@ -7,13 +7,18 @@ namespace NewWorld.Battlefield.Units {
         // Fields.
 
         private UnitController owner = null;
+        private PresentationType presentation;
 
 
         // Properties.
 
         public UnitController Owner => owner;
         public bool Connected => !(owner is null);
-        public abstract PresentationType Presentation { get; }
+        
+        public PresentationType Presentation {
+            get => presentation ?? throw new System.NullReferenceException("Presentation is not set.");
+            protected set => presentation = value;
+        };
 
 
         // Constructor.

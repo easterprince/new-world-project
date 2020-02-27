@@ -5,7 +5,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
     public interface IAbility : IUnitModule {
 
+        // Methods.
+
         Condition Use(object parameterSet);
+        void Connect(UnitController owner);
+
 
     }
 

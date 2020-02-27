@@ -18,8 +18,6 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         // Properties.
 
-        override public MotionAbilityPresentation Presentation => new MotionAbilityPresentation(this);
-
         public float Speed => speed;
 
 
@@ -27,6 +25,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         public MotionAbility(float speed = 1) : base() {
             this.speed = Mathf.Max(speed, 0f);
+            Presentation = new MotionAbilityPresentation(this);
         }
 
 

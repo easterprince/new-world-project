@@ -17,6 +17,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
 
         public UnitBehaviour(UnitController owner) {
             Connect(owner);
+            Presentation = new UnitBehaviourPresentation(this);
         }
 
 
@@ -24,11 +25,6 @@ namespace NewWorld.Battlefield.Units.Behaviours {
 
         private float? nextMovementTime = null;
         private float? nextStopTime = null;
-
-
-        // Properties.
-
-        public override UnitBehaviourPresentation Presentation => new UnitBehaviourPresentation(this);
 
 
         // Methods.

@@ -20,8 +20,6 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
         // Properties.
 
-        override public AttackAbilityPresentation Presentation => new AttackAbilityPresentation(this);
-
         public float AttackPower => attackPower;
         public float AttackSpeed => attackSpeed;
         public float AttackTime => attackTime;
@@ -33,6 +31,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
             this.attackPower = Mathf.Max(attackPower, 0);
             this.attackSpeed = Mathf.Max(attackSpeed, 0);
             this.attackTime = Mathf.Clamp(attackTime, 0f, 1f);
+            Presentation = new AttackAbilityPresentation(this);
         }
 
 

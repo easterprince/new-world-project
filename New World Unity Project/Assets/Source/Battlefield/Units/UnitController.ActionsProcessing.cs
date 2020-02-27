@@ -91,6 +91,9 @@ namespace NewWorld.Battlefield.Units {
             if (generalUnitUpdate is UseAbility useAbility) {
                 return ProcessGeneralUnitUpdate(useAbility);
             }
+            if (generalUnitUpdate is AttachAbility attachAbility) {
+                return ProcessGeneralUnitUpdate(attachAbility);
+            }
             return false;
         }
 
@@ -135,6 +138,14 @@ namespace NewWorld.Battlefield.Units {
                     var forceCondition = new ForceCondition(newCondition);
                     ProcessGeneralUnitUpdate(forceCondition);
                 }
+            }
+            return true;
+        }
+
+        private bool ProcessGeneralUnitUpdate(AttachAbility attachAbility) {
+            IAbility ability = attachAbility.Ability;
+            if (!ability.Connected) {
+                
             }
             return true;
         }

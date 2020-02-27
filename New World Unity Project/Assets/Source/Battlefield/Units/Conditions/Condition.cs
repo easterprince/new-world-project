@@ -25,13 +25,19 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         public bool Exited => exited;
         public virtual bool CanBeCancelled => false;
-        public override ConditionPresentation Presentation => new ConditionPresentation(this);
 
 
         // To string conversion.
 
         override public string ToString() {
             return "Unknown condition";
+        }
+
+
+        // Constructor.
+
+        protected Condition() {
+            Presentation = new ConditionPresentation(this);
         }
 
 

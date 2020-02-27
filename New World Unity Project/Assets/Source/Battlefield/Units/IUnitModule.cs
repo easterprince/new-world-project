@@ -7,6 +7,7 @@ namespace NewWorld.Battlefield.Units {
         // Properties.
 
         UnitController Owner { get; }
+        bool Connected { get; }
 
 
     }
