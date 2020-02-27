@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities {
     
-    public class AbilityPresentation<AbilityType, PresentationType> : UnitModulePresentation<AbilityType, PresentationType>
+    public class AbilityPresentation<AbilityType, PresentationType> : UnitModulePresentation<AbilityType, PresentationType>, IAbilityPresentation
         where AbilityType : Ability<PresentationType>
         where PresentationType : AbilityPresentation<AbilityType, PresentationType> {
 

@@ -8,6 +8,7 @@ namespace NewWorld.Battlefield.Units {
 
         UnitController Owner { get; }
         bool Connected { get; }
+        IUnitModulePresentation Presentation { get; }
 
 
     }

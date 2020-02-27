@@ -5,7 +5,13 @@ using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability<PresentationType> : UnitModule<PresentationType>, IAbility {
+    public abstract class Ability<PresentationType> : UnitModule<PresentationType>, IAbility
+        where PresentationType : class, IAbilityPresentation {
+
+        // Properties.
+
+        IAbilityPresentation IAbility.Presentation => Presentation;
+
 
         // Constructor.
 

@@ -9,6 +9,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         Condition Use(object parameterSet);
         void Connect(UnitController owner);
+        new IAbilityPresentation Presentation { get; }
 
 
     }

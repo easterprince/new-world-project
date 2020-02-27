@@ -32,8 +32,10 @@ namespace NewWorld.Battlefield.Units {
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
             unitController.durability = new UnitDurability(unitController, 100);
-            unitController.MotionAbility = new BasicMotion(2);
-            unitController.AttackAbility = new BasicAttack(20, 2);
+            unitController.ProcessGameActions(new GameAction[] {
+                new AttachAbility(unitController, new BasicMotion(2)),
+                new AttachAbility(unitController, new BasicAttack(20, 2))
+            });
             return unitController;
         }
 
@@ -55,10 +57,24 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
-        public Vector3 Position => transform.position;
+        public Vector3 Position {
+            get {
+                if (this == null) {
+                    return Vector3.zero;
+                }
+                return transform.position;
+            }
+        }
 
-        public Quaternion Rotation => transform.rotation;
-        
+        public Quaternion Rotation {
+            get {
+                if (this == null) {
+                    return Quaternion.identity;
+                }
+                return transform.rotation;
+            }
+        }
+
         public bool Collapsed {
             get {
                 if (durability != null) {
@@ -68,24 +84,23 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        protected MotionAbility MotionAbility {
-            get => motionAbility;
-            set {
-                motionAbility = value;
-                if (motionAbility != null) {
-                    motionAbility.Connect(this);
-                }
-            }
-        }
+        public UnitBehaviourPresentation Behaviour => behaviour.Presentation;
+        public UnitDurabilityPresentation Durability => durability.Presentation;
+        public ConditionPresentation CurrentCondition => currentCondition.Presentation;
 
-        protected AttackAbility AttackAbility {
-            get => attackAbility;
-            set {
-                attackAbility = value;
-                if (attackAbility != null) {
-                    attackAbility.Connect(this);
+
+        // Informational methods.
+
+        public AbilityPresentationType GetAbility<AbilityPresentationType>()
+            where AbilityPresentationType : IAbilityPresentation {
+
+            foreach (var pair in abilities) {
+                if (pair.Key is AbilityPresentationType found) {
+                    return found;
                 }
             }
+
+            return default;
         }
 
 

@@ -2,7 +2,8 @@
 
 namespace NewWorld.Battlefield.Units {
     
-    public abstract class UnitModule<PresentationType> : IUnitModule {
+    public abstract class UnitModule<PresentationType> : IUnitModule
+        where PresentationType : class, IUnitModulePresentation {
 
         // Fields.
 
@@ -18,7 +19,9 @@ namespace NewWorld.Battlefield.Units {
         public PresentationType Presentation {
             get => presentation ?? throw new System.NullReferenceException("Presentation is not set.");
             protected set => presentation = value;
-        };
+        }
+
+        IUnitModulePresentation IUnitModule.Presentation => Presentation;
 
 
         // Constructor.

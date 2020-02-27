@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units {
     
-    public abstract class UnitModulePresentation<ModuleType, PresentationType>
+    public abstract class UnitModulePresentation<ModuleType, PresentationType> : IUnitModulePresentation
         where ModuleType : UnitModule<PresentationType>
         where PresentationType : UnitModulePresentation<ModuleType, PresentationType> {
 

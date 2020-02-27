@@ -145,7 +145,8 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessGeneralUnitUpdate(AttachAbility attachAbility) {
             IAbility ability = attachAbility.Ability;
             if (!ability.Connected) {
-                
+                ability.Connect(this);
+                abilities[ability.Presentation] = ability;
             }
             return true;
         }
