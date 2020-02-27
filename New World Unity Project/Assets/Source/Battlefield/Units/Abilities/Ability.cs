@@ -18,7 +18,17 @@ namespace NewWorld.Battlefield.Units.Abilities {
             base.Connect(owner);
         }
 
-        public abstract Condition Use(object parameterSet);
+        public Condition Use(object parameterSet) {
+            if (!Connected) {
+                throw new System.InvalidOperationException("Ability cannot be used when disconnected.");
+            }
+            return MakeCondition(parameterSet);
+        }
+
+
+        // Inner methods.
+
+        protected abstract Condition MakeCondition(object parameterSet);
 
 
     }

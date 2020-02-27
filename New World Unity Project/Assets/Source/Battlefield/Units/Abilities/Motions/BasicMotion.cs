@@ -13,7 +13,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         // Methods.
 
-        sealed override public Condition Use(object parameterSet) {
+        sealed override protected Condition MakeCondition(object parameterSet) {
             if (!(parameterSet is Vector2 destination)) {
                 throw new System.ArgumentException($"Parameter set must be of type {typeof(Vector2)}.");
             }
