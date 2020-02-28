@@ -42,10 +42,22 @@ namespace NewWorld.Battlefield.UI {
             }
             unitNameText.text = selectedUnit.name;
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.ToString() ?? "Idle"}");
+            stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.Description ?? "Idle"}");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"Position: {selectedUnit.Position}");
-            stringBuilder.AppendLine($"Rotation: {selectedUnit.Rotation}");
+            if (selectedUnit.Durability == null) {
+                stringBuilder.AppendLine("Indestructible.");
+            } else {
+                stringBuilder.AppendLine($"Durability: {selectedUnit.Durability.Durability}/{selectedUnit.Durability.DurabilityLimit}");
+            }
+            var abilities = selectedUnit.Abilities;
+            if (abilities.Count == 0) {
+                stringBuilder.AppendLine("No abilities.");
+            } else {
+                stringBuilder.AppendLine($"Abilities ({abilities.Count}):");
+                foreach (var ability in abilities) {
+                    stringBuilder.AppendLine(ability.Name);
+                }
+            }
             unitDescriptionText.text = stringBuilder.ToString();
         }
 

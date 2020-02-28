@@ -11,40 +11,48 @@ using NewWorld.Battlefield.Units.Conditions.Motions;
 
 namespace NewWorld.Battlefield.Units.Behaviours {
 
-    public class UnitBehaviour : UnitModule {
+    public class UnitBehaviour : UnitModule<UnitBehaviourPresentation> {
 
         // Constructor.
 
-        public UnitBehaviour(UnitController owner) : base(owner) {}
+        public UnitBehaviour(UnitController owner) {
+            Connect(owner);
+            Presentation = new UnitBehaviourPresentation(this);
+        }
 
 
-        // Behaviour.
-
+        // Fields.
 
         private float? nextMovementTime = null;
         private float? nextStopTime = null;
+
+
+        // Methods.
 
         public void Act(out CancelCondition cancelCondition, out UseAbility useAbility) {
             cancelCondition = null;
             useAbility = null;
 
+            MotionAbilityPresentation motionAbility = Owner.GetAbility<MotionAbilityPresentation>();
+            AttackAbilityPresentation attackAbility = Owner.GetAbility<AttackAbilityPresentation>();
+
             // Fight around.
-            if (Owner.AttackAbility != null) {
-                if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled && !(Owner.CurrentCondition is AttackCondition)) {
+            if (attackAbility != null) {
+                if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled && !(Owner.CurrentCondition is AttackConditionPresentation)) {
                     foreach (Vector2Int nodeDifference in Enumerables.InSegment2(-1, 1)) {
                         var currentNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                         var otherNode = currentNode + nodeDifference;
                         var otherUnit = UnitSystemController.Instance.GetUnitOnPosition(otherNode);
-                        if (otherUnit != null && !otherUnit.Collapsed && otherUnit != Owner) {
+                        if (otherUnit != null && !otherUnit.Collapsing && otherUnit != Owner) {
                             var parameterSet = AttackAbility.FormParameterSet(otherUnit);
-                            useAbility = new UseAbility(Owner.AttackAbility, parameterSet);
+                            useAbility = new UseAbility(attackAbility, parameterSet);
                         }
                     }
                 }
             }
 
             // Wander around.
-            if (Owner.MotionAbility != null) {
+            if (motionAbility != null) {
                 if (Owner.CurrentCondition == null || Owner.CurrentCondition.CanBeCancelled) {
                     if (nextMovementTime == null) {
                         nextMovementTime = Time.time + Random.Range(0f, 2f);
@@ -59,7 +67,7 @@ namespace NewWorld.Battlefield.Units.Behaviours {
                             UnitSystemController.Instance.GetUnitOnPosition(newConnectedNode) != null
                         );
                         object parameterSet = MotionAbility.FormParameterSet(newConnectedNode);
-                        useAbility = new UseAbility(Owner.MotionAbility, parameterSet);
+                        useAbility = new UseAbility(motionAbility, parameterSet);
                         nextMovementTime = null;
                     }
                 }

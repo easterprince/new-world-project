@@ -31,7 +31,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
         // Constructor.
 
-        public DirectMotion(UnitController owner, Vector2 destination, float speed = 1) : base(owner, destination, speed) {}
+        public DirectMotion(Vector2 destination, float speed = 1) : base(destination, speed) {}
 
 
         // Inner methods.

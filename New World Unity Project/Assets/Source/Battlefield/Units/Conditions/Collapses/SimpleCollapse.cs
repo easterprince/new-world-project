@@ -22,7 +22,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         // Constructor.
 
-        public SimpleCollapse(UnitController owner, float vanishingPeriod) : base(owner, vanishingPeriod) {}
+        public SimpleCollapse(float vanishingPeriod) : base(vanishingPeriod) {}
 
 
         // Life cycle.

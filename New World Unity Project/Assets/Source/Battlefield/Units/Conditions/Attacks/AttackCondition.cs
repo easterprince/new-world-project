@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Conditions.Attacks {
 
-    public abstract class AttackCondition : Condition {
+    public abstract class AttackCondition : Condition<AttackConditionPresentation> {
 
         // Fields.
 
@@ -14,10 +14,10 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
 
         // Properties.
 
-        protected UnitController Target => target;
-        protected float AttackPower => attackPower;
-        protected float AttackSpeed => attackSpeed;
-        protected float AttackTime => attackTime;
+        public UnitController Target => target;
+        public float AttackPower => attackPower;
+        public float AttackSpeed => attackSpeed;
+        public float AttackTime => attackTime;
 
 
         // To string conversion.
@@ -30,13 +30,14 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         // Constructors.
 
         public AttackCondition(
-            UnitController owner, UnitController target,
+            UnitController target,
             float attackPower = 1, float attackSpeed = 1, float attackTime = 0.5f
-        ) : base(owner) {
+        ) : base() {
             this.target = target;
             this.attackPower = Mathf.Max(0, attackPower);
             this.attackSpeed = Mathf.Max(0, attackSpeed);
             this.attackTime = Mathf.Clamp(attackTime, 0f, 1f);
+            Presentation = new AttackConditionPresentation(this);
         }
 
 

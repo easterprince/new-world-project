@@ -4,23 +4,23 @@ using UnityEngine;
 
 namespace NewWorld.Utilities.Singletons {
 
-    public class SceneSingleton<T> : MonoBehaviour
-        where T : SceneSingleton<T> {
+    public class SceneSingleton<TSelf> : MonoBehaviour
+        where TSelf : SceneSingleton<TSelf> {
 
         // Fields.
 
-        private static T instance;
+        private static TSelf instance;
 
 
         // Static.
 
-        public static T Instance {
+        public static TSelf Instance {
             get => instance;
         }
 
         public static void EnsureInstance(object userClass) {
             if (Instance == null) {
-                throw new MissingSingletonException<T>(userClass);
+                throw new MissingSingletonException<TSelf>(userClass);
             }
         }
 
@@ -29,9 +29,9 @@ namespace NewWorld.Utilities.Singletons {
 
         private protected virtual void Awake() {
             if (instance == null) {
-                instance = (T) this;
+                instance = (TSelf) this;
             } else {
-                throw new System.Exception($"{typeof(T)} singleton has been already instantiated.");
+                throw new System.Exception($"{typeof(TSelf)} singleton has been already instantiated.");
             }
         }
 

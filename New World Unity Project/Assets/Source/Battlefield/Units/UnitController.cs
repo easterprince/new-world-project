@@ -31,9 +31,11 @@ namespace NewWorld.Battlefield.Units {
             unit.layer = parent.gameObject.layer;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
-            unitController.motionAbility = new BasicMotion(unitController, 2);
-            unitController.attackAbility = new BasicAttack(unitController, 20, 2);
             unitController.durability = new UnitDurability(unitController, 100);
+            unitController.ProcessGameActions(new GameAction[] {
+                new AttachAbility(unitController, new BasicMotion(2)),
+                new AttachAbility(unitController, new BasicAttack(20, 2))
+            });
             return unitController;
         }
 
@@ -43,45 +45,69 @@ namespace NewWorld.Battlefield.Units {
         // Gameobject components.
         private Animator animator;
 
-        // Game logic components.
+        // Modules.
         private UnitBehaviour behaviour = null;
         private UnitDurability durability = null;
-        private MotionAbility motionAbility = null;
-        private AttackAbility attackAbility = null;
+        private ICondition currentCondition = null;
+        private readonly Dictionary<IAbilityPresentation, IAbility> abilities = new Dictionary<IAbilityPresentation, IAbility>();
 
         // Actions.
         private List<GameAction> actionsToReturn = new List<GameAction>();
 
-        // Conditions.
-        private Condition currentCondition = null;
-
 
         // Properties.
 
-        public MotionAbility MotionAbility => motionAbility;
-        public AttackAbility AttackAbility => attackAbility;
-        public Condition CurrentCondition => currentCondition;
+        public Vector3 Position {
+            get {
+                if (this == null) {
+                    return Vector3.zero;
+                }
+                return transform.position;
+            }
+        }
 
-        public bool Collapsed {
+        public Quaternion Rotation {
+            get {
+                if (this == null) {
+                    return Quaternion.identity;
+                }
+                return transform.rotation;
+            }
+        }
+
+        public bool Collapsing {
             get {
                 if (durability != null) {
-                    return durability.Collapsed;
+                    return durability.Broken;
                 }
                 return false;
             }
         }
 
-        public Vector3 Position => transform.position;
-        public Quaternion Rotation => transform.rotation;
+        public UnitBehaviourPresentation Behaviour => behaviour?.Presentation;
+        public UnitDurabilityPresentation Durability => durability?.Presentation;
+        public IConditionPresentation CurrentCondition => currentCondition?.Presentation;
+        public ICollection<IAbilityPresentation> Abilities {
+            get {
+                var abilityPresentations = new IAbilityPresentation[abilities.Count];
+                abilities.Keys.CopyTo(abilityPresentations, 0);
+                return abilityPresentations;
+            }
+        }
 
 
         // Informational methods.
 
-        public bool HasAbility(Ability ability) {
-            if (ability == null) {
-                return false;
+        public TAbilityPresentation GetAbility<TAbilityPresentation>()
+            where TAbilityPresentation : IAbilityPresentation {
+
+            foreach (var pair in abilities) {
+                if (pair.Key is TAbilityPresentation found) {
+                    return found;
+                }
             }
-            return motionAbility == ability || attackAbility == ability;
+
+            return default;
         }
 
 
@@ -99,7 +125,7 @@ namespace NewWorld.Battlefield.Units {
 
         private void Update() {
 
-            if (!Collapsed) {
+            if (!Collapsing) {
 
                 // Ask behaviour for orders.
                 if (behaviour != null) {
@@ -123,12 +149,12 @@ namespace NewWorld.Battlefield.Units {
                 ProcessGameActions(actions, false);
             }
 
-            if (Collapsed) {
+            if (Collapsing) {
 
                 // Change condition to collapse.
                 if (!(currentCondition is CollapseCondition)) {
-                    var collapseCondition = new SimpleCollapse(this, 2);
-                    var forceCondition = new ForceCondition(collapseCondition);
+                    var collapseCondition = new SimpleCollapse(2);
+                    var forceCondition = new ForceCondition(this, collapseCondition);
                     ProcessGameAction(forceCondition, false);
                 }
 
@@ -138,7 +164,7 @@ namespace NewWorld.Battlefield.Units {
 
 
         // Actions management and used ability update.
-
+        // TODO. Rework it, stop saving actions and send them for saving to unit system.
         public IEnumerable<GameAction> ReceiveActions() {
             var actions = actionsToReturn;
             actionsToReturn = new List<GameAction>();

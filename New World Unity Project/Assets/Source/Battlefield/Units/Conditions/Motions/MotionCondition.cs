@@ -7,7 +7,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 
 namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
-    public abstract class MotionCondition : Condition {
+    public abstract class MotionCondition : Condition<MotionConditionPresentation> {
 
         // Fields.
 
@@ -17,22 +17,16 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
         // Properties.
 
-        protected Vector2 Destination => destination;
-        protected float Speed => speed;
-
-
-        // To string conversion.
-
-        override public string ToString() {
-            return $"Moving to {destination}";
-        }
+        public Vector2 Destination => destination;
+        public float Speed => speed;
 
 
         // Constructor.
 
-        public MotionCondition(UnitController owner, Vector2 destination, float speed = 1) : base(owner) {
+        public MotionCondition(Vector2 destination, float speed = 1) : base() {
             this.destination = destination;
             this.speed = Mathf.Max(0, speed);
+            Presentation = new MotionConditionPresentation(this);
         }
 
 
