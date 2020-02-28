@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.UI.SelectionSystem;
 
 namespace NewWorld.Battlefield.UI {
 
@@ -35,6 +36,31 @@ namespace NewWorld.Battlefield.UI {
         }
 
         private void Update() {
+            UpdateText();
+        }
+
+        private void OnDestroy() {
+            PointerInterceptorController.Instance?.ClickEvent.RemoveListener(ProcessClick);
+        }
+
+
+        // Triggered.
+
+        private void ProcessClick(PointerEventData pointerEventData) {
+            var pointerPosition = pointerEventData.position;
+            var pointerRay = BattlefieldCameraController.Instance.CameraComponent.ScreenPointToRay(pointerPosition);
+            var layerMask = LayerMask.GetMask("Units");
+            Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
+            var colliderHit = raycastHit.collider;
+            if (colliderHit != null) {
+                selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
+            } else {
+                selectedUnit = null;
+            }
+            SelectionSystemController.Instance.ChangeMainSelection(selectedUnit); 
+        }
+
+        private void UpdateText() {
             if (selectedUnit == null) {
                 unitNameText.text = "";
                 unitDescriptionText.text = "Click on unit to get its description.";
@@ -59,26 +85,6 @@ namespace NewWorld.Battlefield.UI {
                 }
             }
             unitDescriptionText.text = stringBuilder.ToString();
-        }
-
-        private void OnDestroy() {
-            PointerInterceptorController.Instance?.ClickEvent.RemoveListener(ProcessClick);
-        }
-
-
-        // Triggered.
-
-        private void ProcessClick(PointerEventData pointerEventData) {
-            var pointerPosition = pointerEventData.position;
-            var pointerRay = BattlefieldCameraController.Instance.CameraComponent.ScreenPointToRay(pointerPosition);
-            var layerMask = LayerMask.GetMask("Units");
-            Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
-            var colliderHit = raycastHit.collider;
-            if (colliderHit != null) {
-                selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
-            } else {
-                selectedUnit = null;
-            }
         }
 
 

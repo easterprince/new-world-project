@@ -44,6 +44,7 @@ namespace NewWorld.Battlefield.Units {
 
         // Gameobject components.
         private Animator animator;
+        new private Collider collider;
 
         // Modules.
         private UnitBehaviour behaviour = null;
@@ -60,7 +61,7 @@ namespace NewWorld.Battlefield.Units {
         public Vector3 Position {
             get {
                 if (this == null) {
-                    return Vector3.zero;
+                    throw new System.InvalidOperationException("Unit is destroyed, property is invalid.");
                 }
                 return transform.position;
             }
@@ -69,9 +70,18 @@ namespace NewWorld.Battlefield.Units {
         public Quaternion Rotation {
             get {
                 if (this == null) {
-                    return Quaternion.identity;
+                    throw new System.InvalidOperationException("Unit is destroyed, property is invalid.");
                 }
                 return transform.rotation;
+            }
+        }
+
+        public Collider ColliderComponent {
+            get {
+                if (this == null) {
+                    throw new System.InvalidOperationException("Unit is destroyed, property is invalid.");
+                }
+                return collider;
             }
         }
 
@@ -116,7 +126,8 @@ namespace NewWorld.Battlefield.Units {
         private void Awake() {
             UnitSystemController.EnsureInstance(this);
             MapController.EnsureInstance(this);
-            animator = GetComponent<Animator>();
+            animator = GetComponent<Animator>() ?? throw new MissingComponentException("Missing animator!");
+            collider = GetComponent<Collider>() ?? throw new MissingComponentException("Missing collider!");
         }
 
         private void Start() {
