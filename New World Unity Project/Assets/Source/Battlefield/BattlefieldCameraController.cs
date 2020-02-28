@@ -32,13 +32,16 @@ namespace NewWorld.Battlefield {
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
+        [SerializeField]
+        private GameObject cameraHolder;
+
         [Header("Motion and rotation speed")]
-        [SerializeField][Range(0.0f, 100.0f)]
-        private float motionSpeed = 1.0f;
-        [SerializeField][Range(0.0f, 100.0f)]
-        private float rotationSpeed = 1.0f;
-        [SerializeField][Range(0.0f, 100.0f)]
-        private float zoomingSpeed = 1.0f;
+        [SerializeField][Range(1f, 100.0f)]
+        private float motionSpeed = 10.0f;
+        [SerializeField][Range(10f, 1000.0f)]
+        private float zoomingSpeed = 100.0f;
+        [SerializeField][Range(0.01f, 1.0f)]
+        private float rotationSpeed = 0.1f;
 
         [Header("Height")]
         [SerializeField][Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
@@ -71,45 +74,70 @@ namespace NewWorld.Battlefield {
 
         override private protected void Awake() {
             base.Awake();
+            defaultViewedPosition = Vector2.zero;
+            defaultViewingDistance = maxViewingDistance;
+            defaultRotation = transform.rotation;
+            currentViewedPosition = defaultViewedPosition;
+            currentViewingDistance = defaultViewingDistance;
+            currentRotation = defaultRotation;
         }
 
         private void Start() {
             BattlefieldController.EnsureInstance(this);
             MapController.EnsureInstance(this);
-            cameraComponent = GetComponent<Camera>() ?? throw new MissingComponentException("Missing Camera component!");
+            if (cameraHolder == null) {
+                throw new MissingReferenceException("Missing Camera Holder GameObject!");
+            }
+            cameraComponent = cameraHolder.GetComponent<Camera>();
+            if (cameraComponent == null) {
+                throw new MissingComponentException("Camera Holder is missing Camera component!");
+            }
         }
 
         private void Update() {
 
-            /*
-            // Correct current location.
+            // Update current location.
             float deltaTime = Time.unscaledDeltaTime;
             if (BattlefieldController.Instance.BattleStarted) {
 
-                // Input processing.
+                // Process input.
                 if (Input.GetAxisRaw("Cancel") == 0) {
-                
-                    Vector3 positionAddition = Vector3.zero;
-                    positionAddition += transform.right * Input.GetAxisRaw("Common X");
-                    positionAddition += transform.forward * Input.GetAxisRaw("Common Y");
-                    //positionAddition *= motionSpeedModifier;
-                    transform.position += positionAddition;
-                    //transform.rotation *= Quaternion.Euler(0, Input.GetAxisRaw("Turn") * rotationSpeedModifier, 0);
-                    //float newSize = cameraComponent.orthographicSize + scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
-                    //cameraComponent.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
-                
+                    
+                    // Update viewed position.
+                    Vector3 positionChange = Vector3.zero;
+                    positionChange += transform.right * Input.GetAxisRaw("Common X");
+                    positionChange += transform.forward * Input.GetAxisRaw("Common Y");
+                    positionChange *= motionSpeed * deltaTime;
+                    currentViewedPosition += new Vector2(positionChange.x, positionChange.z);
+
+                    // Update distance.
+                    float distanceChange = zoomingSpeed * deltaTime * -Input.GetAxisRaw("Common Z");
+                    currentViewingDistance += distanceChange;
+
+                    // Update rotation.
+                    Quaternion additionalRotation = Quaternion.AngleAxis(360 * rotationSpeed * deltaTime * Input.GetAxisRaw("Turn"), transform.up);
+                    currentRotation *= additionalRotation;
+
                 } else {
 
-                    currentPosition = defaultPosition;
+                    // Reset location.
+                    currentViewedPosition = defaultViewedPosition;
+                    currentViewingDistance = defaultViewingDistance;
                     currentRotation = defaultRotation;
-                    //cameraComponent.orthographicSize = defaultSize;
-                
+
                 }
 
             }
+            CorrectViewedPosition(ref currentViewedPosition);
+            CorrectViewingDistance(ref currentViewingDistance);
 
             // Apply current location.
-            */
+            transform.rotation = currentRotation;
+            float originY = Mathf.Max(MapController.Instance.GetSurfaceHeight(currentViewedPosition), 0);
+            Vector3 origin = new Vector3(currentViewedPosition.x, originY, currentViewedPosition.y);
+            Vector3 offset = currentViewingDistance * -cameraHolder.transform.forward;
+            transform.position = origin + offset;
+
         }
 
 
