@@ -2,9 +2,9 @@
 
 namespace NewWorld.Battlefield.Units.Abilities {
     
-    public class AbilityPresentation<TAbility, TPresentation> : UnitModulePresentation<TAbility, TPresentation>, IAbilityPresentation
-        where TAbility : Ability<TPresentation>
-        where TPresentation : AbilityPresentation<TAbility, TPresentation> {
+    public class AbilityPresentation<TAbility, TSelf> : UnitModulePresentation<TAbility, TSelf>, IAbilityPresentation
+        where TAbility : Ability<TSelf>
+        where TSelf : AbilityPresentation<TAbility, TSelf> {
 
         // Constructors.
 

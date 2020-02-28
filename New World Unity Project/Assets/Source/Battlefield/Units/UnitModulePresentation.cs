@@ -2,9 +2,9 @@
 
 namespace NewWorld.Battlefield.Units {
     
-    public abstract class UnitModulePresentation<TModule, TPresentation> : IUnitModulePresentation
-        where TModule : UnitModule<TPresentation>
-        where TPresentation : UnitModulePresentation<TModule, TPresentation> {
+    public abstract class UnitModulePresentation<TModule, TSelf> : IUnitModulePresentation
+        where TModule : UnitModule<TSelf>
+        where TSelf : UnitModulePresentation<TModule, TSelf> {
 
         // Fields.
 
