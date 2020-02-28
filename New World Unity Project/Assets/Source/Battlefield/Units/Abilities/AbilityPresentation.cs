@@ -11,6 +11,11 @@ namespace NewWorld.Battlefield.Units.Abilities {
         protected AbilityPresentation(TAbility presented) : base(presented) {}
 
 
+        // Properties.
+
+        public string Name => Presented.Name;
+
+
     }
 
 }

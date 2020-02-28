@@ -24,6 +24,8 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
         public float AttackSpeed => attackSpeed;
         public float AttackTime => attackTime;
 
+        override public string Name => "Attack";
+
 
         // Constructor.
 

@@ -35,7 +35,7 @@ namespace NewWorld.Battlefield.Units {
             protected set => durability = Mathf.Min(value, durabilityLimit);
         }
 
-        public bool Collapsed => durability <= 0;
+        public bool Broken => durability <= 0;
 
 
         // Constructor.

@@ -11,6 +11,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
         // Properties.
 
         IAbilityPresentation IAbility.Presentation => Presentation;
+        public virtual string Name => "Unknown";
 
 
         // Constructor.

@@ -9,6 +9,11 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
         public MotionAbilityPresentation(MotionAbility presented) : base(presented) {}
 
 
+        // Properties.
+
+        public float Speed => Presented.Speed;
+
+
     }
 
 }

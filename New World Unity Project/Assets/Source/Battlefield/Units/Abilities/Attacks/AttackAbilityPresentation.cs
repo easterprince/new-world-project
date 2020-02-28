@@ -9,6 +9,13 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
         public AttackAbilityPresentation(AttackAbility presented) : base(presented) {}
 
 
+        // Properties.
+
+        public float AttackPower => Presented.AttackPower;
+        public float AttackSpeed => Presented.AttackSpeed;
+        public float AttackTime => Presented.AttackTime;
+
+
     }
 
 }

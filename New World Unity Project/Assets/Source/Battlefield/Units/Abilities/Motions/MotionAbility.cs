@@ -19,6 +19,7 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
         // Properties.
 
         public float Speed => speed;
+        override public string Name => "Move";
 
 
         // Constructor.

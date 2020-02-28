@@ -75,10 +75,10 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public bool Collapsed {
+        public bool Collapsing {
             get {
                 if (durability != null) {
-                    return durability.Collapsed;
+                    return durability.Broken;
                 }
                 return false;
             }
@@ -87,6 +87,13 @@ namespace NewWorld.Battlefield.Units {
         public UnitBehaviourPresentation Behaviour => behaviour?.Presentation;
         public UnitDurabilityPresentation Durability => durability?.Presentation;
         public IConditionPresentation CurrentCondition => currentCondition?.Presentation;
+        public ICollection<IAbilityPresentation> Abilities {
+            get {
+                var abilityPresentations = new IAbilityPresentation[abilities.Count];
+                abilities.Keys.CopyTo(abilityPresentations, 0);
+                return abilityPresentations;
+            }
+        }
 
 
         // Informational methods.
@@ -118,7 +125,7 @@ namespace NewWorld.Battlefield.Units {
 
         private void Update() {
 
-            if (!Collapsed) {
+            if (!Collapsing) {
 
                 // Ask behaviour for orders.
                 if (behaviour != null) {
@@ -142,7 +149,7 @@ namespace NewWorld.Battlefield.Units {
                 ProcessGameActions(actions, false);
             }
 
-            if (Collapsed) {
+            if (Collapsing) {
 
                 // Change condition to collapse.
                 if (!(currentCondition is CollapseCondition)) {
