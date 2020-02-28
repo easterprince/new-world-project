@@ -3,47 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletons;
+using NewWorld.Battlefield.Map;
 
 namespace NewWorld.Battlefield {
 
     public class BattlefieldCameraController : SceneSingleton<BattlefieldCameraController> {
 
+        // Constants.
+
+        private const float viewingDistanceLowerLimit = 1;
+        private const float viewingDistanceUpperLimit = 100;
+
+
         // Fields.
 
-        private Vector3 defaultPosition;
+        // GameObject components.
+        private Camera cameraComponent;
+
+        // Current location.
+        private Vector2 currentViewedPosition;
+        private float currentViewingDistance;
+        private Quaternion currentRotation;
+
+        // Default location.
+        private Vector2 defaultViewedPosition;
+        private float defaultViewingDistance;
         private Quaternion defaultRotation;
-        //private float defaultSize;
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
-        [SerializeField]
-        private Camera cameraComponent;
+        [Header("Motion and rotation speed")]
+        [SerializeField][Range(0.0f, 100.0f)]
+        private float motionSpeed = 1.0f;
+        [SerializeField][Range(0.0f, 100.0f)]
+        private float rotationSpeed = 1.0f;
+        [SerializeField][Range(0.0f, 100.0f)]
+        private float zoomingSpeed = 1.0f;
 
-        [SerializeField]
-        private float motionSpeedModifier = 1.0f;
-
-        [SerializeField]
-        private float rotationSpeedModifier = 1.0f;
-
-        [SerializeField]
-        private float scrollingSpeedModifier = 1.0f;
-
-        //[SerializeField]
-        //private float minCameraSize = 3.0f;
-
-        //[SerializeField]
-        //private float maxCameraSize = 10.0f;
+        [Header("Height")]
+        [SerializeField][Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
+        private float minViewingDistance = 10.0f;
+        [SerializeField][Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
+        private float maxViewingDistance = 20.0f;
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private void OnValidate() {
-            //const float sizeLowerLimit = 1;
-            //const float sizeUpperLimit = 1000;
-            //minCameraSize = Mathf.Max(minCameraSize, sizeLowerLimit);
-            //maxCameraSize = Mathf.Max(maxCameraSize, sizeLowerLimit);
-            //minCameraSize = Mathf.Min(minCameraSize, sizeUpperLimit);
-            //maxCameraSize = Mathf.Min(maxCameraSize, sizeUpperLimit);
-            //minCameraSize = Mathf.Min(minCameraSize, maxCameraSize);
+
+            // Validate speed parameters.
+            motionSpeed = Mathf.Max(motionSpeed, 0f);
+            rotationSpeed = Mathf.Max(rotationSpeed, 0f);
+            zoomingSpeed = Mathf.Max(zoomingSpeed, 0f);
+
+            // Validate height parameters.
+            minViewingDistance = Mathf.Clamp(minViewingDistance, viewingDistanceLowerLimit, viewingDistanceUpperLimit);
+            maxViewingDistance = Mathf.Clamp(maxViewingDistance, viewingDistanceLowerLimit, viewingDistanceUpperLimit);
+
         }
 
 
@@ -56,31 +71,61 @@ namespace NewWorld.Battlefield {
 
         override private protected void Awake() {
             base.Awake();
-            defaultPosition = transform.position;
-            defaultRotation = transform.rotation;
-            //defaultSize = cameraComponent.orthographicSize;
+        }
+
+        private void Start() {
+            BattlefieldController.EnsureInstance(this);
+            MapController.EnsureInstance(this);
+            cameraComponent = GetComponent<Camera>() ?? throw new MissingComponentException("Missing Camera component!");
         }
 
         private void Update() {
-            if (BattlefieldController.Instance?.BattleStarted ?? true) {
+
+            /*
+            // Correct current location.
+            float deltaTime = Time.unscaledDeltaTime;
+            if (BattlefieldController.Instance.BattleStarted) {
 
                 // Input processing.
                 if (Input.GetAxisRaw("Cancel") == 0) {
+                
                     Vector3 positionAddition = Vector3.zero;
                     positionAddition += transform.right * Input.GetAxisRaw("Common X");
                     positionAddition += transform.forward * Input.GetAxisRaw("Common Y");
-                    positionAddition *= motionSpeedModifier;
+                    //positionAddition *= motionSpeedModifier;
                     transform.position += positionAddition;
-                    transform.rotation *= Quaternion.Euler(0, Input.GetAxisRaw("Turn") * rotationSpeedModifier, 0);
+                    //transform.rotation *= Quaternion.Euler(0, Input.GetAxisRaw("Turn") * rotationSpeedModifier, 0);
                     //float newSize = cameraComponent.orthographicSize + scrollingSpeedModifier * -Input.GetAxisRaw("Common Z");
                     //cameraComponent.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
+                
                 } else {
-                    transform.position = defaultPosition;
-                    transform.rotation = defaultRotation;
+
+                    currentPosition = defaultPosition;
+                    currentRotation = defaultRotation;
                     //cameraComponent.orthographicSize = defaultSize;
+                
                 }
 
             }
+
+            // Apply current location.
+            */
+        }
+
+
+        // TODO. Make method (not properties) to change position/rotation/distance.
+
+
+        // Support.
+
+        private void CorrectViewedPosition(ref Vector2 position) {
+            Vector2Int mapSize = MapController.Instance.Size;
+            position.x = Mathf.Clamp(position.x, -1, mapSize.x);
+            position.y = Mathf.Clamp(position.y, -1, mapSize.y);
+        }
+
+        private void CorrectViewingDistance(ref float distance) {
+            distance = Mathf.Clamp(distance, minViewingDistance, maxViewingDistance);
         }
 
 
