@@ -48,12 +48,20 @@ namespace NewWorld.Battlefield.UI.SelectionSystem {
         // Support.
 
         private void CalculateScreenSize(out Vector2 position, out float size) {
+            Camera cameraComponent = BattlefieldCameraController.Instance.CameraComponent;
             Bounds bounds = selected.ColliderComponent.bounds;
+
+            // Calculate position.
             Vector3 center = bounds.center;
-            Vector2 centerProjection = BattlefieldCameraController.Instance.CameraComponent.WorldToScreenPoint(center);
+            Vector3 centerProjection = cameraComponent.WorldToScreenPoint(center);
+            position = centerProjection;
+
+            // Calculate size.
             Vector3 extents = bounds.extents;
             float radius = 0;
-            for (int mask = 0; mask < (1 << 2); ++mask) {
+            for (int mask = 0; mask < (1 << 3); ++mask) {
+
+                // Calculate edge.
                 Vector3 addition = extents;
                 if ((mask & (1 << 0)) != 0) {
                     addition.x *= -1;
@@ -61,12 +69,25 @@ namespace NewWorld.Battlefield.UI.SelectionSystem {
                 if ((mask & (1 << 1)) != 0) {
                     addition.y *= -1;
                 }
+                if ((mask & (1 << 2)) != 0) {
+                    addition.z *= -1;
+                }
                 Vector3 edge = center + addition;
-                Vector2 edgeProjection = BattlefieldCameraController.Instance.CameraComponent.WorldToScreenPoint(edge);
-                radius = Mathf.Max(radius, (edgeProjection - centerProjection).magnitude);
+
+                // Check if edge is visible.
+                Vector3 edgeOnViewport = cameraComponent.WorldToViewportPoint(edge);
+                if (edgeOnViewport.x < 0 || edgeOnViewport.x > 1 || edgeOnViewport.y < 0 || edgeOnViewport.y > 1 || edgeOnViewport.z < 0) {
+                    continue;
+                }
+
+                // Update radius.
+                Vector3 edgeProjection = cameraComponent.WorldToScreenPoint(edge);
+                float localRadius = (edgeProjection - centerProjection).magnitude;
+                radius = Mathf.Max(radius, localRadius);
+
             }
-            position = centerProjection;
             size = 2 * radius;
+
         }
 
 
