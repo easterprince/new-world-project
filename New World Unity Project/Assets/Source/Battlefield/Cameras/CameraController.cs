@@ -32,10 +32,15 @@ namespace NewWorld.Battlefield.Cameras {
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
+        [Header("Components")]
         [SerializeField]
         private GameObject cameraHolder;
 
-        [Header("Motion and rotation speed")]
+        [Header("Parameters")]
+        [SerializeField]
+        private bool isControlledByInput = false;
+
+        [Space]
         [SerializeField]
         [Range(1f, 100.0f)]
         private float motionSpeed = 10.0f;
@@ -46,7 +51,7 @@ namespace NewWorld.Battlefield.Cameras {
         [Range(0.01f, 1.0f)]
         private float rotationSpeed = 0.1f;
 
-        [Header("Height")]
+        [Space]
         [SerializeField]
         [Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
         private float minViewingDistance = 10.0f;
@@ -102,7 +107,7 @@ namespace NewWorld.Battlefield.Cameras {
 
             // Update current location.
             float deltaTime = Time.unscaledDeltaTime;
-            if (BattlefieldController.Instance.BattleStarted) {
+            if (isControlledByInput && BattlefieldController.Instance.BattleStarted) {
 
                 // Process input.
                 if (Input.GetAxisRaw("Cancel") == 0) {

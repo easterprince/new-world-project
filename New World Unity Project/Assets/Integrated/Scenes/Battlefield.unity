@@ -2131,6 +2131,11 @@ PrefabInstance:
       propertyPath: m_TargetTexture
       value: 
       objectReference: {fileID: 8400000, guid: 0a66042c1e27c3945aa6f364932a0014, type: 2}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: minViewingDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6360018168204447803, guid: 8f6948f59d8b05a448992230ebf95042,
         type: 3}
       propertyPath: m_RootOrder
@@ -2512,6 +2517,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 446288522}
     m_Modifications:
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: isControlledByInput
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6360018168204447803, guid: 8f6948f59d8b05a448992230ebf95042,
         type: 3}
       propertyPath: m_RootOrder

@@ -119,7 +119,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraHolder: {fileID: 6360018168005193998}
-  motionSpeed: 10
+  isControlledByInput: 0
+  motionSpeed: 15
   zoomingSpeed: 200
   rotationSpeed: 0.2
   minViewingDistance: 5
