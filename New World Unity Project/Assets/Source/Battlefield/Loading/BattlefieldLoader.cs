@@ -5,7 +5,7 @@ using UnityEngine;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Loading.Generation;
 using NewWorld.Battlefield.Units;
-using NewWorld.Battlefield.UI;
+using NewWorld.Battlefield.UI.LoadingScreen;
 
 namespace NewWorld.Battlefield.Loading {
 

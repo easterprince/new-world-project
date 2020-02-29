@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using NewWorld.Battlefield;
 using NewWorld.Utilities;
 
-namespace NewWorld.Battlefield.UI {
+namespace NewWorld.Battlefield.UI.LoadingScreen {
 
     public class LoadingScreenController : MonoBehaviour {
 
@@ -21,7 +20,7 @@ namespace NewWorld.Battlefield.UI {
 
         // Structure.
         bool ready = false;
-        
+
 
         // Life cycle.
 
@@ -37,7 +36,7 @@ namespace NewWorld.Battlefield.UI {
 
         private void Start() {
             logo.CurrentCondition = LoadingLogoController.Condition.Waiting;
-            
+
             BattlefieldController.EnsureInstance(this);
             BattlefieldController.Instance.UnloadedEvent.AddListener(WhenBattlefieldUnloaded);
 

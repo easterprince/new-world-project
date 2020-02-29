@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NewWorld.Battlefield.UI {
+namespace NewWorld.Battlefield.UI.LoadingScreen {
 
     public class LoadingLogoController : MonoBehaviour {
 
@@ -43,17 +43,17 @@ namespace NewWorld.Battlefield.UI {
                 currentCondition = value;
                 switch (value) {
                     case Condition.Inactive:
-                    image.sprite = null;
-                    break;
+                        image.sprite = null;
+                        break;
                     case Condition.Waiting:
-                    image.sprite = waitingSprite;
-                    break;
+                        image.sprite = waitingSprite;
+                        break;
                     case Condition.Loading:
-                    image.sprite = loadingSprite;
-                    break;
+                        image.sprite = loadingSprite;
+                        break;
                     case Condition.Ready:
-                    image.sprite = readySprite;
-                    break;
+                        image.sprite = readySprite;
+                        break;
                 }
             }
         }

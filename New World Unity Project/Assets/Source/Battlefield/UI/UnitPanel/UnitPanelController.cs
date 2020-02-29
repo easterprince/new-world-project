@@ -5,17 +5,24 @@ using UnityEngine.EventSystems;
 using NewWorld.Battlefield.Units;
 using NewWorld.Battlefield.UI.SelectionSystem;
 
-namespace NewWorld.Battlefield.UI {
+namespace NewWorld.Battlefield.UI.UnitPanel {
 
     public class UnitPanelController : MonoBehaviour {
 
         // Fields.
 
 #pragma warning disable IDE0044, CS0414, CS0649
+
+        [Header("Panel")]
         [SerializeField]
         private Text unitNameText;
         [SerializeField]
         private Text unitDescriptionText;
+
+        [Header("Portrait")]
+        [SerializeField]
+        private UnitPortraitController portrait;
+
 #pragma warning restore IDE0044, CS0414, CS0649
 
         UnitController selectedUnit;
@@ -30,9 +37,14 @@ namespace NewWorld.Battlefield.UI {
             if (unitNameText == null) {
                 throw new MissingReferenceException($"Missing {nameof(unitNameText)}.");
             }
+            if (portrait == null) {
+                throw new MissingReferenceException($"Missing {nameof(portrait)}.");
+            }
             PointerInterceptorController.EnsureInstance(this);
-            PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessClick);
             BattlefieldCameraController.EnsureInstance(this);
+            portrait.PointerClickEvent.AddListener(ProcessPortraitClick);
+            PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessInterceptorClick);
+
         }
 
         private void Update() {
@@ -40,13 +52,13 @@ namespace NewWorld.Battlefield.UI {
         }
 
         private void OnDestroy() {
-            PointerInterceptorController.Instance?.ClickEvent.RemoveListener(ProcessClick);
+            PointerInterceptorController.Instance.ClickEvent.RemoveListener(ProcessInterceptorClick);
         }
 
 
-        // Triggered.
+        // Trigger handlers.
 
-        private void ProcessClick(PointerEventData pointerEventData) {
+        private void ProcessInterceptorClick(PointerEventData pointerEventData) {
             var pointerPosition = pointerEventData.position;
             var pointerRay = BattlefieldCameraController.Instance.CameraComponent.ScreenPointToRay(pointerPosition);
             var layerMask = LayerMask.GetMask("Units");
@@ -57,8 +69,19 @@ namespace NewWorld.Battlefield.UI {
             } else {
                 selectedUnit = null;
             }
-            SelectionSystemController.Instance.ChangeMainSelection(selectedUnit); 
+            SelectionSystemController.Instance.ChangeMainSelection(selectedUnit);
         }
+
+        private void ProcessPortraitClick() {
+            if (selectedUnit == null) {
+                return;
+            }
+            var position = new Vector2(selectedUnit.Position.x, selectedUnit.Position.z);
+            BattlefieldCameraController.Instance.Relocate(position);
+        }
+
+
+        // Support.
 
         private void UpdateText() {
             if (selectedUnit == null) {

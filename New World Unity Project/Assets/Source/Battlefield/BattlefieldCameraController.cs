@@ -141,7 +141,11 @@ namespace NewWorld.Battlefield {
         }
 
 
-        // TODO. Make method (not properties) to change position/rotation/distance.
+        // Methods.
+
+        public void Relocate(Vector2 position) {
+            currentViewedPosition = position;
+        }
 
 
         // Support.
