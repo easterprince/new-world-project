@@ -5,9 +5,9 @@ using NewWorld.Utilities;
 using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Map;
 
-namespace NewWorld.Battlefield {
+namespace NewWorld.Battlefield.Cameras {
 
-    public class BattlefieldCameraController : SceneSingleton<BattlefieldCameraController> {
+    public class CameraController : MonoBehaviour {
 
         // Constants.
 
@@ -36,17 +36,22 @@ namespace NewWorld.Battlefield {
         private GameObject cameraHolder;
 
         [Header("Motion and rotation speed")]
-        [SerializeField][Range(1f, 100.0f)]
+        [SerializeField]
+        [Range(1f, 100.0f)]
         private float motionSpeed = 10.0f;
-        [SerializeField][Range(10f, 1000.0f)]
+        [SerializeField]
+        [Range(10f, 1000.0f)]
         private float zoomingSpeed = 100.0f;
-        [SerializeField][Range(0.01f, 1.0f)]
+        [SerializeField]
+        [Range(0.01f, 1.0f)]
         private float rotationSpeed = 0.1f;
 
         [Header("Height")]
-        [SerializeField][Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
+        [SerializeField]
+        [Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
         private float minViewingDistance = 10.0f;
-        [SerializeField][Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
+        [SerializeField]
+        [Range(viewingDistanceLowerLimit, viewingDistanceUpperLimit)]
         private float maxViewingDistance = 20.0f;
 
 #pragma warning restore IDE0044, CS0414, CS0649
@@ -72,8 +77,7 @@ namespace NewWorld.Battlefield {
 
         // Life cycle.
 
-        override private protected void Awake() {
-            base.Awake();
+        private void Awake() {
             defaultViewedPosition = Vector2.zero;
             defaultViewingDistance = maxViewingDistance;
             defaultRotation = transform.rotation;
@@ -102,7 +106,7 @@ namespace NewWorld.Battlefield {
 
                 // Process input.
                 if (Input.GetAxisRaw("Cancel") == 0) {
-                    
+
                     // Update viewed position.
                     Vector3 positionChange = Vector3.zero;
                     positionChange += transform.right * Input.GetAxisRaw("Common X");

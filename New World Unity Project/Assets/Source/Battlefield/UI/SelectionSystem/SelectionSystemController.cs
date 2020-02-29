@@ -9,8 +9,10 @@ namespace NewWorld.Battlefield.UI.SelectionSystem {
         // Fields.
 
 #pragma warning disable IDE0044, CS0414, CS0649
+
         [SerializeField]
         private SelectionController mainSelection;
+
 #pragma warning restore IDE0044, CS0414, CS0649
 
 

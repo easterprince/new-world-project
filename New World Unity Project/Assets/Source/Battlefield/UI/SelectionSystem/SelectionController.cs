@@ -1,15 +1,25 @@
-﻿using NewWorld.Battlefield.Units;
+﻿using NewWorld.Battlefield.Cameras;
+using NewWorld.Battlefield.Units;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace NewWorld.Battlefield.UI.SelectionSystem {
-    
+
     public class SelectionController : MonoBehaviour {
 
         // Fields.
 
+#pragma warning disable IDE0044, CS0414, CS0649
+
+        [SerializeField]
+        private CameraController mainCamera;
+
+#pragma warning restore IDE0044, CS0414, CS0649
+
+        // Components.
         private Image image;
 
+        // Condition.
         private UnitController selected;
 
 
@@ -28,6 +38,9 @@ namespace NewWorld.Battlefield.UI.SelectionSystem {
         // Life cycle.
 
         private void Start() {
+            if (mainCamera == null) {
+                throw new MissingReferenceException($"Missing {nameof(mainCamera)}.");
+            }
             image = GetComponent<Image>() ?? throw new MissingComponentException("Need Image component!");
         }
 
@@ -48,7 +61,7 @@ namespace NewWorld.Battlefield.UI.SelectionSystem {
         // Support.
 
         private void CalculateScreenSize(out Vector2 position, out float size) {
-            Camera cameraComponent = BattlefieldCameraController.Instance.CameraComponent;
+            Camera cameraComponent = mainCamera.CameraComponent;
             Bounds bounds = selected.ColliderComponent.bounds;
 
             // Calculate position.

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using NewWorld.Battlefield.Units;
 using NewWorld.Battlefield.UI.SelectionSystem;
+using NewWorld.Battlefield.Cameras;
 
 namespace NewWorld.Battlefield.UI.UnitPanel {
 
@@ -12,6 +13,9 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
         // Fields.
 
 #pragma warning disable IDE0044, CS0414, CS0649
+
+        [SerializeField]
+        private CameraController mainCamera;
 
         [Header("Panel")]
         [SerializeField]
@@ -31,6 +35,9 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
         // Life cycle.
 
         private void Start() {
+            if (mainCamera == null) {
+                throw new MissingReferenceException($"Missing {nameof(mainCamera)}.");
+            }
             if (unitDescriptionText == null) {
                 throw new MissingReferenceException($"Missing {nameof(unitDescriptionText)}.");
             }
@@ -41,7 +48,6 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
                 throw new MissingReferenceException($"Missing {nameof(portrait)}.");
             }
             PointerInterceptorController.EnsureInstance(this);
-            BattlefieldCameraController.EnsureInstance(this);
             portrait.PointerClickEvent.AddListener(ProcessPortraitClick);
             PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessInterceptorClick);
 
@@ -60,7 +66,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
 
         private void ProcessInterceptorClick(PointerEventData pointerEventData) {
             var pointerPosition = pointerEventData.position;
-            var pointerRay = BattlefieldCameraController.Instance.CameraComponent.ScreenPointToRay(pointerPosition);
+            var pointerRay = mainCamera.CameraComponent.ScreenPointToRay(pointerPosition);
             var layerMask = LayerMask.GetMask("Units");
             Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
             var colliderHit = raycastHit.collider;
@@ -77,7 +83,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
                 return;
             }
             var position = new Vector2(selectedUnit.Position.x, selectedUnit.Position.z);
-            BattlefieldCameraController.Instance.Relocate(position);
+            mainCamera.Relocate(position);
         }
 
 
