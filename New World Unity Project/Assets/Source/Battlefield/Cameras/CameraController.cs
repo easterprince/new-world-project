@@ -4,6 +4,7 @@ using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Map;
+using NewWorld.Battlefield.Units;
 
 namespace NewWorld.Battlefield.Cameras {
 
@@ -70,7 +71,7 @@ namespace NewWorld.Battlefield.Cameras {
 
             // Validate height parameters.
             minViewingDistance = Mathf.Clamp(minViewingDistance, viewingDistanceLowerLimit, viewingDistanceUpperLimit);
-            maxViewingDistance = Mathf.Clamp(maxViewingDistance, viewingDistanceLowerLimit, viewingDistanceUpperLimit);
+            maxViewingDistance = Mathf.Clamp(maxViewingDistance, minViewingDistance, viewingDistanceUpperLimit);
 
         }
 
@@ -78,6 +79,11 @@ namespace NewWorld.Battlefield.Cameras {
         // Properties.
 
         public Camera CameraComponent => cameraComponent;
+
+        public float CurrentViewingDistance {
+            get => currentViewingDistance;
+            set => currentViewingDistance = value;
+        }
 
 
         // Life cycle.
@@ -152,8 +158,16 @@ namespace NewWorld.Battlefield.Cameras {
 
         // Methods.
 
-        public void Relocate(Vector2 position) {
+        public void Center(Vector2 position) {
             currentViewedPosition = position;
+        }
+
+        public void Center(UnitController unit) {
+            if (unit == null) {
+                return;
+            }
+            Vector3 position = unit.Position;
+            currentViewedPosition = new Vector2(position.x, position.z);
         }
 
 

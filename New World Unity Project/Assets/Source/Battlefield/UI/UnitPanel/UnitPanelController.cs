@@ -75,6 +75,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
             } else {
                 selectedUnit = null;
             }
+            portrait.Followed = selectedUnit;
             SelectionSystemController.Instance.ChangeMainSelection(selectedUnit);
         }
 
@@ -82,8 +83,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
             if (selectedUnit == null) {
                 return;
             }
-            var position = new Vector2(selectedUnit.Position.x, selectedUnit.Position.z);
-            mainCamera.Relocate(position);
+            mainCamera.Center(selectedUnit);
         }
 
 
