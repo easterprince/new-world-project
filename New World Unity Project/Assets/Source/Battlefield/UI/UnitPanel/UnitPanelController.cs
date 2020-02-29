@@ -52,7 +52,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
         }
 
         private void OnDestroy() {
-            PointerInterceptorController.Instance.ClickEvent.RemoveListener(ProcessInterceptorClick);
+            PointerInterceptorController.Instance?.ClickEvent.RemoveListener(ProcessInterceptorClick);
         }
 
 
