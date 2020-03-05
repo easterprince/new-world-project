@@ -78,7 +78,7 @@ namespace NewWorld.Battlefield.UI.LoadingScreen {
             CurrentCondition = Condition.Inactive;
         }
 
-        private void Update() {
+        private void LateUpdate() {
             if (currentCondition == Condition.Loading) {
                 currentAngle = (currentAngle + 1) % 360;
                 Quaternion rotation = Quaternion.AngleAxis(currentAngle, Vector3.forward);

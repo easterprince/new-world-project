@@ -44,7 +44,7 @@ namespace NewWorld.Battlefield.UI.SelectionSystem {
             image = GetComponent<Image>() ?? throw new MissingComponentException("Need Image component!");
         }
 
-        private void Update() {
+        private void LateUpdate() {
             if (selected == null) {
                 Selected = null;
                 return;

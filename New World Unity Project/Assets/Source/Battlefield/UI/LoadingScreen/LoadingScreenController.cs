@@ -42,7 +42,7 @@ namespace NewWorld.Battlefield.UI.LoadingScreen {
 
         }
 
-        private void Update() {
+        private void LateUpdate() {
             if (ready && Input.anyKey) {
                 gameObject.SetActive(false);
                 BattlefieldController.Instance.StartBattle();

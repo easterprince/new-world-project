@@ -53,7 +53,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
 
         }
 
-        private void Update() {
+        private void LateUpdate() {
             UpdateText();
         }
 

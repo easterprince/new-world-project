@@ -50,7 +50,7 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
             }
         }
 
-        private void Update() {
+        private void LateUpdate() {
             if (followed == null) {
                 if (cameraView.activeSelf) {
                     cameraView.SetActive(false);

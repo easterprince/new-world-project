@@ -109,7 +109,7 @@ namespace NewWorld.Battlefield.Cameras {
             }
         }
 
-        private void Update() {
+        private void LateUpdate() {
 
             // Update current location.
             float deltaTime = Time.unscaledDeltaTime;
@@ -143,15 +143,8 @@ namespace NewWorld.Battlefield.Cameras {
                 }
 
             }
-            CorrectViewedPosition(ref currentViewedPosition);
-            CorrectViewingDistance(ref currentViewingDistance);
 
-            // Apply current location.
-            transform.rotation = currentRotation;
-            float originY = Mathf.Max(MapController.Instance.GetSurfaceHeight(currentViewedPosition), 0);
-            Vector3 origin = new Vector3(currentViewedPosition.x, originY, currentViewedPosition.y);
-            Vector3 offset = currentViewingDistance * -cameraHolder.transform.forward;
-            transform.position = origin + offset;
+            ApplyCurrentLocation();
 
         }
 
@@ -160,6 +153,7 @@ namespace NewWorld.Battlefield.Cameras {
 
         public void Center(Vector2 position) {
             currentViewedPosition = position;
+            ApplyCurrentLocation();
         }
 
         public void Center(UnitController unit) {
@@ -168,10 +162,26 @@ namespace NewWorld.Battlefield.Cameras {
             }
             Vector3 position = unit.Position;
             currentViewedPosition = new Vector2(position.x, position.z);
+            ApplyCurrentLocation();
         }
 
 
         // Support.
+
+        private void ApplyCurrentLocation() {
+
+            // Correct location.
+            CorrectViewedPosition(ref currentViewedPosition);
+            CorrectViewingDistance(ref currentViewingDistance);
+
+            // Apply location.
+            transform.rotation = currentRotation;
+            float originY = Mathf.Max(MapController.Instance.GetSurfaceHeight(currentViewedPosition), 0);
+            Vector3 origin = new Vector3(currentViewedPosition.x, originY, currentViewedPosition.y);
+            Vector3 offset = currentViewingDistance * -cameraHolder.transform.forward;
+            transform.position = origin + offset;
+
+        }
 
         private void CorrectViewedPosition(ref Vector2 position) {
             Vector2Int mapSize = MapController.Instance.Size;
