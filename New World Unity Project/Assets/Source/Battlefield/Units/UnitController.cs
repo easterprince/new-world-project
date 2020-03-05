@@ -11,6 +11,7 @@ using NewWorld.Battlefield.Units.Conditions;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Units.Conditions.Collapses;
+using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -28,6 +29,7 @@ namespace NewWorld.Battlefield.Units {
             }
             GameObject unit = Instantiate(prefab, new Vector3(-1, -1, -1), Quaternion.identity, parent);
             unit.name = name ?? defaultGameObjectName;
+            GameObjects.SetLayerRecursively(unit, parent.gameObject.layer);
             unit.layer = parent.gameObject.layer;
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.behaviour = new UnitBehaviour(unitController);
