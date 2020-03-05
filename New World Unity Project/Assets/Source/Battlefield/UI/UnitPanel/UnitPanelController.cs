@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using NewWorld.Battlefield.Units;
 using NewWorld.Battlefield.UI.SelectionSystem;
 using NewWorld.Battlefield.Cameras;
+using NewWorld.Battlefield.UI.Bars;
 
 namespace NewWorld.Battlefield.UI.UnitPanel {
 
@@ -14,18 +15,23 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
+        [Header("Camera")]
         [SerializeField]
         private CameraController mainCamera;
 
-        [Header("Panel")]
+        [Header("Portrait")]
+        [SerializeField]
+        private UnitPortraitController portrait;
+
+        [Header("Text")]
         [SerializeField]
         private Text unitNameText;
         [SerializeField]
         private Text unitDescriptionText;
 
-        [Header("Portrait")]
+        [Header("Bars")]
         [SerializeField]
-        private UnitPortraitController portrait;
+        private BarController durabilityBar;
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
@@ -47,14 +53,16 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
             if (portrait == null) {
                 throw new MissingReferenceException($"Missing {nameof(portrait)}.");
             }
+            if (durabilityBar == null) {
+                throw new MissingReferenceException($"Missing {nameof(durabilityBar)}.");
+            }
             PointerInterceptorController.EnsureInstance(this);
             portrait.PointerClickEvent.AddListener(ProcessPortraitClick);
             PointerInterceptorController.Instance.ClickEvent.AddListener(ProcessInterceptorClick);
-
         }
 
         private void LateUpdate() {
-            UpdateText();
+            UpdateInfo();
         }
 
         private void OnDestroy() {
@@ -89,31 +97,53 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
 
         // Support.
 
-        private void UpdateText() {
-            if (selectedUnit == null) {
+        private void UpdateInfo() {
+
+            // Update name.
+            if (selectedUnit != null) {
+                unitNameText.text = selectedUnit.name;
+            } else {
                 unitNameText.text = "";
-                unitDescriptionText.text = "Click on unit to get its description.";
-                return;
             }
-            unitNameText.text = selectedUnit.name;
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.Description ?? "Idle"}");
-            stringBuilder.AppendLine();
-            if (selectedUnit.Durability == null) {
-                stringBuilder.AppendLine("Indestructible.");
-            } else {
-                stringBuilder.AppendLine($"Durability: {selectedUnit.Durability.Durability}/{selectedUnit.Durability.DurabilityLimit}");
-            }
-            var abilities = selectedUnit.Abilities;
-            if (abilities.Count == 0) {
-                stringBuilder.AppendLine("No abilities.");
-            } else {
-                stringBuilder.AppendLine($"Abilities ({abilities.Count}):");
-                foreach (var ability in abilities) {
-                    stringBuilder.AppendLine(ability.Name);
+
+            // Update description.
+            if (selectedUnit != null) {
+                var stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.Description ?? "Idle"}");
+                stringBuilder.AppendLine();
+                if (selectedUnit.Durability == null) {
+                    stringBuilder.AppendLine("Indestructible.");
+                } else {
+                    stringBuilder.AppendLine($"Durability: {selectedUnit.Durability.Durability}/{selectedUnit.Durability.DurabilityLimit}");
                 }
+                var abilities = selectedUnit.Abilities;
+                if (abilities.Count == 0) {
+                    stringBuilder.AppendLine("No abilities.");
+                } else {
+                    stringBuilder.AppendLine($"Abilities ({abilities.Count}):");
+                    foreach (var ability in abilities) {
+                        stringBuilder.AppendLine(ability.Name);
+                    }
+                }
+                unitDescriptionText.text = stringBuilder.ToString();
+            } else {
+                unitDescriptionText.text = "Click on unit to get its description.";
             }
-            unitDescriptionText.text = stringBuilder.ToString();
+
+            // Update bars.
+            if (selectedUnit != null) {
+                var unitDurability = selectedUnit.Durability;
+                if (unitDurability == null) {
+                    durabilityBar.Filled = 1;
+                    durabilityBar.Color = Color.white;
+                } else {
+                    durabilityBar.Filled = unitDurability.Durability / unitDurability.DurabilityLimit;
+                    durabilityBar.Color = Color.red;
+                }
+            } else {
+                durabilityBar.Filled = 0;
+            }
+
         }
 
 
