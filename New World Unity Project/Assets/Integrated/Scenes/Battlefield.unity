@@ -1019,9 +1019,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cc85e27749abc24b804bc31e8b3ce44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clusterSize: 8
-  heightMapResolution: 65
-  alphaMapResolution: 64
+  clusterPrefab: {fileID: 4551728798644950150, guid: 8f1d9ee2cf25bee419f3f26b477ea5c5,
+    type: 3}
   tileMaximumRadius: 0
   flatBorder: 2.5
   abyssLevel: -3
