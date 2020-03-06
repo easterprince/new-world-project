@@ -27,6 +27,10 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
         [SerializeField]
         private Text unitNameText;
         [SerializeField]
+        private Text unitFactionText;
+        [SerializeField]
+        private Text unitDurabilityText;
+        [SerializeField]
         private Text unitDescriptionText;
 
         [Header("Bars")]
@@ -44,11 +48,17 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
             if (mainCamera == null) {
                 throw new MissingReferenceException($"Missing {nameof(mainCamera)}.");
             }
+            if (unitNameText == null) {
+                throw new MissingReferenceException($"Missing {nameof(unitNameText)}.");
+            }
+            if (unitFactionText == null) {
+                throw new MissingReferenceException($"Missing {nameof(unitFactionText)}.");
+            }
             if (unitDescriptionText == null) {
                 throw new MissingReferenceException($"Missing {nameof(unitDescriptionText)}.");
             }
-            if (unitNameText == null) {
-                throw new MissingReferenceException($"Missing {nameof(unitNameText)}.");
+            if (unitDurabilityText == null) {
+                throw new MissingReferenceException($"Missing {nameof(unitDurabilityText)}.");
             }
             if (portrait == null) {
                 throw new MissingReferenceException($"Missing {nameof(portrait)}.");
@@ -106,6 +116,13 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
                 unitNameText.text = "";
             }
 
+            // Update faction.
+            if (selectedUnit != null) {
+                unitFactionText.text = "neutral";
+            } else {
+                unitFactionText.text = "";
+            }
+
             // Update description.
             if (selectedUnit != null) {
                 var stringBuilder = new StringBuilder();
@@ -130,18 +147,21 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
                 unitDescriptionText.text = "Click on unit to get its description.";
             }
 
-            // Update bars.
+            // Update durability info.
             if (selectedUnit != null) {
                 var unitDurability = selectedUnit.Durability;
                 if (unitDurability == null) {
                     durabilityBar.Filled = 1;
                     durabilityBar.Color = Color.white;
+                    unitDurabilityText.text = "Indestructible";
                 } else {
                     durabilityBar.Filled = unitDurability.Durability / unitDurability.DurabilityLimit;
                     durabilityBar.Color = Color.red;
+                    unitDurabilityText.text = $"Durability: {unitDurability.Durability}/{unitDurability.DurabilityLimit}";
                 }
             } else {
                 durabilityBar.Filled = 0;
+                unitDurabilityText.text = "";
             }
 
         }
