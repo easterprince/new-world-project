@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using NewWorld.Utilities;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace NewWorld.Battlefield.UI.Bars {
 
-    public class VerticalBarController : BarController {
+    public class VerticalVesselController : VesselController {
 
         // Fields.
 
@@ -23,20 +24,12 @@ namespace NewWorld.Battlefield.UI.Bars {
 
         private void Start() {
             rectTransform = GetComponent<RectTransform>();
-            if (rectTransform == null) {
-                throw new MissingComponentException($"Missing {typeof(RectTransform)} component!");
-            }
-            if (fill == null) {
-                throw new MissingReferenceException("Missing fill!");
-            }
+            GameObjects.ValidateComponent(rectTransform);
+            GameObjects.ValidateReference(fill, "Fill");
             fillTransform = fill.GetComponent<RectTransform>();
-            if (fillTransform == null) {
-                throw new MissingComponentException($"Fill is missing {typeof(RectTransform)} component!");
-            }
+            GameObjects.ValidateComponent(fillTransform, "Fill");
             fillImage = fill.GetComponent<Image>();
-            if (fillImage == null) {
-                throw new MissingComponentException($"Fill is missing  {typeof(Image)} component!");
-            }
+            GameObjects.ValidateComponent(fillImage, "Fill");
         }
 
 

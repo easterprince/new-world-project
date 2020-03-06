@@ -27,10 +27,6 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
         [SerializeField]
         private Text unitNameText;
         [SerializeField]
-        private Text unitFactionText;
-        [SerializeField]
-        private Text unitDurabilityText;
-        [SerializeField]
         private Text unitDescriptionText;
 
         [Header("Bars")]
@@ -53,9 +49,6 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
             }
             if (unitDescriptionText == null) {
                 throw new MissingReferenceException($"Missing {nameof(unitDescriptionText)}.");
-            }
-            if (unitDurabilityText == null) {
-                throw new MissingReferenceException($"Missing {nameof(unitDurabilityText)}.");
             }
             if (portrait == null) {
                 throw new MissingReferenceException($"Missing {nameof(portrait)}.");
@@ -118,11 +111,6 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
                 var stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"Current condition: {selectedUnit.CurrentCondition?.Description ?? "Idle"}");
                 stringBuilder.AppendLine();
-                if (selectedUnit.Durability == null) {
-                    stringBuilder.AppendLine("Indestructible.");
-                } else {
-                    stringBuilder.AppendLine($"Durability: {selectedUnit.Durability.Durability}/{selectedUnit.Durability.DurabilityLimit}");
-                }
                 var abilities = selectedUnit.Abilities;
                 if (abilities.Count == 0) {
                     stringBuilder.AppendLine("No abilities.");
@@ -139,19 +127,24 @@ namespace NewWorld.Battlefield.UI.UnitPanel {
 
             // Update durability info.
             if (selectedUnit != null) {
+                durabilityBar.gameObject.SetActive(true);
                 var unitDurability = selectedUnit.Durability;
                 if (unitDurability == null) {
                     durabilityBar.Filled = 1;
                     durabilityBar.Color = Color.white;
-                    unitDurabilityText.text = "indestructible";
+                    durabilityBar.TypeText = "DUR";
+                    durabilityBar.ValueText = "Indestructible";
                 } else {
                     durabilityBar.Filled = unitDurability.Durability / unitDurability.DurabilityLimit;
                     durabilityBar.Color = Color.red;
-                    unitDurabilityText.text = $"{unitDurability.Durability}/{unitDurability.DurabilityLimit}";
+                    durabilityBar.TypeText = "DUR";
+                    durabilityBar.ValueText = $"{unitDurability.Durability}/{unitDurability.DurabilityLimit}";
                 }
             } else {
+                durabilityBar.gameObject.SetActive(false);
                 durabilityBar.Filled = 0;
-                unitDurabilityText.text = "";
+                durabilityBar.TypeText = "";
+                durabilityBar.ValueText = "";
             }
 
         }

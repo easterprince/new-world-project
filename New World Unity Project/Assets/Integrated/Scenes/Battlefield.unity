@@ -875,6 +875,7 @@ GameObject:
   m_Component:
   - component: {fileID: 727092554}
   - component: {fileID: 727092555}
+  - component: {fileID: 727092556}
   m_Layer: 5
   m_Name: Durability Section
   m_TagString: Untagged
@@ -911,6 +912,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 727092553}
   m_CullTransparentMesh: 0
+--- !u!114 &727092556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727092553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7d247a342f41d94493bb7689bd1fbaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 1939377469}
+  valueText: {fileID: 1730994671}
+  vessel: {fileID: 1025984468}
 --- !u!1 &750632329
 GameObject:
   m_ObjectHideFlags: 0
@@ -1233,7 +1249,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1025984464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63ed1a40702c0604d8df85d6ba37dcd9, type: 3}
+  m_Script: {fileID: 11500000, guid: be4855ec8c48e6345bc46ff6bd3ee144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   fill: {fileID: 1699673311}
@@ -1765,10 +1781,8 @@ MonoBehaviour:
   mainCamera: {fileID: 1122689474}
   portrait: {fileID: 1609000782}
   unitNameText: {fileID: 1253931592}
-  unitFactionText: {fileID: 0}
-  unitDurabilityText: {fileID: 1730994671}
   unitDescriptionText: {fileID: 125972348}
-  durabilityBar: {fileID: 1025984468}
+  durabilityBar: {fileID: 727092556}
 --- !u!1 &1547847116
 GameObject:
   m_ObjectHideFlags: 0
@@ -2684,7 +2698,7 @@ GameObject:
   - component: {fileID: 1939377470}
   - component: {fileID: 1939377469}
   m_Layer: 5
-  m_Name: Durability Symbol
+  m_Name: Durability Kind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

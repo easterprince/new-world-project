@@ -1,39 +1,55 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.UI.Bars {
     
-    public abstract class BarController : MonoBehaviour {
+    public class BarController : MonoBehaviour {
 
         // Fields.
 
-        private float filled;
-        private Color color;
+#pragma warning disable IDE0044, CS0414, CS0649
+
+        [SerializeField]
+        private Text nameText;
+        [SerializeField]
+        private Text valueText;
+        [SerializeField]
+        private VesselController vessel;
+
+#pragma warning restore IDE0044, CS0414, CS0649
 
 
-        // Properties.
+        // Life cycle.
 
-        public float Filled {
-            get => filled;
-            set {
-                filled = Mathf.Clamp(value, 0, 1);
-                OnFilledUpdate();
-            }
-        }
-
-        public Color Color {
-            get => color;
-            set {
-                color = value;
-                OnColorUpdate();
-            }
+        private void Start() {
+            GameObjects.ValidateReference(nameText, "Name Text");
+            GameObjects.ValidateReference(valueText, "Value Text");
+            GameObjects.ValidateReference(vessel, "Vessel");
         }
 
 
         // Methods.
 
-        protected abstract void OnFilledUpdate();
+        public string TypeText {
+            get => nameText.text;
+            set => nameText.text = value;
+        }
 
-        protected abstract void OnColorUpdate();
+        public string ValueText {
+            get => valueText.text;
+            set => valueText.text = value;
+        }
+
+        public float Filled {
+            get => vessel.Filled;
+            set => vessel.Filled = value;
+        }
+
+        public Color Color {
+            get => vessel.Color;
+            set => vessel.Color = value;
+        }
 
 
     }
