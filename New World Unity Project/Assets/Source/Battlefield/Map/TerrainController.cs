@@ -13,36 +13,29 @@ namespace NewWorld.Battlefield.Map {
 
 #pragma warning disable IDE0044, CS0414, CS0649
 
+        [Header("Prefab")]
         [SerializeField]
-        private int clusterSize;
+        private GameObject clusterPrefab;
 
-        [SerializeField]
-        private int heightMapResolution;
-
-        [SerializeField]
-        private int alphaMapResolution;
-
+        [Header("Drawing parameters")]
         [SerializeField]
         private float tileMaximumRadius;
-
         [SerializeField]
         private float flatBorder;
-
         [SerializeField]
         private float abyssLevel;
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
-        private TerrainLayer terrainLayer;
-
         private bool constructed = true;
         private Terrain[,] clusters = new Terrain[0, 0];
 
+        private int clusterSize;
+        private int heightMapResolution;
+        private int alphaMapResolution;
+
 
         private void OnValidate() {
-            clusterSize = Mathf.NextPowerOfTwo(Mathf.Clamp(clusterSize, 1, 32));
-            heightMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(heightMapResolution - 1, 32, 2048)) + 1;
-            alphaMapResolution = Mathf.NextPowerOfTwo(Mathf.Clamp(alphaMapResolution, 32, 2048));
             tileMaximumRadius = Mathf.Clamp(tileMaximumRadius, 0, 1);
             flatBorder = Mathf.Max(0.5f, flatBorder);
             abyssLevel = Mathf.Min(0, abyssLevel);
@@ -56,8 +49,18 @@ namespace NewWorld.Battlefield.Map {
 
         // Life cycle.
 
-        void Awake() {
-            terrainLayer = Resources.Load("Default Terrain Layer") as TerrainLayer;
+        private void Start() {
+            if (clusterPrefab == null) {
+                throw new MissingReferenceException("Missing cluster prefab!");
+            }
+            Terrain terrain = clusterPrefab.GetComponent<Terrain>();
+            if (terrain == null) {
+                throw new MissingComponentException("Cluster prefab is missing Terrain component!");
+            }
+            TerrainData terrainData = terrain.terrainData;
+            clusterSize = (int) terrainData.size.x;
+            heightMapResolution = terrainData.heightmapResolution;
+            alphaMapResolution = terrainData.alphamapResolution;
         }
 
 
@@ -99,26 +102,22 @@ namespace NewWorld.Battlefield.Map {
                     float[,] heightMap = heightMaps[clusterIndex.x, clusterIndex.y];
                     float[,,] alphaMap = alphaMaps[clusterIndex.x, clusterIndex.y];
 
-                    var terrainData = new TerrainData();
-                    terrainData.heightmapResolution = heightMapResolution;
-                    terrainData.alphamapResolution = alphaMapResolution;
-                    terrainData.baseMapResolution = 1024;
-                    terrainData.SetDetailResolution(1024, 16);
-                    terrainData.size = new Vector3(clusterSize, description.HeightLimit - abyssLevel, clusterSize);
-                    terrainData.SetHeights(0, 0, heightMap);
-                    terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
-                    terrainData.SetAlphamaps(0, 0, alphaMap);
-
-                    GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
-                    terrainObject.transform.parent = transform;
+                    GameObject terrainObject = Instantiate(clusterPrefab, transform);
                     terrainObject.transform.position = new Vector3(
                             clusterIndex.x * clusterSize - flatBorder,
                             abyssLevel,
                             clusterIndex.y * clusterSize - flatBorder
                     );
+                    terrainObject.layer = gameObject.layer;
                     terrainObject.name = "Cluster " + terrainObject.transform.position;
                     Terrain terrain = terrainObject.GetComponent<Terrain>();
                     clusters[clusterIndex.x, clusterIndex.y] = terrain;
+
+                    terrain.terrainData = Instantiate(terrain.terrainData);
+                    var terrainData = terrain.terrainData;
+                    terrainData.size = new Vector3(clusterSize, description.HeightLimit - abyssLevel, clusterSize);
+                    terrainData.SetHeights(0, 0, heightMap);
+                    terrainData.SetAlphamaps(0, 0, alphaMap);
 
                 }
 

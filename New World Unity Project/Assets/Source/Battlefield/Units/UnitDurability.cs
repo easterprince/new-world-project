@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NewWorld.Battlefield.Units {
     
-    public class UnitDurability : UnitModule {
+    public class UnitDurability : UnitModule<UnitDurabilityPresentation> {
 
         // Static.
 
@@ -35,14 +35,16 @@ namespace NewWorld.Battlefield.Units {
             protected set => durability = Mathf.Min(value, durabilityLimit);
         }
 
-        public bool Collapsed => durability <= 0;
+        public bool Broken => durability <= 0;
 
 
         // Constructor.
 
-        public UnitDurability(UnitController owner, float durabilityLimit) : base(owner) {
+        public UnitDurability(UnitController owner, float durabilityLimit) {
             DurabilityLimit = durabilityLimit;
             Durability = durabilityLimit;
+            Presentation = new UnitDurabilityPresentation(this);
+            Connect(owner);
         }
 
 

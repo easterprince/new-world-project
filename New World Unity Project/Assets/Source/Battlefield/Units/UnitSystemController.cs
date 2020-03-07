@@ -21,6 +21,12 @@ namespace NewWorld.Battlefield.Units {
         private Dictionary<UnitController, Vector2Int> positions = new Dictionary<UnitController, Vector2Int>();
         private Dictionary<Vector2Int, UnitController> onPositions = new Dictionary<Vector2Int, UnitController>();
 
+        // Game objects.
+#pragma warning disable IDE0044, CS0414, CS0649
+        [SerializeField]
+        private GameObject unitsGameObject;
+#pragma warning restore IDE0044, CS0414, CS0649
+
         // Events.
         private ConditionalEvent<UnitController, Vector2Int> connectedNodeUpdatedEvent;
         private ConditionalEvent<UnitController> unitAddedEvent;
@@ -50,7 +56,9 @@ namespace NewWorld.Battlefield.Units {
 
         override private protected void Awake() {
             base.Awake();
-            Instance = this;
+            if (unitsGameObject == null) {
+                throw new MissingReferenceException($"Missing {unitsGameObject}.");
+            }
             connectedNodeUpdatedEvent = new WhenLoadedEvent<UnitController, Vector2Int>(this);
             unitAddedEvent = new WhenLoadedEvent<UnitController>(this);
             unitRemovedEvent = new WhenLoadedEvent<UnitController, Vector2Int>(this);
@@ -58,7 +66,7 @@ namespace NewWorld.Battlefield.Units {
 
         private void Start() {
             MapController.EnsureInstance(this);
-            MapController.Instance.UnloadedEvent.AddListener(() => StartReloading(null));
+            MapController.Instance.UnloadedEvent.AddListener(StartClearing);
         }
 
         private void Update() {
@@ -73,6 +81,11 @@ namespace NewWorld.Battlefield.Units {
                 ProcessGameAction(action);
             }
 
+        }
+
+        override private protected void OnDestroy() {
+            MapController.Instance?.UnloadedEvent.RemoveListener(StartClearing);
+            base.OnDestroy();
         }
 
 
@@ -106,6 +119,13 @@ namespace NewWorld.Battlefield.Units {
             }
 
             Loaded = true;
+        }
+
+
+        // Event handlers.
+
+        private void StartClearing() {
+            StartReloading(null);
         }
 
 

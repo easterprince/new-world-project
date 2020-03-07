@@ -4,8 +4,8 @@ using UnityEngine.Events;
 
 namespace NewWorld.Utilities.Singletons {
     
-    public abstract class ReloadableSingleton<T, Description> : SceneSingleton<T>, ILoadable
-        where T : ReloadableSingleton<T, Description> {
+    public abstract class ReloadableSingleton<TSelf, TDescription> : SceneSingleton<TSelf>, ILoadable
+        where TSelf : ReloadableSingleton<TSelf, TDescription> {
 
         // Fields.
 
@@ -35,9 +35,17 @@ namespace NewWorld.Utilities.Singletons {
         public UnityEvent LoadedEvent => loadedEvent;
 
 
+        // Life cycle.
+
+        override private protected void OnDestroy() {
+            Loaded = false;
+            base.OnDestroy();
+        }
+
+
         // Public methods.
 
-        public abstract void StartReloading(Description description);
+        public abstract void StartReloading(TDescription description);
 
 
     }

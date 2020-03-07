@@ -6,7 +6,7 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
         // Constructors.
 
-        public GeneralUnitUpdate(UnitController owner) : base(owner) {}
+        public GeneralUnitUpdate(UnitController unit) : base(unit) {}
 
 
     }

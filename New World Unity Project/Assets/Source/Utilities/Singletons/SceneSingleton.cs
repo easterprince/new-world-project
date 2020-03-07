@@ -4,35 +4,40 @@ using UnityEngine;
 
 namespace NewWorld.Utilities.Singletons {
 
-    public class SceneSingleton<T> : MonoBehaviour
-        where T : SceneSingleton<T> {
+    public class SceneSingleton<TSelf> : MonoBehaviour
+        where TSelf : SceneSingleton<TSelf> {
 
         // Fields.
 
-        private static T instance;
+        private static TSelf instance;
 
 
         // Static.
 
-        public static T Instance {
+        public static TSelf Instance {
             get => instance;
-            protected set => instance = value;
         }
 
         public static void EnsureInstance(object userClass) {
             if (Instance == null) {
-                throw new MissingSingletonException<T>(userClass);
+                throw new MissingSingletonException<TSelf>(userClass);
             }
         }
 
 
         // Life cycle.
 
-        virtual private protected void Awake() {}
+        private protected virtual void Awake() {
+            if (instance == null) {
+                instance = (TSelf) this;
+            } else {
+                throw new System.Exception($"{typeof(TSelf)} singleton has been already instantiated.");
+            }
+        }
 
-        virtual protected void OnDestroy() {
-            if (Instance == this) {
-                Instance = null;
+        private protected virtual void OnDestroy() {
+            if (instance == this) {
+                instance = null;
             }
         }
 

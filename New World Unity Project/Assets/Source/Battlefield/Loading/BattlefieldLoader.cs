@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Map.Generation;
+using NewWorld.Battlefield.Loading.Generation;
 using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.UI.LoadingScreen;
 
 namespace NewWorld.Battlefield.Loading {
 
@@ -15,12 +16,11 @@ namespace NewWorld.Battlefield.Loading {
 #pragma warning disable IDE0044, CS0414, CS0649
 
         [SerializeField]
-        private BattlefieldLoadingScreenController loadingScreen;
+        private LoadingScreenController loadingScreen;
 
 #pragma warning restore IDE0044, CS0414, CS0649
 
         private bool readyToLoad = false;
-        private bool readyToStart = false;
 
         private BattlefieldDescription battlefieldDescription;
 
@@ -33,19 +33,8 @@ namespace NewWorld.Battlefield.Loading {
 
         private void Update() {
             if (readyToLoad) {
-                LoadBattlefield();
+                BattlefieldController.Instance.StartReloading(battlefieldDescription);
                 readyToLoad = false;
-            }
-            if (readyToStart) {
-                if (loadingScreen.LoadingAnimation) {
-                    loadingScreen.LoadingAnimation = false;
-                }
-                if (Input.anyKey) {
-                    readyToStart = false;
-                    loadingScreen.gameObject.SetActive(false);
-                    BattlefieldController.Instance.StartBattle();
-                    Destroy(this.gameObject);
-                }
             }
         }
 
@@ -87,17 +76,6 @@ namespace NewWorld.Battlefield.Loading {
                 unitDescriptions.Add(new UnitDescription(position, 0.48f));
             }
             return new BattlefieldDescription(mapDescription, unitDescriptions);
-        }
-
-        private void LoadBattlefield() {
-
-            void AfterBattlefieldLoad() {
-                BattlefieldController.Instance.LoadedEvent.RemoveListener(AfterBattlefieldLoad);
-                readyToStart = true;
-            }
-
-            BattlefieldController.Instance.LoadedEvent.AddListener(AfterBattlefieldLoad);
-            BattlefieldController.Instance.StartReloading(battlefieldDescription);
         }
 
 

@@ -5,16 +5,37 @@ using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability : UnitModule {
+    public abstract class Ability<TPresentation> : UnitModule<TPresentation>, IAbility
+        where TPresentation : class, IAbilityPresentation {
+
+        // Properties.
+
+        IAbilityPresentation IAbility.Presentation => Presentation;
+        public virtual string Name => "Unknown";
+
 
         // Constructor.
 
-        public Ability(UnitController owner) : base(owner) {}
+        protected Ability() : base() {}
 
 
         // Methods.
 
-        public abstract Condition Use(object parameterSet);
+        new public void Connect(UnitController owner) {
+            base.Connect(owner);
+        }
+
+        public ICondition Use(object parameterSet) {
+            if (!Connected) {
+                throw new System.InvalidOperationException("Ability cannot be used when disconnected.");
+            }
+            return MakeCondition(parameterSet);
+        }
+
+
+        // Inner methods.
+
+        protected abstract ICondition MakeCondition(object parameterSet);
 
 
     }
