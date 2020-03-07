@@ -162,7 +162,7 @@ namespace NewWorld.Battlefield.Cameras {
             if (unit == null) {
                 return;
             }
-            currentViewedPosition = unit.Position;
+            currentViewedPosition = unit.ColliderComponent.bounds.center;
             ApplyCurrentLocation();
         }
 
