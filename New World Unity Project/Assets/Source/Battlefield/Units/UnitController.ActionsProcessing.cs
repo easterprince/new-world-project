@@ -21,22 +21,20 @@ namespace NewWorld.Battlefield.Units {
                 throw new System.ArgumentNullException(nameof(gameAction));
             }
             bool processed = false;
-            
-            if (gameAction is UnitUpdate unitUpdate && unitUpdate.Unit == this) {
-                if (unitUpdate is GeneralUnitUpdate generalUnitUpdate) {
-                    processed = ProcessGeneralUnitUpdate(generalUnitUpdate);
-                } else if (unitUpdate is InternalUnitUpdate internalUnitUpdate) {
-                    if (!external) {
-                        processed = ProcessInternalUnitUpdate(internalUnitUpdate);
+
+            if (gameAction is UnitUpdate unitUpdate) {
+                if (unitUpdate.Unit == this) {
+                    if (unitUpdate is GeneralUnitUpdate ownGeneralUnitUpdate) {
+                        processed = ProcessOwnGeneralUnitUpdate(ownGeneralUnitUpdate);
+                    } else if (unitUpdate is InternalUnitUpdate ownInternalUnitUpdate && !external) {
+                        processed = ProcessOwnInternalUnitUpdate(ownInternalUnitUpdate);
                     }
+                } else if (!external) {
+                    unitUpdate.Unit.AddAction(unitUpdate);
+                    processed = true;
                 }
-            } else if (gameAction is UnitSystemUpdate unitSystemUpdate) {
-                if (!external) {
-                    processed = ProcessUnitSystemUpdate(unitSystemUpdate);
-                }
-            } else if (!external) {
-                actionsToReturn.Add(gameAction);
-                processed = true;
+            } else if (gameAction is UnitSystemUpdate unitSystemUpdate && !external) {
+                processed = ProcessUnitSystemUpdate(unitSystemUpdate);
             }
 
             if (!processed) {
@@ -53,58 +51,36 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public void ProcessGameAction(GameAction gameAction) {
-            if (gameAction == null) {
-                throw new System.ArgumentNullException(nameof(gameAction));
-            }
-            if (this == null) {
-                return;
-            }
-            ProcessGameAction(gameAction, true);
-        }
-
-        public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
-            if (gameActions == null) {
-                throw new System.ArgumentNullException(nameof(gameActions));
-            }
-            if (this == null) {
-                return;
-            }
-            foreach (var gameAction in gameActions) {
-                ProcessGameAction(gameAction, true);
-            }
-        }
-
 
         // General unit updates.
 
-        private bool ProcessGeneralUnitUpdate(GeneralUnitUpdate generalUnitUpdate) {
+        private bool ProcessOwnGeneralUnitUpdate(GeneralUnitUpdate generalUnitUpdate) {
             if (generalUnitUpdate is CauseDamage causeDamage) {
-                return ProcessGeneralUnitUpdate(causeDamage);
+                return ProcessOwnGeneralUnitUpdate(causeDamage);
             }
             if (generalUnitUpdate is StopCondition stopCondition) {
-                return ProcessGeneralUnitUpdate(stopCondition);
+                return ProcessOwnGeneralUnitUpdate(stopCondition);
             }
             if (generalUnitUpdate is ForceCondition forceCondition) {
-                return ProcessGeneralUnitUpdate(forceCondition);
+                return ProcessOwnGeneralUnitUpdate(forceCondition);
             }
             if (generalUnitUpdate is UseAbility useAbility) {
-                return ProcessGeneralUnitUpdate(useAbility);
+                return ProcessOwnGeneralUnitUpdate(useAbility);
             }
             if (generalUnitUpdate is AttachAbility attachAbility) {
-                return ProcessGeneralUnitUpdate(attachAbility);
+                return ProcessOwnGeneralUnitUpdate(attachAbility);
             }
             return false;
         }
 
-        private bool ProcessGeneralUnitUpdate(CauseDamage causeDamage) {
+        private bool ProcessOwnGeneralUnitUpdate(CauseDamage causeDamage) {
             if (durability != null) {
                 durability.TakeDamage(causeDamage.DamageValue);
             }
             return true;
         }
 
-        private bool ProcessGeneralUnitUpdate(StopCondition stopCondition) {
+        private bool ProcessOwnGeneralUnitUpdate(StopCondition stopCondition) {
             if (stopCondition.Condition.BelongsTo(currentCondition)) {
                 var actions = currentCondition.Stop(stopCondition.ForceStop);
                 if (currentCondition.Exited) {
@@ -115,10 +91,10 @@ namespace NewWorld.Battlefield.Units {
             return true;
         }
 
-        private bool ProcessGeneralUnitUpdate(ForceCondition forceCondition) {
+        private bool ProcessOwnGeneralUnitUpdate(ForceCondition forceCondition) {
             if (currentCondition != null) {
                 var stopCondition = new StopCondition(CurrentCondition, true);
-                ProcessGeneralUnitUpdate(stopCondition);
+                ProcessOwnGeneralUnitUpdate(stopCondition);
             }
             currentCondition = forceCondition.Condition;
             var actions = currentCondition.Enter(this);
@@ -126,23 +102,23 @@ namespace NewWorld.Battlefield.Units {
             return true;
         }
 
-        private bool ProcessGeneralUnitUpdate(UseAbility useAbility) {
+        private bool ProcessOwnGeneralUnitUpdate(UseAbility useAbility) {
             IAbility ability = FindAbility(useAbility.AbilityPresentation);
             if (ability != null) {
                 if (currentCondition != null) {
                     var cancelCondition = new CancelCondition(CurrentCondition);
-                    ProcessGeneralUnitUpdate(cancelCondition);
+                    ProcessOwnGeneralUnitUpdate(cancelCondition);
                 }
                 if (currentCondition == null) {
                     var newCondition = ability.Use(useAbility.ParameterSet);
                     var forceCondition = new ForceCondition(this, newCondition);
-                    ProcessGeneralUnitUpdate(forceCondition);
+                    ProcessOwnGeneralUnitUpdate(forceCondition);
                 }
             }
             return true;
         }
 
-        private bool ProcessGeneralUnitUpdate(AttachAbility attachAbility) {
+        private bool ProcessOwnGeneralUnitUpdate(AttachAbility attachAbility) {
             IAbility ability = attachAbility.Ability;
             if (!ability.Connected) {
                 ability.Connect(this);
@@ -154,26 +130,26 @@ namespace NewWorld.Battlefield.Units {
 
         // Internal unit updates.
 
-        private bool ProcessInternalUnitUpdate(InternalUnitUpdate internalUnitUpdate) {
+        private bool ProcessOwnInternalUnitUpdate(InternalUnitUpdate internalUnitUpdate) {
             if (internalUnitUpdate is MoveUnit moveUnit) {
-                return ProcessInternalUnitUpdate(moveUnit);
+                return ProcessOwnInternalUnitUpdate(moveUnit);
             }
             if (internalUnitUpdate is SetRotation setRotation) {
-                return ProcessInternalUnitUpdate(setRotation);
+                return ProcessOwnInternalUnitUpdate(setRotation);
             }
             if (internalUnitUpdate is UpdateAnimatorParameter<float> updateFloatAnimatorParameter) {
-                return ProcessInternalUnitUpdate(updateFloatAnimatorParameter);
+                return ProcessOwnInternalUnitUpdate(updateFloatAnimatorParameter);
             }
             if (internalUnitUpdate is UpdateAnimatorParameter<bool> updateBoolAnimatorParameter) {
-                return ProcessInternalUnitUpdate(updateBoolAnimatorParameter);
+                return ProcessOwnInternalUnitUpdate(updateBoolAnimatorParameter);
             }
             if (internalUnitUpdate is ApplyAnimatorTrigger applyAnimatorTrigger) {
-                return ProcessInternalUnitUpdate(applyAnimatorTrigger);
+                return ProcessOwnInternalUnitUpdate(applyAnimatorTrigger);
             }
             return false;
         }
 
-        private bool ProcessInternalUnitUpdate(MoveUnit moveUnit) {
+        private bool ProcessOwnInternalUnitUpdate(MoveUnit moveUnit) {
             Vector2 newPosition2D = new Vector2(transform.position.x, transform.position.z) + moveUnit.PositionChange;
             float newY = MapController.Instance.GetSurfaceHeight(newPosition2D);
             Vector3 newPosition = new Vector3(newPosition2D.x, newY, newPosition2D.y);
@@ -187,22 +163,22 @@ namespace NewWorld.Battlefield.Units {
             return true;
         }
 
-        private bool ProcessInternalUnitUpdate(SetRotation setRotation) {
+        private bool ProcessOwnInternalUnitUpdate(SetRotation setRotation) {
             transform.rotation = setRotation.Rotation;
             return true;
         }
 
-        private bool ProcessInternalUnitUpdate(UpdateAnimatorParameter<float> animatorParameterUpdate) {
+        private bool ProcessOwnInternalUnitUpdate(UpdateAnimatorParameter<float> animatorParameterUpdate) {
             animator.SetFloat(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
             return true;
         }
 
-        private bool ProcessInternalUnitUpdate(UpdateAnimatorParameter<bool> animatorParameterUpdate) {
+        private bool ProcessOwnInternalUnitUpdate(UpdateAnimatorParameter<bool> animatorParameterUpdate) {
             animator.SetBool(animatorParameterUpdate.AnimationParameterHash, animatorParameterUpdate.NewValue);
             return true;
         }
 
-        private bool ProcessInternalUnitUpdate(ApplyAnimatorTrigger animatorTriggerApplication) {
+        private bool ProcessOwnInternalUnitUpdate(ApplyAnimatorTrigger animatorTriggerApplication) {
             animator.SetTrigger(animatorTriggerApplication.AnimationTriggerHash);
             return true;
         }
@@ -211,7 +187,7 @@ namespace NewWorld.Battlefield.Units {
         // Unit System updates.
 
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
-            actionsToReturn.Add(unitSystemUpdate);
+            UnitSystemController.Instance.AddAction(unitSystemUpdate);
             return true;
         }
 

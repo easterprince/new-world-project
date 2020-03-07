@@ -12,7 +12,7 @@ namespace NewWorld.Battlefield.Units {
         // Actions processing.
         // Note: method have to return true if action has been processed, and false otherwise.
 
-        public void ProcessGameAction(GameAction gameAction) {
+        private void ProcessGameAction(GameAction gameAction) {
             if (gameAction == null) {
                 throw new System.ArgumentNullException(nameof(gameAction));
             }
@@ -20,8 +20,6 @@ namespace NewWorld.Battlefield.Units {
 
             if (gameAction is UnitSystemUpdate unitSystemUpdate) {
                 processed = ProcessUnitSystemUpdate(unitSystemUpdate);
-            } else if (gameAction is UnitUpdate unitUpdate) {
-                processed = ProcessUnitUpdate(unitUpdate);
             }
 
             if (!processed) {
@@ -29,11 +27,11 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
+        private void ProcessGameActions(IEnumerable<GameAction> gameActions) {
             if (gameActions == null) {
                 throw new System.ArgumentNullException(nameof(gameActions));
             }
-            foreach (GameAction gameAction in gameActions) {
+            foreach (var gameAction in gameActions) {
                 ProcessGameAction(gameAction);
             }
         }
@@ -57,7 +55,7 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(UpdateConnectedNode connectedNodeUpdate) {
             UnitController updatedUnit = connectedNodeUpdate.Unit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
-            if (CheckRelocation(newConnectedNode, updatedUnit)) {
+            if (units.Contains(updatedUnit) && CheckRelocation(newConnectedNode, updatedUnit)) {
                 Vector2Int oldConnectedNode = positions[updatedUnit];
                 onPositions.Remove(oldConnectedNode);
                 onPositions[newConnectedNode] = updatedUnit;
@@ -88,17 +86,6 @@ namespace NewWorld.Battlefield.Units {
                 units.Remove(unit);
                 Destroy(unit.gameObject);
                 unitRemovedEvent.TryInvoke(unit, position);
-            }
-            return true;
-        }
-
-
-        // Unit updates.
-
-        private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
-            UnitController unit = unitUpdate.Unit;
-            if (units.Contains(unit)) {
-                unit.ProcessGameAction(unitUpdate);
             }
             return true;
         }

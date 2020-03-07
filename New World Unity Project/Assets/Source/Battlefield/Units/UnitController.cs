@@ -15,7 +15,7 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units {
 
-    public partial class UnitController : MonoBehaviour, IActing {
+    public partial class UnitController : MonoBehaviour {
 
         // Fabric.
 
@@ -37,7 +37,7 @@ namespace NewWorld.Battlefield.Units {
             unitController.ProcessGameActions(new GameAction[] {
                 new AttachAbility(unitController, new BasicMotion(2)),
                 new AttachAbility(unitController, new BasicAttack(20, 2))
-            });
+            }, true);
             return unitController;
         }
 
@@ -55,7 +55,7 @@ namespace NewWorld.Battlefield.Units {
         private readonly Dictionary<IAbilityPresentation, IAbility> abilities = new Dictionary<IAbilityPresentation, IAbility>();
 
         // Actions.
-        private List<GameAction> actionsToReturn = new List<GameAction>();
+        private readonly List<GameAction> unprocessedActions = new List<GameAction>();
 
 
         // Properties.
@@ -128,8 +128,10 @@ namespace NewWorld.Battlefield.Units {
         private void Awake() {
             UnitSystemController.EnsureInstance(this);
             MapController.EnsureInstance(this);
-            animator = GetComponent<Animator>() ?? throw new MissingComponentException("Missing animator!");
-            collider = GetComponent<Collider>() ?? throw new MissingComponentException("Missing collider!");
+            animator = GetComponent<Animator>();
+            GameObjects.ValidateComponent(animator);
+            collider = GetComponent<Collider>();
+            GameObjects.ValidateComponent(collider);
         }
 
         private void Start() {
@@ -138,9 +140,14 @@ namespace NewWorld.Battlefield.Units {
 
         private void Update() {
 
-            if (!Collapsing) {
+            // Process unprocessed actions.
+            foreach (var gameAction in unprocessedActions) {
+                ProcessGameAction(gameAction, true);
+            }
+            unprocessedActions.Clear();
 
-                // Ask behaviour for orders.
+            // Ask behaviour for orders.
+            if (!Collapsing) {
                 if (behaviour != null) {
                     behaviour.Act(out CancelCondition cancelCondition, out UseAbility useAbility);
                     if (cancelCondition != null) {
@@ -150,7 +157,6 @@ namespace NewWorld.Battlefield.Units {
                         ProcessGameAction(useAbility, false);
                     }
                 }
-
             }
 
             // Receive and process actions from used ability.
@@ -162,26 +168,34 @@ namespace NewWorld.Battlefield.Units {
                 ProcessGameActions(actions, false);
             }
 
+            // Change condition to collapsing.
             if (Collapsing) {
-
-                // Change condition to collapse.
                 if (!(currentCondition is CollapseCondition)) {
                     var collapseCondition = new SimpleCollapse(2);
                     var forceCondition = new ForceCondition(this, collapseCondition);
                     ProcessGameAction(forceCondition, false);
                 }
-
             }
 
         }
 
 
         // Actions management and used ability update.
-        // TODO. Rework it, stop saving actions and send them for saving to unit system.
-        public IEnumerable<GameAction> ReceiveActions() {
-            var actions = actionsToReturn;
-            actionsToReturn = new List<GameAction>();
-            return actions;
+
+        public void AddAction(GameAction gameAction) {
+            if (gameAction == null) {
+                throw new System.ArgumentNullException(nameof(gameAction));
+            }
+            unprocessedActions.Add(gameAction);
+        }
+
+        public void AddActions(IEnumerable<GameAction> gameActions) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
+            foreach (var gameAction in gameActions) {
+                AddAction(gameAction);
+            }
         }
 
 
