@@ -20,8 +20,6 @@ namespace NewWorld.Battlefield.Units {
 
             if (gameAction is UnitSystemUpdate unitSystemUpdate) {
                 processed = ProcessUnitSystemUpdate(unitSystemUpdate);
-            } else if (gameAction is UnitUpdate unitUpdate) {
-                processed = ProcessUnitUpdate(unitUpdate);
             }
 
             if (!processed) {
@@ -88,17 +86,6 @@ namespace NewWorld.Battlefield.Units {
                 units.Remove(unit);
                 Destroy(unit.gameObject);
                 unitRemovedEvent.TryInvoke(unit, position);
-            }
-            return true;
-        }
-
-
-        // Unit updates.
-
-        private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
-            UnitController unit = unitUpdate.Unit;
-            if (units.Contains(unit)) {
-                unit.AddAction(unitUpdate);
             }
             return true;
         }
