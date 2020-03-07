@@ -22,12 +22,12 @@ namespace NewWorld.Battlefield.Cameras {
         private Camera cameraComponent;
 
         // Current location.
-        private Vector2 currentViewedPosition;
+        private Vector3 currentViewedPosition;
         private float currentViewingDistance;
         private Quaternion currentRotation;
 
         // Default location.
-        private Vector2 defaultViewedPosition;
+        private Vector3 defaultViewedPosition;
         private float defaultViewingDistance;
         private Quaternion defaultRotation;
 
@@ -40,6 +40,8 @@ namespace NewWorld.Battlefield.Cameras {
         [Header("Parameters")]
         [SerializeField]
         private bool isControlledByInput = false;
+        [SerializeField]
+        private bool followSurface = false;
 
         [Space]
         [SerializeField]
@@ -89,7 +91,7 @@ namespace NewWorld.Battlefield.Cameras {
         // Life cycle.
 
         private void Awake() {
-            defaultViewedPosition = Vector2.zero;
+            defaultViewedPosition = Vector3.zero;
             defaultViewingDistance = maxViewingDistance;
             defaultRotation = transform.rotation;
             currentViewedPosition = defaultViewedPosition;
@@ -123,7 +125,7 @@ namespace NewWorld.Battlefield.Cameras {
                     positionChange += transform.right * Input.GetAxisRaw("Common X");
                     positionChange += transform.forward * Input.GetAxisRaw("Common Y");
                     positionChange *= motionSpeed * deltaTime;
-                    currentViewedPosition += new Vector2(positionChange.x, positionChange.z);
+                    currentViewedPosition += positionChange;
 
                     // Update distance.
                     float distanceChange = zoomingSpeed * deltaTime * -Input.GetAxisRaw("Common Z");
@@ -151,7 +153,7 @@ namespace NewWorld.Battlefield.Cameras {
 
         // Methods.
 
-        public void Center(Vector2 position) {
+        public void Center(Vector3 position) {
             currentViewedPosition = position;
             ApplyCurrentLocation();
         }
@@ -160,8 +162,7 @@ namespace NewWorld.Battlefield.Cameras {
             if (unit == null) {
                 return;
             }
-            Vector3 position = unit.Position;
-            currentViewedPosition = new Vector2(position.x, position.z);
+            currentViewedPosition = unit.Position;
             ApplyCurrentLocation();
         }
 
@@ -176,17 +177,18 @@ namespace NewWorld.Battlefield.Cameras {
 
             // Apply location.
             transform.rotation = currentRotation;
-            float originY = Mathf.Max(MapController.Instance.GetSurfaceHeight(currentViewedPosition), 0);
-            Vector3 origin = new Vector3(currentViewedPosition.x, originY, currentViewedPosition.y);
             Vector3 offset = currentViewingDistance * -cameraHolder.transform.forward;
-            transform.position = origin + offset;
+            transform.position = currentViewedPosition + offset;
 
         }
 
-        private void CorrectViewedPosition(ref Vector2 position) {
+        private void CorrectViewedPosition(ref Vector3 position) {
             Vector2Int mapSize = MapController.Instance.Size;
             position.x = Mathf.Clamp(position.x, -1, mapSize.x);
-            position.y = Mathf.Clamp(position.y, -1, mapSize.y);
+            position.z = Mathf.Clamp(position.z, -1, mapSize.y);
+            if (followSurface) {
+                position.y = Mathf.Max(MapController.Instance.GetSurfaceHeight(position), 0);
+            }
         }
 
         private void CorrectViewingDistance(ref float distance) {
