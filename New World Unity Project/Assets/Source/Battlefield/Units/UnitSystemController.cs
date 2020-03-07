@@ -17,9 +17,10 @@ namespace NewWorld.Battlefield.Units {
 
         // Structure.
         private long unusedUnitIndex = 0;
-        private HashSet<UnitController> units = new HashSet<UnitController>();
-        private Dictionary<UnitController, Vector2Int> positions = new Dictionary<UnitController, Vector2Int>();
-        private Dictionary<Vector2Int, UnitController> onPositions = new Dictionary<Vector2Int, UnitController>();
+        private readonly HashSet<UnitController> units = new HashSet<UnitController>();
+        private readonly Dictionary<UnitController, Vector2Int> positions = new Dictionary<UnitController, Vector2Int>();
+        private readonly Dictionary<Vector2Int, UnitController> onPositions = new Dictionary<Vector2Int, UnitController>();
+        private readonly List<GameAction> unprocessedActions = new List<GameAction>();
 
         // Game objects.
 #pragma warning disable IDE0044, CS0414, CS0649
@@ -70,17 +71,10 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private void Update() {
-            var collectedActions = new List<GameAction>();
-
-            foreach (UnitController actingUnit in units) {
-                IEnumerable<GameAction> actions = actingUnit.ReceiveActions();
-                collectedActions.AddRange(actions);
-            }
-
-            foreach (GameAction action in collectedActions) {
+            foreach (GameAction action in unprocessedActions) {
                 ProcessGameAction(action);
             }
-
+            unprocessedActions.Clear();
         }
 
         override private protected void OnDestroy() {
@@ -103,7 +97,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
 
-        // External control.
+        // Reloading.
 
         override public void StartReloading(List<UnitDescription> unitDescriptions) {
             Loaded = false;
@@ -119,6 +113,25 @@ namespace NewWorld.Battlefield.Units {
             }
 
             Loaded = true;
+        }
+
+
+        // Action management.
+
+        public void AddAction(GameAction gameAction) {
+            if (gameAction == null) {
+                throw new System.ArgumentNullException(nameof(gameAction));
+            }
+            unprocessedActions.Add(gameAction);
+        }
+
+        public void AddActions(IEnumerable<GameAction> gameActions) {
+            if (gameActions == null) {
+                throw new System.ArgumentNullException(nameof(gameActions));
+            }
+            foreach (var gameAction in gameActions) {
+                AddAction(gameAction);
+            }
         }
 
 

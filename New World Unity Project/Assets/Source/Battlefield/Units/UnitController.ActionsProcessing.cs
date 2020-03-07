@@ -35,7 +35,7 @@ namespace NewWorld.Battlefield.Units {
                     processed = ProcessUnitSystemUpdate(unitSystemUpdate);
                 }
             } else if (!external) {
-                actionsToReturn.Add(gameAction);
+                UnitSystemController.Instance.AddAction(gameAction);
                 processed = true;
             }
 
@@ -50,28 +50,6 @@ namespace NewWorld.Battlefield.Units {
             }
             foreach (var gameAction in gameActions) {
                 ProcessGameAction(gameAction, external);
-            }
-        }
-
-        public void ProcessGameAction(GameAction gameAction) {
-            if (gameAction == null) {
-                throw new System.ArgumentNullException(nameof(gameAction));
-            }
-            if (this == null) {
-                return;
-            }
-            ProcessGameAction(gameAction, true);
-        }
-
-        public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
-            if (gameActions == null) {
-                throw new System.ArgumentNullException(nameof(gameActions));
-            }
-            if (this == null) {
-                return;
-            }
-            foreach (var gameAction in gameActions) {
-                ProcessGameAction(gameAction, true);
             }
         }
 
@@ -211,7 +189,7 @@ namespace NewWorld.Battlefield.Units {
         // Unit System updates.
 
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
-            actionsToReturn.Add(unitSystemUpdate);
+            UnitSystemController.Instance.AddAction(unitSystemUpdate);
             return true;
         }
 

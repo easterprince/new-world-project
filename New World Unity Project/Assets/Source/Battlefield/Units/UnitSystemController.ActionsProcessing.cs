@@ -12,7 +12,7 @@ namespace NewWorld.Battlefield.Units {
         // Actions processing.
         // Note: method have to return true if action has been processed, and false otherwise.
 
-        public void ProcessGameAction(GameAction gameAction) {
+        private void ProcessGameAction(GameAction gameAction) {
             if (gameAction == null) {
                 throw new System.ArgumentNullException(nameof(gameAction));
             }
@@ -29,11 +29,11 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public void ProcessGameActions(IEnumerable<GameAction> gameActions) {
+        private void ProcessGameActions(IEnumerable<GameAction> gameActions) {
             if (gameActions == null) {
                 throw new System.ArgumentNullException(nameof(gameActions));
             }
-            foreach (GameAction gameAction in gameActions) {
+            foreach (var gameAction in gameActions) {
                 ProcessGameAction(gameAction);
             }
         }
@@ -57,7 +57,7 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(UpdateConnectedNode connectedNodeUpdate) {
             UnitController updatedUnit = connectedNodeUpdate.Unit;
             Vector2Int newConnectedNode = connectedNodeUpdate.NewConnectedNode;
-            if (CheckRelocation(newConnectedNode, updatedUnit)) {
+            if (units.Contains(updatedUnit) && CheckRelocation(newConnectedNode, updatedUnit)) {
                 Vector2Int oldConnectedNode = positions[updatedUnit];
                 onPositions.Remove(oldConnectedNode);
                 onPositions[newConnectedNode] = updatedUnit;
@@ -98,7 +98,7 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitUpdate(UnitUpdate unitUpdate) {
             UnitController unit = unitUpdate.Unit;
             if (units.Contains(unit)) {
-                unit.ProcessGameAction(unitUpdate);
+                unit.AddAction(unitUpdate);
             }
             return true;
         }
