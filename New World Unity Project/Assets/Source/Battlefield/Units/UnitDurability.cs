@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NewWorld.Battlefield.Units {
     
-    public class UnitDurability : UnitModule<UnitDurabilityPresentation> {
+    public class UnitDurability : UnitModule<UnitDurability, UnitController> {
 
         // Static.
 
@@ -40,17 +40,17 @@ namespace NewWorld.Battlefield.Units {
 
         // Constructor.
 
-        public UnitDurability(UnitController owner, float durabilityLimit) {
+        public UnitDurability(ParentPassport<UnitController> parentPassport, float durabilityLimit) {
             DurabilityLimit = durabilityLimit;
             Durability = durabilityLimit;
-            Presentation = new UnitDurabilityPresentation(this);
-            Connect(owner);
+            Connect(parentPassport);
         }
 
 
         // Interactions.
 
-        public void TakeDamage(float damageValue) {
+        public void TakeDamage(ParentPassport<UnitController> parentPassport, float damageValue) {
+            ValidatePassport(parentPassport);
             Durability -= damageValue;
         }
 

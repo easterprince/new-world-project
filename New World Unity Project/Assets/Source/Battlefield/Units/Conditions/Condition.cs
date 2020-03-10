@@ -5,8 +5,7 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Conditions {
  
-    public abstract class Condition<TPresentation> : UnitModule<TPresentation>, ICondition
-        where TPresentation : class, IConditionPresentation {
+    public abstract class Condition : UnitModule<UnitController> {
 
         // Enumerators.
 
@@ -26,7 +25,6 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         public bool Exited => exited;
         public virtual bool CanBeCancelled => false;
-        IConditionPresentation ICondition.Presentation => Presentation;
 
 
         // To string conversion.
@@ -38,18 +36,13 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Interaction methods.
 
-        public IEnumerable<GameAction> Enter(UnitController owner) {
-            if (Connected) {
-                throw new System.InvalidOperationException("Condition has been entered already!");
-            }
-            Connect(owner);
+        public IEnumerable<GameAction> Enter(ParentPassport<UnitController> parentPassport) {
+            Connect(parentPassport);
             return OnEnter();
         }
 
-        public IEnumerable<GameAction> Update() {
-            if (!Connected) {
-                throw new System.InvalidOperationException("Condition is not connected!");
-            }
+        public IEnumerable<GameAction> Update(ParentPassport<UnitController> parentPassport) {
+            ValidatePassport(parentPassport);
             if (exited) {
                 throw new System.InvalidOperationException("Condition is over!");
             }
@@ -61,10 +54,8 @@ namespace NewWorld.Battlefield.Units.Conditions {
             return actions;
         }
 
-        public IEnumerable<GameAction> Stop(bool forceStop) {
-            if (!Connected) {
-                throw new System.InvalidOperationException("Condition is not connected!");
-            }
+        public IEnumerable<GameAction> Stop(ParentPassport<UnitController> parentPassport, bool forceStop) {
+            ValidatePassport(parentPassport);
             if (exited || !forceStop && !CanBeCancelled) {
                 return Enumerables.GetNothing<GameAction>();
             }

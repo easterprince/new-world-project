@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Conditions.Attacks {
 
-    public abstract class AttackCondition : Condition<AttackConditionPresentation> {
+    public abstract class AttackCondition : Condition {
 
         // Fields.
 
@@ -37,7 +37,6 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
             this.attackPower = Mathf.Max(0, attackPower);
             this.attackSpeed = Mathf.Max(0, attackSpeed);
             this.attackTime = Mathf.Clamp(attackTime, 0f, 1f);
-            Presentation = new AttackConditionPresentation(this);
         }
 
 
