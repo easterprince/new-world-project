@@ -4,7 +4,6 @@ using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Units.Abilities;
 using NewWorld.Battlefield.Units.Actions;
-using NewWorld.Battlefield.Units.Behaviours;
 using NewWorld.Battlefield.Units.Abilities.Motions;
 using NewWorld.Battlefield.Units.Abilities.Attacks;
 using NewWorld.Battlefield.Units.Conditions;

@@ -7,7 +7,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 
 namespace NewWorld.Battlefield.Units.Conditions.Motions {
 
-    public abstract class MotionCondition : Condition<MotionConditionPresentation> {
+    public abstract class MotionCondition : Condition {
 
         // Fields.
 
@@ -26,7 +26,6 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         public MotionCondition(Vector2 destination, float speed = 1) : base() {
             this.destination = destination;
             this.speed = Mathf.Max(0, speed);
-            Presentation = new MotionConditionPresentation(this);
         }
 
 

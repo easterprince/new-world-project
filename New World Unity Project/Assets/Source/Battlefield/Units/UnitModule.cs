@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units {
 
-    public abstract class UnitModule<TParent>
+    public abstract class UnitModule<TParent> : IUnitModule
         where TParent : class {
 
         // Fields.
@@ -13,7 +13,20 @@ namespace NewWorld.Battlefield.Units {
         // Properties.
 
         public TParent Parent => parentPassport.Parent;
+        
         public bool Connected => !(Parent is null);
+        
+        public UnitController Owner {
+            get {
+                if (Parent is UnitController owner) {
+                    return owner;
+                }
+                if (Parent is IUnitModule module) {
+                    return module.Owner;
+                }
+                return null;
+            }
+        }
 
 
         // Constructor.
@@ -33,9 +46,23 @@ namespace NewWorld.Battlefield.Units {
             this.parentPassport = parentPassport;
         }
 
+        private protected void Disconnect(ParentPassport<TParent> parentPassport) {
+            ValidatePassport(parentPassport);
+            if (!Connected) {
+                throw new System.InvalidOperationException("Module has been already disconnected, can't do it again.");
+            }
+            this.parentPassport = null;
+        }
+
         private protected void ValidatePassport(ParentPassport<TParent> passport) {
             if (passport == null || passport != parentPassport) {
                 throw new System.InvalidOperationException("Operation may be performed only by parent!");
+            }
+        }
+
+        private protected void ValidatePassportOrDisconnection(ParentPassport<TParent> passport) {
+            if (parentPassport != null && passport != parentPassport) {
+                throw new System.InvalidOperationException("Operation may be performed only by parent or when disconnected!");
             }
         }
 
@@ -49,7 +76,7 @@ namespace NewWorld.Battlefield.Units {
 
         // Fields.
 
-        private ParentPassport<TSelf> ownPassport = null;
+        private readonly ParentPassport<TSelf> ownPassport = null;
 
 
         // Constructor.

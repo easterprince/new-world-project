@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
-    public abstract class MotionAbility : Ability<MotionAbilityPresentation> {
+    public abstract class MotionAbility : Ability {
 
         // Static.
 
@@ -26,7 +26,6 @@ namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
         public MotionAbility(float speed = 1) : base() {
             this.speed = Mathf.Max(speed, 0f);
-            Presentation = new MotionAbilityPresentation(this);
         }
 
 

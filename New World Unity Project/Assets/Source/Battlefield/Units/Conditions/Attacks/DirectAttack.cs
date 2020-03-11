@@ -50,7 +50,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
             damageTime = currentTime + AttackTime * attackPeriod;
             finishTime = currentTime + attackPeriod;
 
-            var setRotation = new SetRotation(Owner, Quaternion.LookRotation(Target.Position - Owner.Position));
+            var setRotation = new SetRotation(Parent, Quaternion.LookRotation(Target.Position - Parent.Position));
             var animatorParameterUpdate = new UpdateAnimatorParameter<float>(Owner, attackSpeedAnimatorHash, AttackSpeed);
             return new GameAction[] { setRotation, animatorParameterUpdate };
         }

@@ -5,13 +5,11 @@ using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability<TPresentation> : UnitModule<TPresentation>, IAbility
-        where TPresentation : class, IAbilityPresentation {
+    public abstract class Ability : UnitModule<UnitController> {
 
         // Properties.
 
-        IAbilityPresentation IAbility.Presentation => Presentation;
-        public virtual string Name => "Unknown";
+        public virtual string Name => "Unknown Ability";
 
 
         // Constructor.
@@ -21,11 +19,12 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Methods.
 
-        new public void Connect(UnitController owner) {
-            base.Connect(owner);
+        new public void Connect(ParentPassport<UnitController> parentPassport) {
+            base.Connect(parentPassport);
         }
 
-        public ICondition Use(object parameterSet) {
+        public Condition Use(ParentPassport<UnitController> parentPassport, object parameterSet) {
+            ValidatePassport(parentPassport);
             if (!Connected) {
                 throw new System.InvalidOperationException("Ability cannot be used when disconnected.");
             }
@@ -35,7 +34,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Inner methods.
 
-        protected abstract ICondition MakeCondition(object parameterSet);
+        protected private abstract Condition MakeCondition(object parameterSet);
 
 
     }

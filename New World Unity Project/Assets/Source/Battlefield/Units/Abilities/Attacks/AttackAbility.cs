@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
-    public abstract class AttackAbility : Ability<AttackAbilityPresentation> {
+    public abstract class AttackAbility : Ability {
 
         // Static.
 
@@ -33,7 +33,6 @@ namespace NewWorld.Battlefield.Units.Abilities.Attacks {
             this.attackPower = Mathf.Max(attackPower, 0);
             this.attackSpeed = Mathf.Max(attackSpeed, 0);
             this.attackTime = Mathf.Clamp(attackTime, 0f, 1f);
-            Presentation = new AttackAbilityPresentation(this);
         }
 
 
