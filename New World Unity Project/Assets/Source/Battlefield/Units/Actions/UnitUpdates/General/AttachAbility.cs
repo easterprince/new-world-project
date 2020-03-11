@@ -7,12 +7,12 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
         
         // Fields.
 
-        private IAbility ability;
+        private IUnitModule module;
 
 
         // Properties.
 
-        public IAbility Ability => ability;
+        public IUnitModule Module => module;
 
 
         // Constructors.

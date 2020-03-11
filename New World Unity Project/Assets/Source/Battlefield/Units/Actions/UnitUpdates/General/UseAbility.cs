@@ -7,20 +7,20 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
         // Fields.
         
-        private readonly IAbilityPresentation abilityPresentation;
+        private readonly Ability ability;
         private readonly object parameterSet;
 
 
         // Properties.
 
-        public IAbilityPresentation AbilityPresentation => abilityPresentation;
+        public Ability Ability => ability;
         public object ParameterSet => parameterSet;
 
 
         // Constructor.
 
-        public UseAbility(IAbilityPresentation abilityPresentation, object parameterSet) : base(abilityPresentation.Owner) {
-            this.abilityPresentation = abilityPresentation ?? throw new System.ArgumentNullException(nameof(abilityPresentation));
+        public UseAbility(Ability ability, object parameterSet) : base(ability.Owner) {
+            this.ability = ability ?? throw new System.ArgumentNullException(nameof(ability));
             this.parameterSet = parameterSet;
         }
 

@@ -75,14 +75,14 @@ namespace NewWorld.Battlefield.Units {
 
         private bool ProcessOwnGeneralUnitUpdate(CauseDamage causeDamage) {
             if (durability != null) {
-                durability.TakeDamage(causeDamage.DamageValue);
+                durability.TakeDamage(ownPassport, causeDamage.DamageValue);
             }
             return true;
         }
 
         private bool ProcessOwnGeneralUnitUpdate(StopCondition stopCondition) {
-            if (stopCondition.Condition.BelongsTo(currentCondition)) {
-                var actions = currentCondition.Stop(stopCondition.ForceStop);
+            if (stopCondition.Condition == currentCondition) {
+                var actions = currentCondition.Stop(ownPassport, stopCondition.ForceStop);
                 if (currentCondition.Exited) {
                     currentCondition = null;
                 }
@@ -97,20 +97,20 @@ namespace NewWorld.Battlefield.Units {
                 ProcessOwnGeneralUnitUpdate(stopCondition);
             }
             currentCondition = forceCondition.Condition;
-            var actions = currentCondition.Enter(this);
+            var actions = currentCondition.Enter(ownPassport);
             ProcessGameActions(actions, false);
             return true;
         }
 
         private bool ProcessOwnGeneralUnitUpdate(UseAbility useAbility) {
-            IAbility ability = FindAbility(useAbility.AbilityPresentation);
-            if (ability != null) {
+            var ability = useAbility.Ability;
+            if (abilities.Contains(ability)) {
                 if (currentCondition != null) {
                     var cancelCondition = new CancelCondition(CurrentCondition);
                     ProcessOwnGeneralUnitUpdate(cancelCondition);
                 }
                 if (currentCondition == null) {
-                    var newCondition = ability.Use(useAbility.ParameterSet);
+                    var newCondition = ability.Use(ownPassport, useAbility.ParameterSet);
                     var forceCondition = new ForceCondition(this, newCondition);
                     ProcessOwnGeneralUnitUpdate(forceCondition);
                 }
@@ -119,7 +119,7 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessOwnGeneralUnitUpdate(AttachAbility attachAbility) {
-            IAbility ability = attachAbility.Ability;
+            var ability = attachAbility.Ability;
             if (!ability.Connected) {
                 ability.Connect(this);
                 abilities[ability.Presentation] = ability;
@@ -189,18 +189,6 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(UnitSystemUpdate unitSystemUpdate) {
             UnitSystemController.Instance.AddAction(unitSystemUpdate);
             return true;
-        }
-
-
-        // Support.
-
-        private IAbility FindAbility(IAbilityPresentation abilityPresentation) {
-            foreach (var pair in abilities) {
-                if (pair.Key == abilityPresentation) {
-                    return pair.Value;
-                }
-            }
-            return null;
         }
 
 

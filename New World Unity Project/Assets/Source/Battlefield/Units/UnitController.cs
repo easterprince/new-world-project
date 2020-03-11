@@ -11,6 +11,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Units.Conditions.Collapses;
 using NewWorld.Utilities;
+using NewWorld.Battlefield.Units.Intelligence;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -31,7 +32,7 @@ namespace NewWorld.Battlefield.Units {
             GameObjects.SetLayerRecursively(unit, parent.gameObject.layer);
             unit.layer = parent.gameObject.layer;
             UnitController unitController = unit.GetComponent<UnitController>();
-            unitController.behaviour = new UnitBehaviour(unitController);
+            unitController.intelligence = new UnitIntelligence(unitController);
             unitController.durability = new UnitDurability(unitController, 100);
             unitController.ProcessGameActions(new GameAction[] {
                 new AttachAbility(unitController, new BasicMotion(2)),
@@ -47,11 +48,14 @@ namespace NewWorld.Battlefield.Units {
         private Animator animator;
         new private Collider collider;
 
-        // Modules.
-        private UnitBehaviour behaviour = null;
+        // Game logic modules.
+        private UnitIntelligence intelligence = null;
         private UnitDurability durability = null;
-        private ICondition currentCondition = null;
-        private readonly Dictionary<IAbilityPresentation, IAbility> abilities = new Dictionary<IAbilityPresentation, IAbility>();
+        private Condition currentCondition = null;
+        private readonly HashSet<Ability> abilities = new HashSet<Ability>();
+
+        // Module passport.
+        private ParentPassport<UnitController> ownPassport;
 
         // Actions.
         private readonly List<GameAction> unprocessedActions = new List<GameAction>();
@@ -95,13 +99,13 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public UnitBehaviourPresentation Behaviour => behaviour?.Presentation;
-        public UnitDurabilityPresentation Durability => durability?.Presentation;
-        public IConditionPresentation CurrentCondition => currentCondition?.Presentation;
-        public ICollection<IAbilityPresentation> Abilities {
+        public UnitIntelligence Intelligence => intelligence;
+        public UnitDurability Durability => durability;
+        public Condition CurrentCondition => currentCondition;
+        public ICollection<Ability> Abilities {
             get {
-                var abilityPresentations = new IAbilityPresentation[abilities.Count];
-                abilities.Keys.CopyTo(abilityPresentations, 0);
+                var abilityPresentations = new Ability[abilities.Count];
+                abilities.CopyTo(abilityPresentations, 0);
                 return abilityPresentations;
             }
         }
@@ -109,11 +113,11 @@ namespace NewWorld.Battlefield.Units {
 
         // Informational methods.
 
-        public TAbilityPresentation GetAbility<TAbilityPresentation>()
-            where TAbilityPresentation : IAbilityPresentation {
+        public TAbility GetAbility<TAbility>()
+            where TAbility : Ability {
 
-            foreach (var pair in abilities) {
-                if (pair.Key is TAbilityPresentation found) {
+            foreach (var ability in abilities) {
+                if (ability is TAbility found) {
                     return found;
                 }
             }
@@ -131,6 +135,7 @@ namespace NewWorld.Battlefield.Units {
             GameObjects.ValidateComponent(animator);
             collider = GetComponent<Collider>();
             GameObjects.ValidateComponent(collider);
+            ownPassport = new ParentPassport<UnitController>(this);
         }
 
         private void Start() {
@@ -147,8 +152,8 @@ namespace NewWorld.Battlefield.Units {
 
             // Ask behaviour for orders.
             if (!Collapsing) {
-                if (behaviour != null) {
-                    behaviour.Act(out CancelCondition cancelCondition, out UseAbility useAbility);
+                if (intelligence != null) {
+                    intelligence.Act(ownPassport, out CancelCondition cancelCondition, out UseAbility useAbility);
                     if (cancelCondition != null) {
                         ProcessGameAction(cancelCondition, false);
                     }
@@ -160,7 +165,7 @@ namespace NewWorld.Battlefield.Units {
 
             // Receive and process actions from used ability.
             if (currentCondition != null) {
-                var actions = currentCondition.Update();
+                var actions = currentCondition.Update(ownPassport);
                 if (currentCondition.Exited) {
                     currentCondition = null;
                 }
