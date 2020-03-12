@@ -33,19 +33,18 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
             return Enumerables.GetSingle<GameAction>(action);
         }
 
-        override protected IEnumerable<GameAction> OnUpdate(out bool exited) {
-            exited = Time.time >= vanishingTime;
+        override protected IEnumerable<GameAction> OnUpdate(out bool completed) {
+            completed = false;
+            if (Time.time >= vanishingTime) {
+                var action = new RemoveUnit(Owner);
+                return Enumerables.GetSingle<GameAction>(action);
+            }
             return Enumerables.GetNothing<GameAction>();
         }
 
         override protected IEnumerable<GameAction> OnFinish(StopType stopType) {
-            GameAction action;
-            if (stopType == StopType.Completed) {
-                action = new RemoveUnit(Owner);
-            } else {
-                action = new ApplyAnimatorTrigger(Owner, riseAnimatorHash);
-            }
-            return Enumerables.GetSingle(action);
+            var action = new ApplyAnimatorTrigger(Owner, riseAnimatorHash);
+            return Enumerables.GetSingle<GameAction>(action);
         }
 
 
