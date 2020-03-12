@@ -23,7 +23,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
             base.Connect(parentPassport);
         }
 
-        public Condition Use(ParentPassport<UnitController> parentPassport, object parameterSet) {
+        public UnitCondition Use(ParentPassport<UnitController> parentPassport, object parameterSet) {
             ValidatePassport(parentPassport);
             if (!Connected) {
                 throw new System.InvalidOperationException("Ability cannot be used when disconnected.");
@@ -34,7 +34,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Inner methods.
 
-        protected private abstract Condition MakeCondition(object parameterSet);
+        protected private abstract UnitCondition MakeCondition(object parameterSet);
 
 
     }

@@ -48,10 +48,6 @@ namespace NewWorld.Battlefield.Units {
 
         // Interactions.
 
-        new public void Connect(ParentPassport<UnitController> parentPassport) {
-            base.Connect(parentPassport);
-        }
-
         public void TakeDamage(ParentPassport<UnitController> parentPassport, float damageValue) {
             ValidatePassport(parentPassport);
             Durability -= damageValue;

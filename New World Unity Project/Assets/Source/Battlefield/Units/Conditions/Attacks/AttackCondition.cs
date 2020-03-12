@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Conditions.Attacks {
 
-    public abstract class AttackCondition : Condition {
+    public abstract class AttackCondition : UnitCondition {
 
         // Fields.
 

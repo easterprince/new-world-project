@@ -5,9 +5,15 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battlefield.Units.Conditions {
  
-    public abstract class Condition : UnitModule<UnitController> {
+    public abstract class UnitCondition : UnitModule<UnitController> {
 
         // Enumerators.
+
+        public enum StatusType {
+            NotEntered,
+            Entered,
+            Exited
+        }
 
         protected enum StopType {
             Completed,
@@ -18,12 +24,12 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         // Fields.
 
-        private bool exited = false;
+        private StatusType status = StatusType.NotEntered;
 
 
         // Properties.
 
-        public bool Exited => exited;
+        public StatusType Status => status;
         public virtual bool CanBeCancelled => false;
         public virtual string Description => "Unknown condition";
 
@@ -31,18 +37,23 @@ namespace NewWorld.Battlefield.Units.Conditions {
         // Interaction methods.
 
         public IEnumerable<GameAction> Enter(ParentPassport<UnitController> parentPassport) {
-            Connect(parentPassport);
+            ValidatePassport(parentPassport);
+            if (status != StatusType.NotEntered) {
+                throw new System.InvalidOperationException($"Condition status must be {StatusType.NotEntered}.");
+            }
+            status = StatusType.Entered;
             return OnEnter();
         }
 
         public IEnumerable<GameAction> Update(ParentPassport<UnitController> parentPassport) {
             ValidatePassport(parentPassport);
-            if (exited) {
-                throw new System.InvalidOperationException("Condition is over!");
+            if (status != StatusType.Entered) {
+                throw new System.InvalidOperationException($"Condition status must be {StatusType.Entered}.");
             }
-            var actions = OnUpdate(out exited);
-            if (exited) {
+            var actions = OnUpdate(out bool completed);
+            if (completed) {
                 var otherActions = OnFinish(StopType.Completed);
+                status = StatusType.Exited;
                 actions = Enumerables.Unite(actions, otherActions);
             }
             return actions;
@@ -50,11 +61,14 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         public IEnumerable<GameAction> Stop(ParentPassport<UnitController> parentPassport, bool forceStop) {
             ValidatePassport(parentPassport);
-            if (exited || !forceStop && !CanBeCancelled) {
+            if (status != StatusType.Entered) {
+                throw new System.InvalidOperationException($"Condition status must be {StatusType.Entered}.");
+            }
+            if (!forceStop && !CanBeCancelled) {
                 return Enumerables.GetNothing<GameAction>();
             }
             var actions = OnFinish(forceStop ? StopType.Forced : StopType.Cancelled);
-            exited = true;
+            status = StatusType.Exited;
             return actions;
         }
 

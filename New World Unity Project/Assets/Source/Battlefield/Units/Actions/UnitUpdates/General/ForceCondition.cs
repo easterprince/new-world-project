@@ -7,17 +7,17 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
         // Fields.
 
-        private readonly Condition condition;
+        private readonly UnitCondition condition;
 
 
         // Properties.
 
-        public Condition Condition => condition;
+        public UnitCondition Condition => condition;
 
 
         // Constructor.
 
-        public ForceCondition(UnitController unit, Condition condition) : base(unit) {
+        public ForceCondition(UnitController unit, UnitCondition condition) : base(unit) {
             this.condition = condition ?? throw new System.ArgumentNullException(nameof(condition));
         }
 

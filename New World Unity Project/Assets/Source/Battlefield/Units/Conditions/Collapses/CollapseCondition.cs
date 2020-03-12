@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Conditions.Collapses {
     
-    public abstract class CollapseCondition : Condition {
+    public abstract class CollapseCondition : UnitCondition {
 
         // Fields.
 

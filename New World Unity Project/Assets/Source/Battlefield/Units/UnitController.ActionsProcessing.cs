@@ -8,6 +8,7 @@ using NewWorld.Battlefield.Units.Actions.UnitUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitSystemUpdates;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.Internal;
 using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
+using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units {
 
@@ -83,7 +84,8 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessOwnGeneralUnitUpdate(StopCondition stopCondition) {
             if (stopCondition.Condition == currentCondition) {
                 var actions = currentCondition.Stop(ownPassport, stopCondition.ForceStop);
-                if (currentCondition.Exited) {
+                if (currentCondition.Status == UnitCondition.StatusType.Exited) {
+                    currentCondition.Disconnect(ownPassport);
                     currentCondition = null;
                 }
                 ProcessGameActions(actions, false);
@@ -92,11 +94,15 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private bool ProcessOwnGeneralUnitUpdate(ForceCondition forceCondition) {
+            if (forceCondition.Condition.Connected || forceCondition.Condition.Status != UnitCondition.StatusType.NotEntered) {
+                return true;
+            }
             if (currentCondition != null) {
                 var stopCondition = new StopCondition(CurrentCondition, true);
                 ProcessOwnGeneralUnitUpdate(stopCondition);
             }
             currentCondition = forceCondition.Condition;
+            currentCondition.Connect(ownPassport);
             var actions = currentCondition.Enter(ownPassport);
             ProcessGameActions(actions, false);
             return true;

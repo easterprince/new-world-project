@@ -47,7 +47,7 @@ namespace NewWorld.Battlefield.Units {
 
         // Methods.
 
-        private protected void Connect(ParentPassport<TParent> parentPassport) {
+        public void Connect(ParentPassport<TParent> parentPassport) {
             if (Connected) {
                 throw new System.InvalidOperationException("Module has been already connected, can't do it again.");
             }
@@ -57,7 +57,7 @@ namespace NewWorld.Battlefield.Units {
             this.parentPassport = parentPassport;
         }
 
-        private protected void Disconnect(ParentPassport<TParent> parentPassport) {
+        public void Disconnect(ParentPassport<TParent> parentPassport) {
             ValidatePassport(parentPassport);
             if (!Connected) {
                 throw new System.InvalidOperationException("Module has been already disconnected, can't do it again.");
@@ -66,7 +66,10 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private protected void ValidatePassport(ParentPassport<TParent> passport) {
-            if (passport == null || passport != parentPassport) {
+            if (passport == null) {
+                throw new System.InvalidOperationException("Operation may not be performed when disconnected!");
+            }
+            if (passport != parentPassport) {
                 throw new System.InvalidOperationException("Operation may be performed only by parent!");
             }
         }

@@ -7,19 +7,19 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
 
         // Fields.
 
-        private readonly Condition condition;
+        private readonly UnitCondition condition;
         private readonly bool forceStop;
 
 
         // Properties.
 
-        public Condition Condition => condition;
+        public UnitCondition Condition => condition;
         public bool ForceStop => forceStop;
 
 
         // Constructor.
 
-        public StopCondition(Condition condition, bool forceStop) : base(condition.Owner) {
+        public StopCondition(UnitCondition condition, bool forceStop) : base(condition.Owner) {
             this.condition = condition ?? throw new System.ArgumentNullException(nameof(condition));
             this.forceStop = forceStop;
         }

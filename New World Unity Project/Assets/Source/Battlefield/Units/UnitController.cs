@@ -60,7 +60,7 @@ namespace NewWorld.Battlefield.Units {
         // Game logic modules.
         private UnitIntelligence intelligence = null;
         private UnitDurability durability = null;
-        private Condition currentCondition = null;
+        private UnitCondition currentCondition = null;
         private readonly HashSet<Ability> abilities = new HashSet<Ability>();
 
         // Module passport.
@@ -110,7 +110,7 @@ namespace NewWorld.Battlefield.Units {
 
         public UnitIntelligence Intelligence => intelligence;
         public UnitDurability Durability => durability;
-        public Condition CurrentCondition => currentCondition;
+        public UnitCondition CurrentCondition => currentCondition;
         public ICollection<Ability> Abilities {
             get {
                 var abilityPresentations = new Ability[abilities.Count];
@@ -178,7 +178,8 @@ namespace NewWorld.Battlefield.Units {
             // Receive and process actions from used ability.
             if (currentCondition != null) {
                 var actions = currentCondition.Update(ownPassport);
-                if (currentCondition.Exited) {
+                if (currentCondition.Status == UnitCondition.StatusType.Exited) {
+                    currentCondition.Disconnect(ownPassport);
                     currentCondition = null;
                 }
                 ProcessGameActions(actions, false);

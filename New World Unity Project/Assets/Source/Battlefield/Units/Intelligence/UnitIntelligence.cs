@@ -26,10 +26,6 @@ namespace NewWorld.Battlefield.Units.Intelligence {
 
         // Methods.
 
-        new public void Connect(ParentPassport<UnitController> parentPassport) {
-            base.Connect(parentPassport);
-        }
-
         public void Act(ParentPassport<UnitController> parentPassport, out CancelCondition cancelCondition, out UseAbility useAbility) {
             ValidatePassport(parentPassport);
 
