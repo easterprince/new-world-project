@@ -2,7 +2,18 @@
 
 namespace NewWorld.Battlefield.Units {
 
-    public abstract class UnitModule<TParent> : IUnitModule
+    public abstract class UnitModule {
+
+        // Properties.
+
+        public abstract bool Connected { get; }
+        
+        public abstract UnitController Owner { get; }
+
+
+    }
+
+    public abstract class UnitModule<TParent> : UnitModule
         where TParent : class {
 
         // Fields.
@@ -12,16 +23,16 @@ namespace NewWorld.Battlefield.Units {
 
         // Properties.
 
-        public TParent Parent => parentPassport.Parent;
+        public TParent Parent => parentPassport?.Parent;
         
-        public bool Connected => !(Parent is null);
+        override public bool Connected => !(Parent is null);
         
-        public UnitController Owner {
+        override public UnitController Owner {
             get {
                 if (Parent is UnitController owner) {
                     return owner;
                 }
-                if (Parent is IUnitModule module) {
+                if (Parent is UnitModule module) {
                     return module.Owner;
                 }
                 return null;

@@ -121,8 +121,8 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessOwnGeneralUnitUpdate(AttachAbility attachAbility) {
             var ability = attachAbility.Ability;
             if (!ability.Connected) {
-                ability.Connect(this);
-                abilities[ability.Presentation] = ability;
+                ability.Connect(ownPassport);
+                abilities.Add(ability);
             }
             return true;
         }

@@ -19,12 +19,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Attacks {
         public float AttackSpeed => attackSpeed;
         public float AttackTime => attackTime;
 
-
-        // To string conversion.
-
-        override public string ToString() {
-            return $"Attacking traget {target.name}";
-        }
+        override public string Description => $"Attacking {target.name}";
 
 
         // Constructors.

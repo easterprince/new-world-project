@@ -20,6 +20,8 @@ namespace NewWorld.Battlefield.Units.Conditions.Motions {
         public Vector2 Destination => destination;
         public float Speed => speed;
 
+        override public string Description => "Moving";
+
 
         // Constructor.
 

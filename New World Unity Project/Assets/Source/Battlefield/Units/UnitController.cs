@@ -32,8 +32,8 @@ namespace NewWorld.Battlefield.Units {
             GameObjects.SetLayerRecursively(unit, parent.gameObject.layer);
             unit.layer = parent.gameObject.layer;
             UnitController unitController = unit.GetComponent<UnitController>();
-            unitController.intelligence = new UnitIntelligence(unitController);
-            unitController.durability = new UnitDurability(unitController, 100);
+            unitController.intelligence = new UnitIntelligence(unitController.ownPassport);
+            unitController.durability = new UnitDurability(unitController.ownPassport, 100);
             unitController.ProcessGameActions(new GameAction[] {
                 new AttachAbility(unitController, new BasicMotion(2)),
                 new AttachAbility(unitController, new BasicAttack(20, 2))

@@ -13,12 +13,7 @@ namespace NewWorld.Battlefield.Units.Conditions.Collapses {
 
         public float VanishingPeriod => vanishingPeriod;
 
-
-        // To string conversion.
-
-        override public string ToString() {
-            return "Collapsing";
-        }
+        override public string Description => "Collapsing";
 
 
         // Constructor.

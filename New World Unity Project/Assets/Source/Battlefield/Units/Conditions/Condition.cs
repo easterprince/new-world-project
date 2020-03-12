@@ -25,13 +25,7 @@ namespace NewWorld.Battlefield.Units.Conditions {
 
         public bool Exited => exited;
         public virtual bool CanBeCancelled => false;
-
-
-        // To string conversion.
-
-        override public string ToString() {
-            return "Unknown condition";
-        }
+        public virtual string Description => "Unknown condition";
 
 
         // Interaction methods.

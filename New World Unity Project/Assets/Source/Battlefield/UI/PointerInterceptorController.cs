@@ -30,6 +30,11 @@ namespace NewWorld.Battlefield.UI {
             clickEvent = new PointerEvent();
         }
 
+        override private protected void OnDestroy() {
+            base.OnDestroy();
+            clickEvent.RemoveAllListeners();
+        }
+
 
         // Events.
 
