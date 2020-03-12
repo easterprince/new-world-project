@@ -20,20 +20,29 @@ namespace NewWorld.Battlefield.Units {
         // Fabric.
 
         private const string prefabPath = "Prefabs/Unit";
-        private const string defaultGameObjectName = "Unit";
-        private static GameObject prefab;
 
-        public static UnitController BuildUnit(Transform parent, UnitDescription description, string name = defaultGameObjectName) {
+        private static GameObject prefab;
+        private static int builtUnits = 0;
+
+        public static UnitController BuildUnit(Transform parent, UnitDescription description) {
+            if (parent == null) {
+                throw new System.ArgumentNullException(nameof(parent));
+            }
+
             if (prefab == null) {
                 prefab = Resources.Load<GameObject>(prefabPath);
             }
-            GameObject unit = Instantiate(prefab, new Vector3(-1, -1, -1), Quaternion.identity, parent);
-            unit.name = name ?? defaultGameObjectName;
+
+            GameObject unit = Instantiate(prefab, parent);
+            unit.name = $"Unit {builtUnits + 1}";
+            ++builtUnits;
             GameObjects.SetLayerRecursively(unit, parent.gameObject.layer);
-            unit.layer = parent.gameObject.layer;
+            
             UnitController unitController = unit.GetComponent<UnitController>();
-            unitController.intelligence = new UnitIntelligence(unitController.ownPassport);
-            unitController.durability = new UnitDurability(unitController.ownPassport, 100);
+            unitController.intelligence = new UnitIntelligence();
+            unitController.intelligence.Connect(unitController.ownPassport);
+            unitController.durability = new UnitDurability(100);
+            unitController.durability.Connect(unitController.ownPassport);
             unitController.ProcessGameActions(new GameAction[] {
                 new AttachAbility(unitController, new BasicMotion(2)),
                 new AttachAbility(unitController, new BasicAttack(20, 2))
@@ -129,8 +138,6 @@ namespace NewWorld.Battlefield.Units {
         // Life cycle.
 
         private void Awake() {
-            UnitSystemController.EnsureInstance(this);
-            MapController.EnsureInstance(this);
             animator = GetComponent<Animator>();
             GameObjects.ValidateComponent(animator);
             collider = GetComponent<Collider>();
@@ -139,6 +146,11 @@ namespace NewWorld.Battlefield.Units {
         }
 
         private void Start() {
+            UnitSystemController.EnsureInstance(this);
+            MapController.EnsureInstance(this);
+            if (!UnitSystemController.Instance.HasUnit(this)) {
+                throw new System.Exception("Unit system is unaware of this unit!");
+            }
             SetDefaultLocation();
         }
 

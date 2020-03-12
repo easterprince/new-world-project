@@ -16,7 +16,6 @@ namespace NewWorld.Battlefield.Units {
         // Fields.
 
         // Structure.
-        private long unusedUnitIndex = 0;
         private readonly HashSet<UnitController> units = new HashSet<UnitController>();
         private readonly Dictionary<UnitController, Vector2Int> positions = new Dictionary<UnitController, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitController> onPositions = new Dictionary<Vector2Int, UnitController>();
@@ -94,6 +93,10 @@ namespace NewWorld.Battlefield.Units {
                 return null;
             }
             return unit;
+        }
+
+        public bool HasUnit(UnitController unit) {
+            return units.Contains(unit);
         }
 
 

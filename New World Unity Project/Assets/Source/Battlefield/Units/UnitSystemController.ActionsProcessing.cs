@@ -68,7 +68,7 @@ namespace NewWorld.Battlefield.Units {
         private bool ProcessUnitSystemUpdate(AddUnit unitAddition) {
             UnitDescription description = unitAddition.Description;
             if (CheckRelocation(description.ConnectedNode)) {
-                UnitController unit = UnitController.BuildUnit(unitsGameObject.transform, description, $"Unit {unusedUnitIndex++}");
+                UnitController unit = UnitController.BuildUnit(unitsGameObject.transform, description);
                 units.Add(unit);
                 positions[unit] = description.ConnectedNode;
                 onPositions[description.ConnectedNode] = unit;

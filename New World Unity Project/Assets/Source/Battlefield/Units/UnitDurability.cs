@@ -40,14 +40,17 @@ namespace NewWorld.Battlefield.Units {
 
         // Constructor.
 
-        public UnitDurability(ParentPassport<UnitController> parentPassport, float durabilityLimit) {
+        public UnitDurability(float durabilityLimit) {
             DurabilityLimit = durabilityLimit;
             Durability = durabilityLimit;
-            Connect(parentPassport);
         }
 
 
         // Interactions.
+
+        new public void Connect(ParentPassport<UnitController> parentPassport) {
+            base.Connect(parentPassport);
+        }
 
         public void TakeDamage(ParentPassport<UnitController> parentPassport, float damageValue) {
             ValidatePassport(parentPassport);
