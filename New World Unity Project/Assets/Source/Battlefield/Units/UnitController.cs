@@ -99,15 +99,6 @@ namespace NewWorld.Battlefield.Units {
             }
         }
 
-        public bool Collapsing {
-            get {
-                if (durability != null) {
-                    return durability.Broken;
-                }
-                return false;
-            }
-        }
-
         public UnitIntelligence Intelligence => intelligence;
         public UnitDurability Durability => durability;
         public UnitCondition CurrentCondition => currentCondition;
@@ -162,16 +153,22 @@ namespace NewWorld.Battlefield.Units {
             }
             unprocessedActions.Clear();
 
+            // Update on durability.
+            if (durability != null) {
+                durability.Update(ownPassport, out ForceCondition forceCondition);
+                if (forceCondition != null) {
+                    ProcessGameAction(forceCondition, false);
+                }
+            }
+
             // Ask behaviour for orders.
-            if (!Collapsing) {
-                if (intelligence != null) {
-                    intelligence.Act(ownPassport, out CancelCondition cancelCondition, out UseAbility useAbility);
-                    if (cancelCondition != null) {
-                        ProcessGameAction(cancelCondition, false);
-                    }
-                    if (useAbility != null) {
-                        ProcessGameAction(useAbility, false);
-                    }
+            if (intelligence != null) {
+                intelligence.Act(ownPassport, out CancelCondition cancelCondition, out UseAbility useAbility);
+                if (cancelCondition != null) {
+                    ProcessGameAction(cancelCondition, false);
+                }
+                if (useAbility != null) {
+                    ProcessGameAction(useAbility, false);
                 }
             }
 
@@ -183,15 +180,6 @@ namespace NewWorld.Battlefield.Units {
                     currentCondition = null;
                 }
                 ProcessGameActions(actions, false);
-            }
-
-            // Change condition to collapsing.
-            if (Collapsing) {
-                if (!(currentCondition is CollapseCondition)) {
-                    var collapseCondition = new SimpleCollapse(2);
-                    var forceCondition = new ForceCondition(this, collapseCondition);
-                    ProcessGameAction(forceCondition, false);
-                }
             }
 
         }

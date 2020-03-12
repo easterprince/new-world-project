@@ -42,7 +42,7 @@ namespace NewWorld.Battlefield.Units.Intelligence {
                         var currentNode = UnitSystemController.Instance.GetConnectedNode(Owner);
                         var otherNode = currentNode + nodeDifference;
                         var otherUnit = UnitSystemController.Instance.GetUnitOnPosition(otherNode);
-                        if (otherUnit != null && !otherUnit.Collapsing && otherUnit != Owner) {
+                        if (otherUnit != null && otherUnit != Owner && !(otherUnit.Durability?.Broken ?? true)) {
                             var parameterSet = AttackAbility.FormParameterSet(otherUnit);
                             useAbility = new UseAbility(attackAbility, parameterSet);
                         }

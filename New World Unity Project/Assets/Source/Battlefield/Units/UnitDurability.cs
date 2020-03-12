@@ -1,4 +1,5 @@
-﻿using NewWorld.Battlefield.Units.Conditions.Collapses;
+﻿using NewWorld.Battlefield.Units.Actions.UnitUpdates.General;
+using NewWorld.Battlefield.Units.Conditions.Collapses;
 using UnityEngine;
 
 namespace NewWorld.Battlefield.Units {
@@ -51,6 +52,15 @@ namespace NewWorld.Battlefield.Units {
         public void TakeDamage(ParentPassport<UnitController> parentPassport, float damageValue) {
             ValidatePassport(parentPassport);
             Durability -= damageValue;
+        }
+
+        public void Update(ParentPassport<UnitController> parentPassport, out ForceCondition forceCondition) {
+            ValidatePassport(parentPassport);
+            forceCondition = null;
+            if (Broken && !(Owner.CurrentCondition is CollapseCondition)) {
+                var condition = new SimpleCollapse(1 + Mathf.Log10(durabilityLimit));
+                forceCondition = new ForceCondition(Owner, condition);
+            }
         }
 
 
