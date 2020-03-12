@@ -19,10 +19,6 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Methods.
 
-        new public void Connect(ParentPassport<UnitController> parentPassport) {
-            base.Connect(parentPassport);
-        }
-
         public UnitCondition Use(ParentPassport<UnitController> parentPassport, object parameterSet) {
             ValidatePassport(parentPassport);
             if (!Connected) {
