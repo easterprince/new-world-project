@@ -5,7 +5,7 @@ using NewWorld.Battlefield.Units.Conditions;
 
 namespace NewWorld.Battlefield.Units.Abilities {
 
-    public abstract class Ability : UnitModule<UnitController> {
+    public abstract class UnitAbility : UnitModule<UnitController> {
 
         // Properties.
 
@@ -14,7 +14,7 @@ namespace NewWorld.Battlefield.Units.Abilities {
 
         // Constructor.
 
-        protected Ability() : base() {}
+        protected UnitAbility() : base() {}
 
 
         // Methods.

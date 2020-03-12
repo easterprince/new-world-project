@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Attacks {
 
-    public abstract class AttackAbility : Ability {
+    public abstract class AttackAbility : UnitAbility {
 
         // Static.
 

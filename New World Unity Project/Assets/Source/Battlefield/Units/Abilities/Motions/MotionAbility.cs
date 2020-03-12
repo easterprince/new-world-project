@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Units.Abilities.Motions {
 
-    public abstract class MotionAbility : Ability {
+    public abstract class MotionAbility : UnitAbility {
 
         // Static.
 

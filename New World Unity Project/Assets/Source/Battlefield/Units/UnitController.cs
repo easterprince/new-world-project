@@ -61,7 +61,7 @@ namespace NewWorld.Battlefield.Units {
         private UnitIntelligence intelligence = null;
         private UnitDurability durability = null;
         private UnitCondition currentCondition = null;
-        private readonly HashSet<Ability> abilities = new HashSet<Ability>();
+        private readonly HashSet<UnitAbility> abilities = new HashSet<UnitAbility>();
 
         // Module passport.
         private ParentPassport<UnitController> ownPassport;
@@ -111,9 +111,9 @@ namespace NewWorld.Battlefield.Units {
         public UnitIntelligence Intelligence => intelligence;
         public UnitDurability Durability => durability;
         public UnitCondition CurrentCondition => currentCondition;
-        public ICollection<Ability> Abilities {
+        public ICollection<UnitAbility> Abilities {
             get {
-                var abilityPresentations = new Ability[abilities.Count];
+                var abilityPresentations = new UnitAbility[abilities.Count];
                 abilities.CopyTo(abilityPresentations, 0);
                 return abilityPresentations;
             }
@@ -123,7 +123,7 @@ namespace NewWorld.Battlefield.Units {
         // Informational methods.
 
         public TAbility GetAbility<TAbility>()
-            where TAbility : Ability {
+            where TAbility : UnitAbility {
 
             foreach (var ability in abilities) {
                 if (ability is TAbility found) {

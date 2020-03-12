@@ -7,17 +7,17 @@ namespace NewWorld.Battlefield.Units.Actions.UnitUpdates.General {
         
         // Fields.
 
-        private Ability ability;
+        private UnitAbility ability;
 
 
         // Properties.
 
-        public Ability Ability => ability;
+        public UnitAbility Ability => ability;
 
 
         // Constructors.
 
-        public AttachAbility(UnitController unit, Ability ability) : base(unit) {
+        public AttachAbility(UnitController unit, UnitAbility ability) : base(unit) {
             this.ability = ability ?? throw new System.ArgumentNullException(nameof(ability));
         }
 
