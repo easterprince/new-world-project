@@ -10,18 +10,18 @@ namespace NewWorld.Battlefield {
         // Fields.
 
         private readonly MapDescription mapDescription;
-        private readonly List<UnitDescription> unitDescriptions;
+        private readonly List<UnitTemplate> unitDescriptions;
 
 
         // Properties.
 
         public MapDescription MapDescription => mapDescription;
-        public List<UnitDescription> UnitDescriptions => unitDescriptions;
+        public List<UnitTemplate> UnitDescriptions => unitDescriptions;
 
 
         // Constructor.
 
-        public BattlefieldDescription(MapDescription mapDescription, List<UnitDescription> unitDescriptions) {
+        public BattlefieldDescription(MapDescription mapDescription, List<UnitTemplate> unitDescriptions) {
             this.mapDescription = mapDescription;
             this.unitDescriptions = unitDescriptions;
         }

@@ -6,17 +6,17 @@ namespace NewWorld.Battlefield.Units.Actions.UnitSystemUpdates {
 
         // Fields.
 
-        private readonly UnitDescription description;
+        private readonly UnitTemplate description;
 
 
         // Properties.
 
-        public UnitDescription Description => description;
+        public UnitTemplate Description => description;
 
 
         // Constructor.
 
-        public AddUnit(UnitDescription description) : base() {
+        public AddUnit(UnitTemplate description) : base() {
             this.description = description ?? throw new System.ArgumentNullException(nameof(description));
         }
 

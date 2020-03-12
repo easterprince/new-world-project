@@ -11,7 +11,7 @@ using NewWorld.Utilities.Events;
 
 namespace NewWorld.Battlefield.Units {
 
-    public partial class UnitSystemController : ReloadableSingleton<UnitSystemController, List<UnitDescription>>, IEnumerable<UnitController> {
+    public partial class UnitSystemController : ReloadableSingleton<UnitSystemController, List<UnitTemplate>>, IEnumerable<UnitController> {
 
         // Fields.
 
@@ -102,7 +102,7 @@ namespace NewWorld.Battlefield.Units {
 
         // Reloading.
 
-        override public void StartReloading(List<UnitDescription> unitDescriptions) {
+        override public void StartReloading(List<UnitTemplate> unitDescriptions) {
             Loaded = false;
 
             var removeUnits = new List<UnitController>(units);
@@ -110,7 +110,7 @@ namespace NewWorld.Battlefield.Units {
                 ProcessGameAction(new RemoveUnit(unit));
             }
             if (unitDescriptions != null) {
-                foreach (UnitDescription unitDescription in unitDescriptions) {
+                foreach (UnitTemplate unitDescription in unitDescriptions) {
                     ProcessGameAction(new AddUnit(unitDescription));
                 }
             }

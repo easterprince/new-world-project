@@ -58,7 +58,7 @@ namespace NewWorld.Battlefield.Loading {
                 HeightLimit = 5
             };
             MapDescription mapDescription = mapGenerator.Generate(seed);
-            List<UnitDescription> unitDescriptions = new List<UnitDescription>();
+            List<UnitTemplate> unitDescriptions = new List<UnitTemplate>();
             int unitsCount = 600;
             for (int i = 0; i < unitsCount; ++i) {
                 Vector2Int position;
@@ -66,14 +66,14 @@ namespace NewWorld.Battlefield.Loading {
                 do {
                     position = new Vector2Int(random.Next(mapDescription.Size.x), random.Next(mapDescription.Size.y));
                     repeat = false;
-                    foreach (UnitDescription description in unitDescriptions) {
+                    foreach (UnitTemplate description in unitDescriptions) {
                         if (description.ConnectedNode == position) {
                             repeat = true;
                             break;
                         }
                     }
                 } while (repeat || mapDescription[position].Type == NodeDescription.NodeType.Abyss);
-                unitDescriptions.Add(new UnitDescription(position, 0.48f));
+                unitDescriptions.Add(new UnitTemplate(position, 0.48f));
             }
             return new BattlefieldDescription(mapDescription, unitDescriptions);
         }
