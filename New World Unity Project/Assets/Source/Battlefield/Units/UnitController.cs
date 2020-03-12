@@ -24,7 +24,7 @@ namespace NewWorld.Battlefield.Units {
         private static GameObject prefab;
         private static int builtUnits = 0;
 
-        public static UnitController BuildUnit(Transform parent, UnitTemplate description) {
+        public static UnitController BuildUnit(Transform parent, UnitTemplate template) {
             if (parent == null) {
                 throw new System.ArgumentNullException(nameof(parent));
             }

@@ -13,13 +13,6 @@ namespace NewWorld.Battlefield.Loading {
 
         // Fields.
 
-#pragma warning disable IDE0044, CS0414, CS0649
-
-        [SerializeField]
-        private LoadingScreenController loadingScreen;
-
-#pragma warning restore IDE0044, CS0414, CS0649
-
         private bool readyToLoad = false;
 
         private BattlefieldDescription battlefieldDescription;
@@ -73,7 +66,10 @@ namespace NewWorld.Battlefield.Loading {
                         }
                     }
                 } while (repeat || mapDescription[position].Type == NodeDescription.NodeType.Abyss);
-                unitDescriptions.Add(new UnitTemplate(position, 0.48f));
+                var template = new UnitTemplate() {
+                    ConnectedNode = position
+                };
+                unitDescriptions.Add(template);
             }
             return new BattlefieldDescription(mapDescription, unitDescriptions);
         }
