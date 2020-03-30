@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Unit;
 using NewWorld.Utilities.Singletons;
 using NewWorld.Utilities;
+using NewWorld.Battlefield.UnitSystem;
 
 namespace NewWorld.Battlefield.NodeGrid {
 

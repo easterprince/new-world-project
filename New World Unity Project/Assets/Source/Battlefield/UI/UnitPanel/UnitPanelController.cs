@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Unit;
 using NewWorld.Battlefield.UI.SelectionSystem;
 using NewWorld.Battlefield.Cameras;
 using NewWorld.Battlefield.UI.Bars;

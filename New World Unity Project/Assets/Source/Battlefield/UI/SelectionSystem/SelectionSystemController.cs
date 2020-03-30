@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Unit;
 using NewWorld.Utilities.Singletons;
 
 namespace NewWorld.Battlefield.UI.SelectionSystem {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Unit;
 
 namespace NewWorld.Battlefield {
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Map;
-using NewWorld.Battlefield.Units;
+using NewWorld.Battlefield.Unit;
 
 namespace NewWorld.Battlefield.Cameras {
 
