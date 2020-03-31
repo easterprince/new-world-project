@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Battlefield.Unit.Actions;
 using NewWorld.Battlefield.Unit.Conditions;
+using NewWorld.Battlefield.Unit.Core;
 
 namespace NewWorld.Battlefield.Unit.Abilities {
 
-    public abstract class UnitAbility : UnitModule<UnitController> {
+    public abstract class UnitAbility : UnitModule<UnitAbility, UnitCore, UnitAbilityPresentation> {
 
         // Properties.
 
@@ -19,8 +20,7 @@ namespace NewWorld.Battlefield.Unit.Abilities {
 
         // Methods.
 
-        public UnitCondition Use(ParentPassport<UnitController> parentPassport, object parameterSet) {
-            ValidatePassport(parentPassport);
+        public UnitCondition Use(object parameterSet) {
             if (!Connected) {
                 throw new System.InvalidOperationException("Ability cannot be used when disconnected.");
             }

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using NewWorld.Utilities;
+using NewWorld.Battlefield.Unit.Core;
 
 namespace NewWorld.Battlefield.Unit.Conditions {
 
-    public abstract class UnitCondition : UnitModule<UnitController> {
+    public abstract class UnitCondition : UnitModule<UnitCondition, UnitCore, UnitConditionPresentation> {
 
         // Enumerators.
 
@@ -35,50 +36,43 @@ namespace NewWorld.Battlefield.Unit.Conditions {
 
         // Interaction methods.
 
-        public IEnumerable<GameAction> Enter(ParentPassport<UnitController> parentPassport) {
-            ValidatePassport(parentPassport);
+        public void Enter() {
             if (status != StatusType.NotEntered) {
                 throw new System.InvalidOperationException($"Condition status must be {StatusType.NotEntered}.");
             }
             status = StatusType.Entered;
-            return OnEnter();
+            OnEnter();
         }
 
-        public IEnumerable<GameAction> Update(ParentPassport<UnitController> parentPassport) {
-            ValidatePassport(parentPassport);
+        public void Update() {
             if (status != StatusType.Entered) {
                 throw new System.InvalidOperationException($"Condition status must be {StatusType.Entered}.");
             }
-            var actions = OnUpdate(out bool completed);
+            OnUpdate(out bool completed);
             if (completed) {
-                var otherActions = OnFinish(StopType.Completed);
+                OnFinish(StopType.Completed);
                 status = StatusType.Exited;
-                actions = Enumerables.Unite(actions, otherActions);
             }
-            return actions;
         }
 
-        public IEnumerable<GameAction> Stop(ParentPassport<UnitController> parentPassport, bool forceStop) {
-            ValidatePassport(parentPassport);
+        public void Stop(bool forceStop) {
             if (status != StatusType.Entered) {
                 throw new System.InvalidOperationException($"Condition status must be {StatusType.Entered}.");
             }
-            if (!forceStop && !CanBeCancelled) {
-                return Enumerables.GetNothing<GameAction>();
+            if (forceStop || CanBeCancelled) {
+                OnFinish(forceStop ? StopType.Forced : StopType.Cancelled);
+                status = StatusType.Exited;
             }
-            var actions = OnFinish(forceStop ? StopType.Forced : StopType.Cancelled);
-            status = StatusType.Exited;
-            return actions;
         }
 
 
         // Life cycle.
 
-        protected abstract IEnumerable<GameAction> OnEnter();
+        protected abstract void OnEnter();
 
-        protected abstract IEnumerable<GameAction> OnUpdate(out bool completed);
+        protected abstract void OnUpdate(out bool completed);
 
-        protected abstract IEnumerable<GameAction> OnFinish(StopType stopType);
+        protected abstract void OnFinish(StopType stopType);
 
 
     }

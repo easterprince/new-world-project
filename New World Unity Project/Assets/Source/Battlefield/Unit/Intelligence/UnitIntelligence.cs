@@ -9,10 +9,11 @@ using NewWorld.Battlefield.Unit.Conditions.Attacks;
 using NewWorld.Battlefield.Unit.Conditions.Motions;
 using NewWorld.Battlefield.UnitSystem;
 using NewWorld.Battlefield.Unit.Core;
+using NewWorld.Battlefield.Unit.Abilities;
 
 namespace NewWorld.Battlefield.Unit.Intelligence {
 
-    public class UnitIntelligence : UnitModule<UnitController> {
+    public class UnitIntelligence : UnitModule<UnitIntelligence, UnitCore, UnitIntelligencePresentation> {
 
         // Constructor.
 
@@ -27,11 +28,9 @@ namespace NewWorld.Battlefield.Unit.Intelligence {
 
         // Methods.
 
-        public void Act(ParentPassport<UnitController> parentPassport, out ConditionCancellation cancelCondition, out AbilityUsage useAbility) {
-            ValidatePassport(parentPassport);
-
-            cancelCondition = null;
-            useAbility = null;
+        public void Ask(out bool cancelCondition, out AbilityUsage? abilityUsage) {
+            cancelCondition = false;
+            abilityUsage = null;
 
             MotionAbility motionAbility = Owner.GetAbility<MotionAbility>();
             AttackAbility attackAbility = Owner.GetAbility<AttackAbility>();
@@ -84,6 +83,13 @@ namespace NewWorld.Battlefield.Unit.Intelligence {
                 nextStopTime = null;
             }
 
+        }
+
+
+        // Presentation building.
+
+        override private protected UnitIntelligencePresentation BuildPresentation() {
+            return new UnitIntelligencePresentation(this);
         }
 
 

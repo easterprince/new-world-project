@@ -1,10 +1,11 @@
-﻿using NewWorld.Battlefield.Unit.Conditions.Collapses;
+﻿using NewWorld.Battlefield.Unit.Conditions;
+using NewWorld.Battlefield.Unit.Conditions.Collapses;
 using NewWorld.Battlefield.Unit.Core;
 using UnityEngine;
 
 namespace NewWorld.Battlefield.Unit.Durability {
 
-    public class UnitDurability : UnitModule<UnitDurability, UnitController> {
+    public class UnitDurability : UnitModule<UnitDurability, UnitCore, UnitDurabilityPresentation> {
 
         // Static.
 
@@ -54,8 +55,7 @@ namespace NewWorld.Battlefield.Unit.Durability {
             Durability -= damageValue;
         }
 
-        public void Update(ParentPassport<UnitController> parentPassport, out ConditionChange forceCondition) {
-            ValidatePassport(parentPassport);
+        public void Update(out UnitCondition forceCondition) {
             forceCondition = null;
             if (Broken && !(Owner.CurrentCondition is CollapseCondition)) {
                 var condition = new SimpleCollapse(1 + Mathf.Log10(durabilityLimit));

@@ -1,27 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using NewWorld.Battlefield.Unit.Abilities;
+using NewWorld.Battlefield.Unit.Conditions;
+using NewWorld.Battlefield.Unit.Durability;
+using NewWorld.Battlefield.Unit.Intelligence;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Battlefield.Unit.Core {
 
-    public class UnitCore : UnitModule<UnitCore, UnitController> {
+    public class UnitCore : UnitModule<UnitCore, UnitController, UnitCorePresentation> {
 
-        /*
-        // Game logic modules.
+        // Submodules.
         private UnitIntelligence intelligence = null;
         private UnitDurability durability = null;
         private UnitCondition currentCondition = null;
         private readonly HashSet<UnitAbility> abilities = new HashSet<UnitAbility>();
 
-        // Actions.
-        private readonly List<GameAction> unprocessedActions = new List<GameAction>();
-
-
+   
         // Properties.
 
-        public UnitIntelligence Intelligence => intelligence;
-        public UnitDurability Durability => durability;
-        public UnitCondition CurrentCondition => currentCondition;
-        public ICollection<UnitAbility> Abilities {
+        public UnitIntelligencePresentation Intelligence => intelligence.Presentation;
+        public UnitDurabilityPresentation Durability => durability.Presentation;
+        public UnitConditionPresentation CurrentCondition => currentCondition.Presentation;
+
+        public ICollection<UnitAbilityPresentation> Abilities {
             get {
                 var abilityPresentations = new UnitAbility[abilities.Count];
                 abilities.CopyTo(abilityPresentations, 0);
@@ -30,63 +31,96 @@ namespace NewWorld.Battlefield.Unit.Core {
         }
 
 
-        // Informational methods.
+        // Constructor.
 
-        public TAbility GetAbility<TAbility>()
-            where TAbility : UnitAbility {
+        public UnitCore() {}
 
-            foreach (var ability in abilities) {
-                if (ability is TAbility found) {
-                    return found;
-                }
-            }
 
-            return default;
+        // Presentation building.
+
+        override private protected UnitCorePresentation BuildPresentation() {
+            return new UnitCorePresentation(this);
         }
 
 
-        // Life cycle.
+        // Updating.
 
-        public IEnumerable<GameAction> Update(ownPassport) {
-
-
-            // Process unprocessed actions.
-            foreach (var gameAction in unprocessedActions) {
-                ProcessGameAction(gameAction, true);
-            }
-            unprocessedActions.Clear();
+        public void Update() {
 
             // Update on durability.
             if (durability != null) {
-                durability.Update(ownPassport, out ForceCondition forceCondition);
+                durability.Update(out UnitCondition forceCondition);
                 if (forceCondition != null) {
-                    ProcessGameAction(forceCondition, false);
+                    ChangeCondition(forceCondition, forceChange: true);
                 }
             }
 
-            // Ask behaviour for orders.
+            // Ask intelligence for orders.
             if (intelligence != null) {
-                intelligence.Act(ownPassport, out CancelCondition cancelCondition, out UseAbility useAbility);
-                if (cancelCondition != null) {
-                    ProcessGameAction(cancelCondition, false);
+                intelligence.Ask(out bool cancelCondition, out AbilityUsage? abilityUsage);
+                if (cancelCondition) {
+                    ChangeCondition(null, forceChange: false);
                 }
-                if (useAbility != null) {
-                    ProcessGameAction(useAbility, false);
+                if (abilityUsage != null) {
+                    UseAbility(abilityUsage.Value);
                 }
             }
 
-            // Receive and process actions from used ability.
+            // Update on condition.
             if (currentCondition != null) {
-                var actions = currentCondition.Update(ownPassport);
+                currentCondition.Update();
                 if (currentCondition.Status == UnitCondition.StatusType.Exited) {
-                    currentCondition.Disconnect(ownPassport);
+                    currentCondition.Disconnect();
                     currentCondition = null;
                 }
-                ProcessGameActions(actions, false);
             }
 
         }
-        */
+
+
+        // Regulating.
+
+        public void ChangeCondition(UnitCondition newCondition, bool forceChange) {
+            if (newCondition != null && (newCondition.Connected || newCondition.Status != UnitCondition.StatusType.NotEntered)) {
+                return;
+            }
+            if (currentCondition != null) {
+                currentCondition.Stop(forceChange);
+                if (currentCondition.Status == UnitCondition.StatusType.Exited) {
+                    currentCondition.Disconnect();
+                    currentCondition = null;
+                }
+            }
+            if (newCondition != null && currentCondition == null) {
+                currentCondition = newCondition;
+                currentCondition.Connect(this);
+                currentCondition.Enter();
+            }
+        }
+
+        public void UseAbility(AbilityUsage abilityUsage) {
+            if (abilityUsage.Ability == null) {
+                return;
+            }
+            UnitAbility ability = FindAbility(abilityUsage.Ability);
+            if (ability != null) {
+                var newCondition = ability.Use(abilityUsage.ParameterSet);
+                ChangeCondition(newCondition, forceChange: false);
+            }
+        }
+
+
+        // Support.
+
+        private UnitAbility FindAbility(UnitAbilityPresentation abilityPresentation) {
+            foreach (UnitAbility ability in abilities) {
+                if (ability.Presentation == abilityPresentation) {
+                    return ability;
+                }
+            }
+            return null;
+        } 
+
 
     }
 
