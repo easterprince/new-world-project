@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Unit.Conditions {
     
-    public class UnitConditionPresentation : UnitModulePresentation<UnitCondition> {
+    public class UnitConditionPresentation : PresentationBase<UnitCondition> {
     
         public UnitConditionPresentation(UnitCondition presented) : base(presented) {}
 

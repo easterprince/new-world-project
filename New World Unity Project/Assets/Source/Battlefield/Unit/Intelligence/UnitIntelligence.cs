@@ -13,7 +13,7 @@ using NewWorld.Battlefield.Unit.Abilities;
 
 namespace NewWorld.Battlefield.Unit.Intelligence {
 
-    public class UnitIntelligence : UnitModule<UnitIntelligence, UnitCore, UnitIntelligencePresentation> {
+    public class UnitIntelligence : UnitModuleBase<UnitIntelligence, UnitCore, UnitIntelligencePresentation> {
 
         // Constructor.
 

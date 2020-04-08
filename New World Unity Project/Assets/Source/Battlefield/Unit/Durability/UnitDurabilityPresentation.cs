@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Unit.Durability {
     
-    public class UnitDurabilityPresentation : UnitModulePresentation<UnitDurability> {
+    public class UnitDurabilityPresentation : PresentationBase<UnitDurability> {
    
         // Constructor.
 

@@ -8,7 +8,7 @@ using NewWorld.Battlefield.UnitSystem;
 using NewWorld.Battlefield.Unit.Core;
 using NewWorld.Battlefield.Unit.Durability;
 
-namespace NewWorld.Battlefield.Unit {
+namespace NewWorld.Battlefield.Unit.Controller {
 
     public partial class UnitController {
 

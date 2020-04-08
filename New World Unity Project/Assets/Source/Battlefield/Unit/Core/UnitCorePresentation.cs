@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battlefield.Unit.Core {
     
-    public class UnitCorePresentation : UnitModulePresentation<UnitCore> {
+    public class UnitCorePresentation : PresentationBase<UnitCore> {
             
         public UnitCorePresentation(UnitCore presented) : base(presented) {}
 

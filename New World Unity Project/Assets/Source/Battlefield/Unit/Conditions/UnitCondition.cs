@@ -5,7 +5,7 @@ using NewWorld.Battlefield.Unit.Core;
 
 namespace NewWorld.Battlefield.Unit.Conditions {
 
-    public abstract class UnitCondition : UnitModule<UnitCondition, UnitCore, UnitConditionPresentation> {
+    public abstract class UnitCondition : UnitModuleBase<UnitCondition, UnitCore, UnitConditionPresentation> {
 
         // Enumerators.
 
@@ -37,6 +37,7 @@ namespace NewWorld.Battlefield.Unit.Conditions {
         // Interaction methods.
 
         public void Enter() {
+            ValidateOwnership();
             if (status != StatusType.NotEntered) {
                 throw new System.InvalidOperationException($"Condition status must be {StatusType.NotEntered}.");
             }
@@ -45,6 +46,7 @@ namespace NewWorld.Battlefield.Unit.Conditions {
         }
 
         public void Update() {
+            ValidateOwnership();
             if (status != StatusType.Entered) {
                 throw new System.InvalidOperationException($"Condition status must be {StatusType.Entered}.");
             }
@@ -56,6 +58,7 @@ namespace NewWorld.Battlefield.Unit.Conditions {
         }
 
         public void Stop(bool forceStop) {
+            ValidateOwnership();
             if (status != StatusType.Entered) {
                 throw new System.InvalidOperationException($"Condition status must be {StatusType.Entered}.");
             }

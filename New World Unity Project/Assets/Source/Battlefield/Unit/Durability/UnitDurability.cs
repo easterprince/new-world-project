@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NewWorld.Battlefield.Unit.Durability {
 
-    public class UnitDurability : UnitModule<UnitDurability, UnitCore, UnitDurabilityPresentation> {
+    public class UnitDurability : UnitModuleBase<UnitDurability, UnitCore, UnitDurabilityPresentation> {
 
         // Static.
 

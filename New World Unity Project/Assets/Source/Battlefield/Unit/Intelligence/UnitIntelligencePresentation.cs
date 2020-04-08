@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NewWorld.Battlefield.Unit.Intelligence {
     
-    public class UnitIntelligencePresentation : UnitModulePresentation<UnitIntelligence> {
+    public class UnitIntelligencePresentation : PresentationBase<UnitIntelligence> {
   
         public UnitIntelligencePresentation(UnitIntelligence presented) : base(presented) {}
     

@@ -6,7 +6,7 @@ using NewWorld.Battlefield.Unit.Core;
 
 namespace NewWorld.Battlefield.Unit.Abilities {
 
-    public abstract class UnitAbility : UnitModule<UnitAbility, UnitCore, UnitAbilityPresentation> {
+    public abstract class UnitAbility : UnitModuleBase<UnitAbility, UnitCore, UnitAbilityPresentation> {
 
         // Properties.
 

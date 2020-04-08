@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battlefield.Unit.Abilities;
 using NewWorld.Battlefield.Unit.Conditions;
+using NewWorld.Battlefield.Unit.Controller;
 using NewWorld.Battlefield.Unit.Durability;
 using NewWorld.Battlefield.Unit.Intelligence;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace NewWorld.Battlefield.Unit.Core {
 
-    public class UnitCore : UnitModule<UnitCore, UnitController, UnitCorePresentation> {
+    public class UnitCore : UnitModuleBase<UnitCore, UnitController, UnitCorePresentation> {
 
         // Submodules.
         private UnitIntelligence intelligence = null;
@@ -22,10 +23,14 @@ namespace NewWorld.Battlefield.Unit.Core {
         public UnitDurabilityPresentation Durability => durability.Presentation;
         public UnitConditionPresentation CurrentCondition => currentCondition.Presentation;
 
-        public ICollection<UnitAbilityPresentation> Abilities {
+        public IEnumerable<UnitAbilityPresentation> Abilities {
             get {
-                var abilityPresentations = new UnitAbility[abilities.Count];
-                abilities.CopyTo(abilityPresentations, 0);
+                var abilityPresentations = new UnitAbilityPresentation[abilities.Count];
+                int inserted = 0;
+                foreach (var ability in abilities) {
+                    abilityPresentations[inserted] = ability.Presentation;
+                    ++inserted;
+                }
                 return abilityPresentations;
             }
         }
@@ -46,6 +51,7 @@ namespace NewWorld.Battlefield.Unit.Core {
         // Updating.
 
         public void Update() {
+            ValidateOwnership();
 
             // Update on durability.
             if (durability != null) {
@@ -68,7 +74,12 @@ namespace NewWorld.Battlefield.Unit.Core {
 
             // Update on condition.
             if (currentCondition != null) {
-                currentCondition.Update();
+                if (currentCondition.Status == UnitCondition.StatusType.NotEntered) {
+                    currentCondition.Enter();
+                }
+                if (currentCondition.Status != UnitCondition.StatusType.Exited) {
+                    currentCondition.Update();
+                }
                 if (currentCondition.Status == UnitCondition.StatusType.Exited) {
                     currentCondition.Disconnect();
                     currentCondition = null;
@@ -80,7 +91,16 @@ namespace NewWorld.Battlefield.Unit.Core {
 
         // Regulating.
 
-        public void ChangeCondition(UnitCondition newCondition, bool forceChange) {
+
+
+        public void ForceCondition(UnitCondition newCondition) => ChangeCondition(newCondition, forceChange: true);
+
+        public void StopCondition(UnitConditionPresentation currentCondition) x
+
+
+        // Support.
+
+        private void ChangeCurrentCondition(UnitCondition newCondition, bool forceChange) {
             if (newCondition != null && (newCondition.Connected || newCondition.Status != UnitCondition.StatusType.NotEntered)) {
                 return;
             }
@@ -98,7 +118,18 @@ namespace NewWorld.Battlefield.Unit.Core {
             }
         }
 
-        public void UseAbility(AbilityUsage abilityUsage) {
+        private void StopCondition(UnitConditionPresentation conditionPresentation, bool forceStop) {
+            if (currentCondition == null || currentCondition.Presentation != conditionPresentation) {
+                return;
+            }
+            if (currentCondition.CanBeCancelled || forceStop) {
+                if (currentCondition.Status == UnitCondition.StatusType.NotEntered) {
+                    currentCondition.Disconnect();
+                }
+            }
+        }
+
+        private void UseAbility(AbilityUsage abilityUsage) {
             if (abilityUsage.Ability == null) {
                 return;
             }
@@ -108,9 +139,6 @@ namespace NewWorld.Battlefield.Unit.Core {
                 ChangeCondition(newCondition, forceChange: false);
             }
         }
-
-
-        // Support.
 
         private UnitAbility FindAbility(UnitAbilityPresentation abilityPresentation) {
             foreach (UnitAbility ability in abilities) {

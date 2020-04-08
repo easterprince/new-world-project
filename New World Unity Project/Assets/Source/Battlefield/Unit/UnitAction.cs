@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using NewWorld.Battlefield.Unit.Controller;
 
 namespace NewWorld.Battlefield.Unit {
 
-    public class UnitAction<TSelf> : GameAction<TSelf> {
+    public class UnitAction<TSelf> : GameAction<TSelf>
+        where TSelf : UnitAction<TSelf> {
 
         // Properties.
 

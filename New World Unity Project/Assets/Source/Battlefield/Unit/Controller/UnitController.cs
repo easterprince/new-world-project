@@ -1,22 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using NewWorld.Utilities.Singletons;
 using NewWorld.Battlefield.Map;
 using NewWorld.Battlefield.Unit.Abilities;
 using NewWorld.Battlefield.Unit.Abilities.Motions;
 using NewWorld.Battlefield.Unit.Abilities.Attacks;
 using NewWorld.Battlefield.Unit.Conditions;
-using NewWorld.Battlefield.Unit.Actions.UnitSystemUpdates;
-using NewWorld.Battlefield.Unit.Conditions.Collapses;
 using NewWorld.Utilities;
 using NewWorld.Battlefield.Unit.Intelligence;
 using NewWorld.Battlefield.Unit.Durability;
 using NewWorld.Battlefield.UnitSystem;
 using NewWorld.Battlefield.Unit.Core;
 
-namespace NewWorld.Battlefield.Unit {
+namespace NewWorld.Battlefield.Unit.Controller {
 
-    public partial class UnitController : MonoBehaviour {
+    public partial class UnitController : MonoBehaviour, IParentModule<UnitController> {
 
         // Fabric.
 
