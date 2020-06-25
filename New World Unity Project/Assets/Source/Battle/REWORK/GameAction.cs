@@ -14,14 +14,9 @@ namespace NewWorld.Battlefield {
     public abstract class GameAction<TSelf> : GameAction
         where TSelf : GameAction<TSelf> {
 
-        // Static.
-
-        public static Type UsedActionType => typeof(TSelf);
-
-
         // Properties.
 
-        override public Type ActionType => UsedActionType;
+        override public Type ActionType => typeof(TSelf);
 
 
     }

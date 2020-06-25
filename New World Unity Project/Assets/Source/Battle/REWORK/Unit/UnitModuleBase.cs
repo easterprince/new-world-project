@@ -45,8 +45,11 @@ namespace NewWorld.Battlefield.Unit {
             if (parent is null) {
                 throw new System.ArgumentNullException(nameof(parent));
             }
-            if (Connected && this.parent == parent) {
-                throw new System.InvalidOperationException("Module is already connected to another parent.");
+            if (Connected) {
+                if (this.parent != parent) {
+                    throw new System.InvalidOperationException("Module is already connected to another parent.");
+                }
+                return;
             }
             this.parent = parent;
         }
