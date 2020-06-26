@@ -1,22 +1,26 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.Unit;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.UnitSystem {
 
-    public class UnitSystemCore : ReceptiveCoreBase<UnitSystemCore, UnitSystemPresentation> {
+    public class UnitSystemCore : ReceptiveCoreBase<UnitSystemCore, UnitSystemPresentation, UnitSystemAction>,
+        IResponsiveCore<UnitAdditionAction>, IResponsiveCore<UnitMotionAction>, IResponsiveCore<UnitRemovalAction> {
 
         // Fields.
-        ]
+        private readonly MapCore map;
         private readonly Dictionary<UnitCore, Vector2Int> unitsToPositions = new Dictionary<UnitCore, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
 
 
         // Constructor.
 
-        public UnitSystemCore(ActionPlanner planner) : base(planner) {}
+        public UnitSystemCore(ActionPlanner planner, MapCore map) : base(planner) {
+            this.map = map ?? throw new System.ArgumentNullException(nameof(map));
+        }
 
 
         // Properties.
@@ -44,13 +48,6 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         private protected override UnitSystemPresentation BuildPresentation() {
             return new UnitSystemPresentation(this);
-        }
-
-
-        // Action processing.
-
-        public override void ProcessAction(IGameAction action) {
-            throw new System.NotImplementedException(); // TODO.
         }
 
 
@@ -112,6 +109,27 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             }
             positionsToUnits.Remove(unitsToPositions[unit]);
             unitsToPositions.Remove(unit);
+        }
+
+
+        // Action processing.
+
+        public void ProcessAction(UnitAdditionAction action) {
+            try {
+                AddUnit(action.Unit, action.Position);
+            } catch (InvalidOperationException) {}
+        }
+
+        public void ProcessAction(UnitMotionAction action) {
+            try {
+                MoveUnit(action.Unit, action.Position);
+            } catch (InvalidOperationException) {}
+        }
+
+        public void ProcessAction(UnitRemovalAction action) {
+            try {
+                RemoveUnit(action.Unit);
+            } catch (InvalidOperationException) {}
         }
 
 

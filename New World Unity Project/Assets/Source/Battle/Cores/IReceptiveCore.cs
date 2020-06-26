@@ -1,12 +1,12 @@
 ﻿namespace NewWorld.Battle.Cores {
-    
-    public interface IReceptiveCore : ICore {
 
-        IReceptivePresentation ReceptivePresentation { get; }
+    public interface IReceptiveCore<TGameActionSeries> : ICore
+        where TGameActionSeries : GameAction {
 
-        void ProcessAction(IGameAction action);
+        IReceptivePresentation<TGameActionSeries> ReceptivePresentation { get; }
 
-        void AddAction(IGameAction action);
+        void AddAction<TGameAction>(TGameAction action)
+            where TGameAction : TGameActionSeries;
 
 
     }

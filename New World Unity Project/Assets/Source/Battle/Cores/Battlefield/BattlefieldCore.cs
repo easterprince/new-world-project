@@ -3,7 +3,7 @@ using NewWorld.Battle.Cores.UnitSystem;
 
 namespace NewWorld.Battle.Cores.Battlefield {
     
-    public class BattlefieldCore : ReceptiveCoreBase<BattlefieldCore, BattlefieldPresentation> {
+    public class BattlefieldCore : CoreBase<BattlefieldCore, BattlefieldPresentation> {
 
         // Fields.
 
@@ -15,16 +15,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
         private UnitSystemCore unitSystem = null;
 
 
-        // Constructor.
-
-        public BattlefieldCore(ActionPlanner planner) : base(planner) {}
-
-
         // Methods.
-
-        public override void ProcessAction(IGameAction action) {
-            throw new System.NotImplementedException(); // TODO.
-        }
 
         private protected override BattlefieldPresentation BuildPresentation() {
             return new BattlefieldPresentation(this);

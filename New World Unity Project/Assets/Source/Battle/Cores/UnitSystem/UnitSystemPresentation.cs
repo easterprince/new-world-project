@@ -1,6 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.UnitSystem {
 
-    public class UnitSystemPresentation : ReceptivePresentationBase<UnitSystemPresentation, UnitSystemCore> {
+    public class UnitSystemPresentation : ReceptivePresentationBase<UnitSystemCore, UnitSystemAction> {
         
         // Constructor.
 

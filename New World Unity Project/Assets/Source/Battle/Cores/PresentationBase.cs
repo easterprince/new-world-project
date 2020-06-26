@@ -1,7 +1,7 @@
 ﻿namespace NewWorld.Battle.Cores {
     
     public class PresentationBase<TPresented> : IPresentation
-        where TPresented : class {
+        where TPresented : class, ICore {
 
         // Fields.
 

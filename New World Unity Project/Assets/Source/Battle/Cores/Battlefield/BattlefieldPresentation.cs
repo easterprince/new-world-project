@@ -1,6 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.Battlefield {
 
-    public class BattlefieldPresentation : ReceptivePresentationBase<BattlefieldPresentation, BattlefieldCore> {
+    public class BattlefieldPresentation : PresentationBase<BattlefieldCore> {
 
         // Constructor.
 

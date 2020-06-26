@@ -1,11 +1,13 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
+using System;
+using System.Collections.Generic;
 
 namespace NewWorld.Battle.Cores {
     
-    public abstract class ReceptiveCoreBase<TSelf, TPresentation> : CoreBase<TSelf, TPresentation>, IReceptiveCore
-        where TSelf : ReceptiveCoreBase<TSelf, TPresentation>
-        where TPresentation : ReceptivePresentationBase<TPresentation, TSelf> {
-
+    public abstract class ReceptiveCoreBase<TSelf, TPresentation, TGameActionSeries> : CoreBase<TSelf, TPresentation>, IReceptiveCore<TGameActionSeries>
+        where TSelf : ReceptiveCoreBase<TSelf, TPresentation, TGameActionSeries>
+        where TPresentation : ReceptivePresentationBase<TSelf, TGameActionSeries>
+        where TGameActionSeries : GameAction {
 
         // Fields.
 
@@ -14,25 +16,24 @@ namespace NewWorld.Battle.Cores {
 
         // Properties.
 
-        IReceptivePresentation IReceptiveCore.ReceptivePresentation => Presentation;
+        IReceptivePresentation<TGameActionSeries> IReceptiveCore<TGameActionSeries>.ReceptivePresentation => Presentation;
 
 
         // Constructor.
 
         public ReceptiveCoreBase(ActionPlanner planner) {
-            if (planner is null) {
-                throw new System.ArgumentNullException(nameof(planner));
-            }
-            this.planner = planner;
+            this.planner = planner ?? throw new ArgumentNullException(nameof(planner));
         }
 
 
         // Methods.
 
-        public abstract void ProcessAction(IGameAction action);
+        public void AddAction<TAction>(TAction action)
+            where TAction : TGameActionSeries {
 
-        public void AddAction(IGameAction action) {
-            planner.AddAction(this, action);
+            if (this is IResponsiveCore<TAction> itself) {
+                planner.AddAction(() => itself.ProcessAction(action));
+            }
         }
 
 

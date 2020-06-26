@@ -4,7 +4,7 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battle.Cores.Map {
 
-    public class MapCore : ReceptiveCoreBase<MapCore, MapPresentation> {
+    public class MapCore : CoreBase<MapCore, MapPresentation> {
 
         // Fields.
 
@@ -58,11 +58,6 @@ namespace NewWorld.Battle.Cores.Map {
         private protected override MapPresentation BuildPresentation() {
             return new MapPresentation(this);
         }
-
-
-        // Action processing.
-
-        public override void ProcessAction(IGameAction action) {}
 
 
         // Informational methods.

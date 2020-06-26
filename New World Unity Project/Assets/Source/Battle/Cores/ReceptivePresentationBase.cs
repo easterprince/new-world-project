@@ -2,9 +2,9 @@
 
 namespace NewWorld.Battle.Cores {
 
-    public class ReceptivePresentationBase<TSelf, TPresented> : PresentationBase<TPresented>, IReceptivePresentation
-        where TSelf : ReceptivePresentationBase<TSelf, TPresented>
-        where TPresented : ReceptiveCoreBase<TPresented, TSelf> {
+    public abstract class ReceptivePresentationBase<TPresented, TGameActionSeries> : PresentationBase<TPresented>, IReceptivePresentation<TGameActionSeries>
+        where TPresented : class, IReceptiveCore<TGameActionSeries>
+        where TGameActionSeries : GameAction {
 
         // Constructor.
         
@@ -13,7 +13,9 @@ namespace NewWorld.Battle.Cores {
 
         // Methods.
 
-        public void AddAction(IGameAction action) {
+        public void AddAction<TAction>(TAction action)
+            where TAction : TGameActionSeries {
+
             Presented.AddAction(action);
         }
 

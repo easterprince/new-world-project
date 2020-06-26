@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Map {
 
-    public class MapPresentation : ReceptivePresentationBase<MapPresentation, MapCore> {
+    public class MapPresentation : PresentationBase<MapCore> {
         
         // Constructor.
         
