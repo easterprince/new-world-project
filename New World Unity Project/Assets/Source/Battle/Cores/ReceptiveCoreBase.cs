@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace NewWorld.Battle.Cores {
     
@@ -33,6 +34,8 @@ namespace NewWorld.Battle.Cores {
 
             if (this is IResponsiveCore<TAction> itself) {
                 planner.AddAction(() => itself.ProcessAction(action));
+            } else {
+                Debug.LogAssertion($"Class {typeof(TSelf)} cannot process action of type {typeof(TAction)}.");
             }
         }
 
