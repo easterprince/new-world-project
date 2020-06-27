@@ -1,6 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.Unit {
     
-    public interface IParentPresentation : IPresentation {
+    public interface IUnitModule : ICore {
 
         UnitPresentation Owner { get; }
 

@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Unit {
     
-    public abstract class UnitModuleBase<TSelf, TPresentation, TParentPresentation> : CoreBase<TSelf, TPresentation>
+    public abstract class UnitModuleBase<TSelf, TPresentation, TParentPresentation> : CoreBase<TSelf, TPresentation>, IUnitModule
         where TSelf : UnitModuleBase<TSelf, TPresentation, TParentPresentation>
         where TPresentation : PresentationBase<TSelf>
         where TParentPresentation : class, IParentPresentation {
