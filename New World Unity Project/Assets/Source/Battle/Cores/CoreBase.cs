@@ -1,8 +1,10 @@
-﻿namespace NewWorld.Battle.Cores {
-    
-    public abstract class CoreBase<TSelf, TPresentation> : ICore
-        where TSelf : CoreBase<TSelf, TPresentation>
-        where TPresentation : PresentationBase<TSelf> {
+﻿using NewWorld.Battle.Cores.Battlefield;
+using System;
+
+namespace NewWorld.Battle.Cores {
+
+    public abstract class CoreBase<TPresentation> : IContextPointer
+        where TPresentation : IContextPointer {
 
         // Fields.
 
@@ -23,12 +25,33 @@
             }
         }
 
-        IPresentation ICore.Presentation => Presentation;
+        public abstract BattlefieldPresentation Context { get; }
 
 
-        // Methods.
+        // Presentation generation.
 
         private protected abstract TPresentation BuildPresentation();
+
+
+        // Support methods.
+
+        private protected void ValidateContext() {
+            if (Context is null) {
+                throw new NullReferenceException("Context must be not null.");
+            }
+        }
+
+        private protected void PlanAction<TGameAction>(IResponsive<TGameAction> responsive, TGameAction action)
+            where TGameAction : GameAction {
+
+            if (responsive is null) {
+                throw new ArgumentNullException(nameof(responsive));
+            }
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            Context.ExecuteAfterUpdate(() => responsive.ProcessAction(action));
+        }
 
 
     }

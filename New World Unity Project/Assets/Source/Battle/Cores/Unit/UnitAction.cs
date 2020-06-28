@@ -1,5 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.Unit {
     
-    public class UnitAction : GameAction {}
+    public abstract class UnitAction : GameAction {}
+
 
 }

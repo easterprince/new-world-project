@@ -1,11 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.Unit {
 
-    public class UnitPresentation : ReceptivePresentationBase<UnitCore, UnitAction>, IParentPresentation {
-
-        // Properties.
-
-        UnitPresentation IParentPresentation.Owner => this;
-
+    public class UnitPresentation : UnitModulePresentationBase<UnitCore> {
 
         // Constructor.
 

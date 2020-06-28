@@ -7,20 +7,17 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.UnitSystem {
 
-    public class UnitSystemCore : ReceptiveCoreBase<UnitSystemCore, UnitSystemPresentation, UnitSystemAction>,
-        IResponsiveCore<UnitAdditionAction>, IResponsiveCore<UnitMotionAction>, IResponsiveCore<UnitRemovalAction> {
+    public class UnitSystemCore : ConnectableCoreBase<UnitSystemPresentation, BattlefieldPresentation>,
+        IResponsive<UnitAdditionAction>, IResponsive<UnitMotionAction>, IResponsive<UnitRemovalAction> {
 
         // Fields.
-        private readonly MapCore map;
         private readonly Dictionary<UnitCore, Vector2Int> unitsToPositions = new Dictionary<UnitCore, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
 
 
         // Constructor.
 
-        public UnitSystemCore(ActionPlanner planner, MapCore map) : base(planner) {
-            this.map = map ?? throw new System.ArgumentNullException(nameof(map));
-        }
+        public UnitSystemCore(BattlefieldPresentation parent) : base(parent) {}
 
 
         // Properties.
@@ -58,6 +55,16 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 throw new System.ArgumentNullException(nameof(unit));
             }
             return unitsToPositions.ContainsKey(unit);
+        }
+
+
+        // Updating.
+
+        public void Update() {
+            ValidateContext();
+            foreach (var unit in unitsToPositions.Keys) {
+                unit.Update();
+            }
         }
 
 
@@ -131,6 +138,10 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 RemoveUnit(action.Unit);
             } catch (InvalidOperationException) {}
         }
+
+        public void PlanAction(UnitAdditionAction action) => PlanAction(this, action);
+        public void PlanAction(UnitMotionAction action) => PlanAction(this, action);
+        public void PlanAction(UnitRemovalAction action) => PlanAction(this, action);
 
 
     }

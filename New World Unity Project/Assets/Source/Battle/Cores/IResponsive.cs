@@ -1,6 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores {
     
-    public interface IResponsiveCore<TGameAction> : ICore
+    public interface IResponsive<TGameAction> : IReceptive<TGameAction>
         where TGameAction : GameAction {
 
         void ProcessAction(TGameAction action);

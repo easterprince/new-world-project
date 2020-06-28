@@ -4,7 +4,7 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battle.Cores.Map {
 
-    public class MapCore : CoreBase<MapCore, MapPresentation> {
+    public class MapCore : ConnectableCoreBase<MapPresentation, BattlefieldPresentation> {
 
         // Fields.
 
@@ -46,7 +46,7 @@ namespace NewWorld.Battle.Cores.Map {
 
         // Constructor.
 
-        public MapCore(ActionPlanner planner, Vector2Int size = new Vector2Int(), float heightLimit = 0) : base(planner) {
+        public MapCore(BattlefieldPresentation parent, Vector2Int size = new Vector2Int(), float heightLimit = 0) : base(parent) {
             HeightLimit = heightLimit;
             size = Vector2Int.Max(size, Vector2Int.zero);
             realNodes = new MapNode[size.x, size.y];
@@ -64,6 +64,14 @@ namespace NewWorld.Battle.Cores.Map {
 
         public bool IsRealPosition(in Vector2Int position) {
             return position.x >= 0 && position.x < Size.x && position.y >= 0 && position.y < Size.y;
+        }
+
+        public Vector2Int GetNearestPosition(Vector3 point) {
+            return new Vector2Int(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.z));
+        }
+
+        public Vector2Int GetNearestRealPosition(Vector3 point) {
+            return GetNearestRealPosition(GetNearestPosition(point));
         }
 
         public Vector2Int GetNearestRealPosition(Vector2Int position) {
