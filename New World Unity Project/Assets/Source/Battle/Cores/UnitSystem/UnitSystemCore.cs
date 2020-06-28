@@ -13,6 +13,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         // Fields.
         private readonly Dictionary<UnitCore, Vector2Int> unitsToPositions = new Dictionary<UnitCore, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
+        private readonly Dictionary<UnitPresentation, UnitCore> presentationsToUnits = new Dictionary<UnitPresentation, UnitCore>();
 
 
         // Constructor.
@@ -22,21 +23,21 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Properties.
 
-        public Vector2Int this[UnitCore unit] {
+        public Vector2Int this[UnitPresentation unitPresentation] {
             get {
-                if (!unitsToPositions.TryGetValue(unit, out Vector2Int position)) {
-                    throw new KeyNotFoundException($"No such unit ({unit}) in unit system!");
+                if (!presentationsToUnits.TryGetValue(unitPresentation, out UnitCore unit)) {
+                    throw new KeyNotFoundException($"No such unit ({unitPresentation}) in unit system!");
                 }
-                return position;
+                return unitsToPositions[unit];
             }
         }
 
-        public UnitCore this[Vector2Int position] {
+        public UnitPresentation this[Vector2Int position] {
             get {
                 if (!positionsToUnits.TryGetValue(position, out UnitCore unit)) {
                     return null;
                 }
-                return unit;
+                return unit.Presentation;
             }
         }
 
@@ -50,11 +51,11 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Informational methods.
 
-        public bool HasUnit(UnitCore unit) {
-            if (unit is null) {
-                throw new System.ArgumentNullException(nameof(unit));
+        public bool HasUnit(UnitPresentation unitPresentation) {
+            if (unitPresentation is null) {
+                throw new ArgumentNullException(nameof(unitPresentation));
             }
-            return unitsToPositions.ContainsKey(unit);
+            return presentationsToUnits.ContainsKey(unitPresentation);
         }
 
 
@@ -72,48 +73,52 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         public void AddUnit(UnitCore unit, Vector2Int position) {
             if (unit is null) {
-                throw new System.ArgumentNullException(nameof(unit));
+                throw new ArgumentNullException(nameof(unit));
             }
-            if (HasUnit(unit)) {
+            if (HasUnit(unit.Presentation)) {
                 if (position != unitsToPositions[unit]) {
-                    throw new System.InvalidOperationException($"There is already unit {unit}!");
+                    throw new InvalidOperationException($"There is already unit {unit}!");
                 }
             } else {
                 var onPosition = this[position];
                 if (onPosition != null) {
-                    throw new System.InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
+                    throw new InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
                 }
+                presentationsToUnits[unit.Presentation] = unit;
                 unitsToPositions[unit] = position;
                 positionsToUnits[position] = unit;
             }
         }
 
-        public void MoveUnit(UnitCore unit, Vector2Int position) {
-            if (unit is null) {
-                throw new System.ArgumentNullException(nameof(unit));
+        public void MoveUnit(UnitPresentation unitPresentation, Vector2Int position) {
+            if (unitPresentation is null) {
+                throw new ArgumentNullException(nameof(unitPresentation));
             }
-            if (!HasUnit(unit)) {
-                throw new System.InvalidOperationException($"There is no unit {unit}!");
+            if (!HasUnit(unitPresentation)) {
+                throw new InvalidOperationException($"There is no unit {unitPresentation}!");
             }
             var onPosition = this[position];
             if (onPosition != null) {
-                if (onPosition != unit) {
-                    throw new System.InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
+                if (onPosition != unitPresentation) {
+                    throw new InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
                 }
             } else {
+                UnitCore unit = presentationsToUnits[unitPresentation];
                 positionsToUnits.Remove(unitsToPositions[unit]);
                 unitsToPositions[unit] = position;
                 positionsToUnits[position] = unit;
             }
         }
 
-        public void RemoveUnit(UnitCore unit) {
-            if (unit is null) {
-                throw new System.ArgumentNullException(nameof(unit));
+        public void RemoveUnit(UnitPresentation unitPresentation) {
+            if (unitPresentation is null) {
+                throw new ArgumentNullException(nameof(unitPresentation));
             }
-            if (!HasUnit(unit)) {
-                throw new System.InvalidOperationException($"There is no unit {unit}!");
+            if (!HasUnit(unitPresentation)) {
+                throw new InvalidOperationException($"There is no unit {unitPresentation}!");
             }
+            UnitCore unit = presentationsToUnits[unitPresentation];
+            presentationsToUnits.Remove(unitPresentation);
             positionsToUnits.Remove(unitsToPositions[unit]);
             unitsToPositions.Remove(unit);
         }

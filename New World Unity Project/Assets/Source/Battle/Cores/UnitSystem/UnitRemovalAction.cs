@@ -7,17 +7,17 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Fields.
 
-        private readonly UnitCore unit;
+        private readonly UnitPresentation unit;
 
 
         // Properties.
 
-        public UnitCore Unit => unit;
+        public UnitPresentation Unit => unit;
 
 
         // Constructor.
 
-        public UnitRemovalAction(UnitCore unit) {
+        public UnitRemovalAction(UnitPresentation unit) {
             this.unit = unit ?? throw new System.ArgumentNullException(nameof(unit));
         }
 

@@ -7,19 +7,19 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Fields.
 
-        private readonly UnitCore unit;
+        private readonly UnitPresentation unit;
         private readonly Vector2Int position;
 
 
         // Properties.
 
-        public UnitCore Unit => unit;
+        public UnitPresentation Unit => unit;
         public Vector2Int Position => position;
 
 
         // Constructor.
 
-        public UnitMotionAction(UnitCore unit, Vector2Int position) {
+        public UnitMotionAction(UnitPresentation unit, Vector2Int position) {
             this.unit = unit ?? throw new System.ArgumentNullException(nameof(unit));
             this.position = position;
         }
