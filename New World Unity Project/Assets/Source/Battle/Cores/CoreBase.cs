@@ -34,7 +34,7 @@ namespace NewWorld.Battle.Cores {
         private protected abstract TPresentation BuildPresentation();
 
 
-        // Clonning.
+        // Cloning.
 
         public abstract TSelf Clone();
 
