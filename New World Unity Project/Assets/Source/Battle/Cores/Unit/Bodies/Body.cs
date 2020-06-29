@@ -8,17 +8,29 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
         // Fields.
 
-        private Vector3 position = Vector3.zero;
-        private Vector3 velocity = Vector3.zero;
+        // Main properties.
+        private Vector3 position;
+        private Vector3 velocity;
+        private Quaternion rotation;
+
+        // Planned changes.
+        private float timeChange;
 
 
         // Constructors.
 
-        public Body() {}
+        public Body() {
+            position = Vector3.zero;
+            velocity = Vector3.zero;
+            rotation = Quaternion.identity;
+            timeChange = 0;
+        }
 
         public Body(Body other) {
             position = other.position;
             velocity = other.velocity;
+            rotation = other.rotation;
+            timeChange = other.timeChange;
         }
 
 
@@ -29,10 +41,14 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
             set => position = value;
         }
 
-
         public Vector3 Velocity {
             get => velocity;
             set => velocity = value;
+        }
+
+        public Quaternion Rotation {
+            get => rotation;
+            set => rotation = value;
         }
 
 
@@ -54,7 +70,18 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
         public void Update() {
             ValidateContext();
-            throw new NotImplementedException();
+            timeChange = Context.GameTimeDelta;
+        }
+
+
+        // Force applying.
+
+        public void ApplyMovement(MovementAction movement) {
+            velocity = movement.Velocity;
+            position += velocity * timeChange;
+            if (movement.AdjustRotation) {
+                rotation = Quaternion.LookRotation(velocity);
+            }
         }
 
 
