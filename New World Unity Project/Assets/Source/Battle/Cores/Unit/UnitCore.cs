@@ -5,17 +5,22 @@ using System;
 
 namespace NewWorld.Battle.Cores.Unit {
 
-    public class UnitCore : ConnectableCoreBase<UnitPresentation, UnitSystemPresentation>, IOwnerPointer {
+    public class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer {
 
         // Fields.
 
         private readonly Body body;
 
 
-        // Constructor.
+        // Constructors.
 
         public UnitCore() {
             body = new Body();
+            body.Connect(Presentation);
+        }
+
+        public UnitCore(UnitCore other) {
+            body = other.body.Clone();
             body.Connect(Presentation);
         }
 
@@ -30,6 +35,13 @@ namespace NewWorld.Battle.Cores.Unit {
 
         private protected override UnitPresentation BuildPresentation() {
             return new UnitPresentation(this);
+        }
+
+
+        // Cloning.
+
+        public override UnitCore Clone() {
+            return new UnitCore(this);
         }
 
 

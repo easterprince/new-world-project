@@ -3,7 +3,8 @@ using System;
 
 namespace NewWorld.Battle.Cores {
 
-    public abstract class CoreBase<TPresentation> : IContextPointer
+    public abstract class CoreBase<TSelf, TPresentation> : IContextPointer
+        where TSelf : CoreBase<TSelf, TPresentation>
         where TPresentation : IContextPointer {
 
         // Fields.
@@ -31,6 +32,11 @@ namespace NewWorld.Battle.Cores {
         // Presentation generation.
 
         private protected abstract TPresentation BuildPresentation();
+
+
+        // Clonning.
+
+        public abstract TSelf Clone();
 
 
         // Support methods.

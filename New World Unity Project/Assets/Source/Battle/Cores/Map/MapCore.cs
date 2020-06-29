@@ -4,7 +4,7 @@ using NewWorld.Utilities;
 
 namespace NewWorld.Battle.Cores.Map {
 
-    public class MapCore : ConnectableCoreBase<MapPresentation, BattlefieldPresentation> {
+    public class MapCore : ConnectableCoreBase<MapCore, MapPresentation, BattlefieldPresentation> {
 
         // Fields.
 
@@ -12,12 +12,18 @@ namespace NewWorld.Battle.Cores.Map {
         private MapNode[,] realNodes = new MapNode[0, 0];
 
 
-        // Constructor.
+        // Constructors.
 
         public MapCore(Vector2Int size = new Vector2Int(), float heightLimit = 0) {
             HeightLimit = heightLimit;
             size = Vector2Int.Max(size, Vector2Int.zero);
             realNodes = new MapNode[size.x, size.y];
+        }
+
+        public MapCore(MapCore other) {
+            heightLimit = other.heightLimit;
+            realNodes = new MapNode[other.realNodes.GetLength(0), other.realNodes.GetLength(1)];
+            other.realNodes.CopyTo(realNodes, 0);
         }
 
 
@@ -57,6 +63,13 @@ namespace NewWorld.Battle.Cores.Map {
 
         private protected override MapPresentation BuildPresentation() {
             return new MapPresentation(this);
+        }
+
+        
+        // Cloning.
+
+        public override MapCore Clone() {
+            return new MapCore(this);
         }
 
 

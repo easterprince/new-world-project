@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.UnitSystem {
 
-    public class UnitSystemCore : ConnectableCoreBase<UnitSystemPresentation, BattlefieldPresentation>,
+    public class UnitSystemCore : ConnectableCoreBase<UnitSystemCore, UnitSystemPresentation, BattlefieldPresentation>,
         IResponsive<UnitAdditionAction>, IResponsive<UnitMotionAction>, IResponsive<UnitRemovalAction> {
 
         // Fields.
@@ -15,6 +15,18 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         private readonly Dictionary<UnitCore, Vector2Int> unitsToPositions = new Dictionary<UnitCore, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
         private readonly Dictionary<UnitPresentation, UnitCore> presentationsToUnits = new Dictionary<UnitPresentation, UnitCore>();
+
+
+        // Constructors.
+
+        public UnitSystemCore() {}
+
+        public UnitSystemCore(UnitSystemCore other) {
+            foreach (var unitAndPosition in other.unitsToPositions) {
+                var unitClone = unitAndPosition.Key.Clone();
+                AddUnit(unitClone, unitAndPosition.Value);
+            }
+        }
 
 
         // Properties.
@@ -42,6 +54,13 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         private protected override UnitSystemPresentation BuildPresentation() {
             return new UnitSystemPresentation(this);
+        }
+
+
+        // Cloning.
+
+        public override UnitSystemCore Clone() {
+            return new UnitSystemCore(this);
         }
 
 

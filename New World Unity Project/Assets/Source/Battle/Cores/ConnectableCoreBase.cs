@@ -3,7 +3,8 @@ using System;
 
 namespace NewWorld.Battle.Cores {
     
-    public abstract class ConnectableCoreBase<TPresentation, TParentPresentation> : CoreBase<TPresentation>
+    public abstract class ConnectableCoreBase<TSelf, TPresentation, TParentPresentation> : CoreBase<TSelf, TPresentation>
+        where TSelf : ConnectableCoreBase<TSelf, TPresentation, TParentPresentation>
         where TPresentation : IContextPointer
         where TParentPresentation : class, IContextPointer {
 

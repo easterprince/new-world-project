@@ -4,7 +4,7 @@ using System;
 
 namespace NewWorld.Battle.Cores.Battlefield {
 
-    public class BattlefieldCore : CoreBase<BattlefieldPresentation> {
+    public class BattlefieldCore : CoreBase<BattlefieldCore, BattlefieldPresentation> {
 
         // Fields.
 
@@ -17,12 +17,19 @@ namespace NewWorld.Battle.Cores.Battlefield {
         private readonly UnitSystemCore unitSystem;
 
 
-        // Constructor.
+        // Constructors.
 
         public BattlefieldCore() {
             map = new MapCore();
             map.Connect(Presentation);
             unitSystem = new UnitSystemCore();
+            unitSystem.Connect(Presentation);
+        }
+
+        public BattlefieldCore(BattlefieldCore other) {
+            map = other.map.Clone();
+            map.Connect(Presentation);
+            unitSystem = other.unitSystem.Clone();
             unitSystem.Connect(Presentation);
         }
 
@@ -48,6 +55,13 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         private protected override BattlefieldPresentation BuildPresentation() {
             return new BattlefieldPresentation(this);
+        }
+
+
+        // Cloning.
+
+        public override BattlefieldCore Clone() {
+            return new BattlefieldCore(this);
         }
 
 
