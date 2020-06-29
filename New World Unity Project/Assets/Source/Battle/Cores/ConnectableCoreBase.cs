@@ -12,16 +12,6 @@ namespace NewWorld.Battle.Cores {
         private TParentPresentation parent;
 
 
-        // Constructor.
-
-        public ConnectableCoreBase(TParentPresentation parent) {
-            if (parent is null) {
-                throw new ArgumentNullException(nameof(parent));
-            }
-            this.parent = parent;
-        }
-
-
         // Properties.
 
         public TParentPresentation Parent => parent;

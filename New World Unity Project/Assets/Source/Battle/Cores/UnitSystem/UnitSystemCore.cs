@@ -11,14 +11,10 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         IResponsive<UnitAdditionAction>, IResponsive<UnitMotionAction>, IResponsive<UnitRemovalAction> {
 
         // Fields.
+
         private readonly Dictionary<UnitCore, Vector2Int> unitsToPositions = new Dictionary<UnitCore, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
         private readonly Dictionary<UnitPresentation, UnitCore> presentationsToUnits = new Dictionary<UnitPresentation, UnitCore>();
-
-
-        // Constructor.
-
-        public UnitSystemCore(BattlefieldPresentation parent) : base(parent) {}
 
 
         // Properties.
@@ -84,6 +80,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 if (onPosition != null) {
                     throw new InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
                 }
+                unit.Connect(Presentation);
                 presentationsToUnits[unit.Presentation] = unit;
                 unitsToPositions[unit] = position;
                 positionsToUnits[position] = unit;
@@ -110,7 +107,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             }
         }
 
-        public void RemoveUnit(UnitPresentation unitPresentation) {
+        public UnitCore RemoveUnit(UnitPresentation unitPresentation) {
             if (unitPresentation is null) {
                 throw new ArgumentNullException(nameof(unitPresentation));
             }
@@ -118,9 +115,11 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 throw new InvalidOperationException($"There is no unit {unitPresentation}!");
             }
             UnitCore unit = presentationsToUnits[unitPresentation];
+            unit.Disconnect();
             presentationsToUnits.Remove(unitPresentation);
             positionsToUnits.Remove(unitsToPositions[unit]);
             unitsToPositions.Remove(unit);
+            return unit;
         }
 
 

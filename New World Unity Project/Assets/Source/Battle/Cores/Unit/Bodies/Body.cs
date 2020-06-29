@@ -12,11 +12,6 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
         private Vector3 velocity;
 
 
-        // Constructor.
-
-        public Body(UnitPresentation parent) : base(parent) {}
-
-
         // Properties.
 
         public Vector3 Position {

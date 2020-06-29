@@ -5,12 +5,7 @@ namespace NewWorld.Battle.Cores.Unit {
     public abstract class UnitModuleCoreBase<TPresentation, TParentPresentation> : ConnectableCoreBase<TPresentation, TParentPresentation>, IOwnerPointer
         where TPresentation : IContextPointer
         where TParentPresentation : class, IOwnerPointer {
-        
-        // Constructor.
-        
-        public UnitModuleCoreBase(TParentPresentation parent) : base(parent) {}
-
-
+    
         // Properties.
 
         public UnitPresentation Owner => Parent?.Owner;

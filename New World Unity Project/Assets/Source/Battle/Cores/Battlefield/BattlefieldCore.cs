@@ -20,8 +20,10 @@ namespace NewWorld.Battle.Cores.Battlefield {
         // Constructor.
 
         public BattlefieldCore() {
-            map = new MapCore(Presentation);
-            unitSystem = new UnitSystemCore(Presentation);
+            map = new MapCore();
+            map.Connect(Presentation);
+            unitSystem = new UnitSystemCore();
+            unitSystem.Connect(Presentation);
         }
 
 

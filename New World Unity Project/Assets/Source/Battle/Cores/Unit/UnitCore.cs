@@ -12,17 +12,18 @@ namespace NewWorld.Battle.Cores.Unit {
         private readonly Body body;
 
 
+        // Constructor.
+
+        public UnitCore() {
+            body = new Body();
+            body.Connect(Presentation);
+        }
+
+
         // Properties.
 
         public BodyPresentation Body => body.Presentation;
         public UnitPresentation Owner => Presentation;
-
-
-        // Constructor.
-
-        public UnitCore(UnitSystemPresentation parent) : base(parent) {
-            body = new Body(Presentation);
-        }
 
 
         // Presentation generation.

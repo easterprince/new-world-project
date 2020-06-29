@@ -12,6 +12,15 @@ namespace NewWorld.Battle.Cores.Map {
         private MapNode[,] realNodes = new MapNode[0, 0];
 
 
+        // Constructor.
+
+        public MapCore(Vector2Int size = new Vector2Int(), float heightLimit = 0) {
+            HeightLimit = heightLimit;
+            size = Vector2Int.Max(size, Vector2Int.zero);
+            realNodes = new MapNode[size.x, size.y];
+        }
+
+
         // Properties.
 
         public Vector2Int Size => new Vector2Int(realNodes.GetLength(0), realNodes.GetLength(1));
@@ -41,15 +50,6 @@ namespace NewWorld.Battle.Cores.Map {
                 value.Height = Mathf.Clamp(value.Height, 0, heightLimit);
                 realNodes[position.x, position.y] = value;
             }
-        }
-
-
-        // Constructor.
-
-        public MapCore(BattlefieldPresentation parent, Vector2Int size = new Vector2Int(), float heightLimit = 0) : base(parent) {
-            HeightLimit = heightLimit;
-            size = Vector2Int.Max(size, Vector2Int.zero);
-            realNodes = new MapNode[size.x, size.y];
         }
 
 
