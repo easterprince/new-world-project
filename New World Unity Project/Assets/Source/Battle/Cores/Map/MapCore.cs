@@ -6,10 +6,19 @@ namespace NewWorld.Battle.Cores.Map {
 
     public class MapCore : ConnectableCoreBase<MapCore, MapPresentation, BattlefieldPresentation> {
 
+        // Enumerator.
+        
+        public enum InterpolationMode {
+            None = 0,
+            Bilinear
+        }
+
+        
         // Fields.
 
         private float heightLimit = 0;
         private MapNode[,] realNodes = new MapNode[0, 0];
+        private InterpolationMode interpolation = InterpolationMode.Bilinear;
 
 
         // Constructors.
@@ -58,6 +67,11 @@ namespace NewWorld.Battle.Cores.Map {
             }
         }
 
+        public InterpolationMode Interpolation {
+            get => interpolation;
+            set => interpolation = value;
+        }
+
 
         // Presentation generation.
 
@@ -93,6 +107,13 @@ namespace NewWorld.Battle.Cores.Map {
             return Vector2Int.RoundToInt(position);
         }
 
+        public float GetHeight(Vector3 point) {
+            return interpolation switch {
+                InterpolationMode.Bilinear => GetHeightByInterpolation(point),
+                _ => GetNearestNodeHeight(point)
+            };
+        }
+
 
         // Support methods.
 
@@ -103,6 +124,49 @@ namespace NewWorld.Battle.Cores.Map {
                     $"Node position must be real, i.e. in [0; {Size.x})x[0; {Size.y})."
                 );
             }
+        }
+
+        private float GetNearestNodeHeight(Vector3 point) {
+            var node = this[GetNearestPosition(point)];
+            if (node.Type == MapNode.NodeType.Abyss) {
+                return float.NegativeInfinity;
+            }
+            return node.Height;
+        }
+
+        private float GetHeightByInterpolation(Vector3 point) {
+            var mainPosition = new Vector2Int(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.z));
+
+            // Collect surrounding node heights.
+            float minNonAbyssHeight = float.NegativeInfinity;
+            var heights = new float[2, 2];
+            foreach (var localPosition in Enumerables.InSegment2(1)) {
+                var position = mainPosition + localPosition;
+                var node = this[position];
+                float localHeight;
+                if (node.Type == MapNode.NodeType.Abyss) {
+                    localHeight = float.NegativeInfinity;
+                } else {
+                    localHeight = node.Height;
+                    minNonAbyssHeight = Mathf.Max(minNonAbyssHeight, localHeight);
+                }
+                heights[localPosition.x, localPosition.y] = localHeight;
+            }
+
+            // Calculate surface height.
+            if (minNonAbyssHeight == float.NegativeInfinity) {
+                return float.NegativeInfinity;
+            }
+            float surfaceHeight = 0;
+            float xCoefficient = point.x - mainPosition.x;
+            float yCoefficient = point.z - mainPosition.y;
+            foreach (var localPosition in Enumerables.InSegment2(1)) {
+                float localHeight = Mathf.Max(minNonAbyssHeight, heights[localPosition.x, localPosition.y]);
+                surfaceHeight += localHeight *
+                    (localPosition.x == 1 ? xCoefficient : 1 - xCoefficient) *
+                    (localPosition.y == 1 ? yCoefficient : 1 - yCoefficient);
+            }
+            return surfaceHeight;
         }
 
 

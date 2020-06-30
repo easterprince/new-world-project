@@ -1,40 +1,52 @@
-﻿using NewWorld.Battle.Cores.Battlefield;
-using System;
+﻿using NewWorld.Battle.Cores.Map;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Bodies {
 
     public class Body : UnitModuleCoreBase<Body, BodyPresentation, UnitPresentation> {
 
+        // Enumerator.
+
+        public enum CollisionMode {
+            Nothing = 0,
+            Surface
+        }
+
+
         // Fields.
 
-        // Main properties.
+        // Stable properties.
+        private CollisionMode collidesWith;
+
+        // Dynamic properties.
         private Vector3 position;
         private Vector3 velocity;
         private Quaternion rotation;
-
-        // Planned changes.
-        private float timeChange;
 
 
         // Constructors.
 
         public Body() {
+            collidesWith = CollisionMode.Nothing;
             position = Vector3.zero;
             velocity = Vector3.zero;
             rotation = Quaternion.identity;
-            timeChange = 0;
         }
 
         public Body(Body other) {
+            collidesWith = other.collidesWith;
             position = other.position;
             velocity = other.velocity;
             rotation = other.rotation;
-            timeChange = other.timeChange;
         }
 
 
         // Properties.
+
+        public CollisionMode CollidesWith {
+            get => collidesWith;
+            set => collidesWith = value;
+        }
 
         public Vector3 Position {
             get => position;
@@ -70,18 +82,46 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
         public void Update() {
             ValidateContext();
-            timeChange = Context.GameTimeDelta;
+
+            // Adjust position relatively to surface.
+            if (collidesWith == CollisionMode.Surface) {
+                LiftAboveSurface(ref position, Context.Map);
+            }
+
         }
 
 
-        // Force applying.
+        // Movement applying.
 
         public void ApplyMovement(MovementAction movement) {
-            velocity = movement.Velocity;
-            position += velocity * timeChange;
-            if (movement.AdjustRotation) {
-                rotation = Quaternion.LookRotation(velocity);
+            ValidateContext();
+
+            float timeChange = Context.GameTimeDelta;
+            if (timeChange != 0f) {
+                
+                // Calculate new position.
+                Vector3 newPosition = position + movement.Velocity * Context.GameTimeDelta;
+                if (collidesWith == CollisionMode.Surface) {
+                    LiftAboveSurface(ref newPosition, Context.Map);
+                }
+
+                // Adjust velocity.
+                velocity = (newPosition - position) / timeChange;
+                
+                // Adjust rotation.
+                if (movement.AdjustRotation) {
+                    rotation = Quaternion.LookRotation(movement.Velocity);
+                }
+
             }
+        }
+
+
+        // Support methods.
+
+        private void LiftAboveSurface(ref Vector3 position, MapPresentation map) {
+            float surfaceHeight = map.GetHeight(position);
+            position.y = Mathf.Max(position.y, surfaceHeight);
         }
 
 

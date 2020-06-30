@@ -18,6 +18,14 @@ namespace NewWorld.Battle.Cores.Map {
         private float height;
 
 
+        // Constructors.
+
+        public MapNode(NodeType type = NodeType.Abyss, float height = 0) {
+            this.type = type;
+            this.height = height;
+        }
+
+
         // Properties.
 
         public NodeType Type {
@@ -26,16 +34,13 @@ namespace NewWorld.Battle.Cores.Map {
         }
 
         public float Height {
-            get => height;
+            get {
+                if (type == NodeType.Abyss) {
+                    return float.NegativeInfinity;
+                }
+                return height;
+            }
             set => height = Mathf.Max(value, 0);
-        }
-
-
-        // Constructors.
-
-        public MapNode(NodeType type = NodeType.Abyss, float height = 0) {
-            this.type = type;
-            this.height = height;
         }
 
 
