@@ -1,11 +1,11 @@
 ﻿namespace NewWorld.Battle.Cores.Unit {
     
-    public abstract class UnitModulePresentationBase<TPresented> : PresentationBase<TPresented>, IOwnerPointer
+    public abstract class UnitPresentationBase<TPresented> : PresentationBase<TPresented>, IOwnerPointer
         where TPresented : IOwnerPointer {
         
         // Constructor.
         
-        public UnitModulePresentationBase(TPresented presented) : base(presented) {}
+        public UnitPresentationBase(TPresented presented) : base(presented) {}
 
 
         // Properties.

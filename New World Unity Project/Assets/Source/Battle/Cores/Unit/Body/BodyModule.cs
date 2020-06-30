@@ -1,9 +1,9 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using UnityEngine;
 
-namespace NewWorld.Battle.Cores.Unit.Bodies {
+namespace NewWorld.Battle.Cores.Unit.Body {
 
-    public class Body : UnitModuleCoreBase<Body, BodyPresentation, UnitPresentation> {
+    public class BodyModule : UnitModuleBase<BodyModule, BodyPresentation, UnitPresentation> {
 
         // Enumerator.
 
@@ -26,14 +26,14 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
         // Constructors.
 
-        public Body() {
+        public BodyModule() {
             collidesWith = CollisionMode.Nothing;
             position = Vector3.zero;
             velocity = Vector3.zero;
             rotation = Quaternion.identity;
         }
 
-        public Body(Body other) {
+        public BodyModule(BodyModule other) {
             collidesWith = other.collidesWith;
             position = other.position;
             velocity = other.velocity;
@@ -65,7 +65,7 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
 
         // Presentation generation.
-        
+
         private protected override BodyPresentation BuildPresentation() {
             return new BodyPresentation(this);
         }
@@ -73,8 +73,8 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
         // Cloning.
 
-        public override Body Clone() {
-            return new Body(this);
+        public override BodyModule Clone() {
+            return new BodyModule(this);
         }
 
 
@@ -98,7 +98,7 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
             float timeChange = Context.GameTimeDelta;
             if (timeChange != 0f) {
-                
+
                 // Calculate new position.
                 Vector3 newPosition = position + movement.Velocity * Context.GameTimeDelta;
                 if (collidesWith == CollisionMode.Surface) {
@@ -107,7 +107,7 @@ namespace NewWorld.Battle.Cores.Unit.Bodies {
 
                 // Adjust velocity.
                 velocity = (newPosition - position) / timeChange;
-                
+
                 // Adjust rotation.
                 if (movement.AdjustRotation) {
                     rotation = Quaternion.LookRotation(movement.Velocity);

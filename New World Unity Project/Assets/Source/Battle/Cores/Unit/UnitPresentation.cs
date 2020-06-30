@@ -1,6 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.Unit {
 
-    public class UnitPresentation : UnitModulePresentationBase<UnitCore> {
+    public class UnitPresentation : UnitPresentationBase<UnitCore> {
 
         // Constructor.
 

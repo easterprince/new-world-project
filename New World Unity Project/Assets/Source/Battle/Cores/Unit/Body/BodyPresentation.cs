@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battle.Cores.Unit.Bodies {
+namespace NewWorld.Battle.Cores.Unit.Body {
 
-    public class BodyPresentation : UnitModulePresentationBase<Body> {
-        
+    public class BodyPresentation : UnitPresentationBase<BodyModule> {
+
         // Constructor.
-        
-        public BodyPresentation(Body presented) : base(presented) {}
+
+        public BodyPresentation(BodyModule presented) : base(presented) { }
 
 
         // Properties.

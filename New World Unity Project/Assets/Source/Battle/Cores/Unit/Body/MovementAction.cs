@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-namespace NewWorld.Battle.Cores.Unit.Bodies {
-    
+namespace NewWorld.Battle.Cores.Unit.Body {
+
     public class MovementAction : UnitAction {
 
         // Fields.

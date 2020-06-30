@@ -1,5 +1,5 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
-using NewWorld.Battle.Cores.Unit.Bodies;
+using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
 
@@ -9,13 +9,13 @@ namespace NewWorld.Battle.Cores.Unit {
 
         // Fields.
 
-        private readonly Body body;
+        private readonly BodyModule body;
 
 
         // Constructors.
 
         public UnitCore() {
-            body = new Body();
+            body = new BodyModule();
             body.Connect(Presentation);
         }
 
