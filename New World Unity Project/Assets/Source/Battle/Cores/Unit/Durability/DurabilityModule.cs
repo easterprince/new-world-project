@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewWorld.Battle.Cores.Unit.Conditions;
+using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Durability {
@@ -63,14 +64,17 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         public void Update() {
             ValidateContext();
-            throw new NotImplementedException();
+            if (durability < 1f) {
+                var action = new ConditionCausingAction(new CollapsingCondition());
+                Owner.PlanAction(action);
+            }
         }
 
 
         // Modifying methods.
 
-        public void ProcessDamage(DamageCausingAction damageCausing) {
-            Durability -= damageCausing.Damage;
+        public void CauseDamage(Damage damage) {
+            Durability -= damage.DamageValue;
         }
 
 

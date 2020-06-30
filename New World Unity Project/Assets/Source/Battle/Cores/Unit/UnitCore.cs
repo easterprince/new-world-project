@@ -1,17 +1,20 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Unit.Body;
+using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Durability;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
 
 namespace NewWorld.Battle.Cores.Unit {
 
-    public class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer {
+    public class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer,
+        IResponsive<ConditionCausingAction>, IResponsive<DamageCausingAction> {
 
         // Fields.
 
         private readonly BodyModule body;
         private readonly DurabilityModule durability;
+        private ConditionModule condition;
 
 
         // Constructors.
@@ -21,6 +24,8 @@ namespace NewWorld.Battle.Cores.Unit {
             body.Connect(Presentation);
             durability = new DurabilityModule();
             durability.Connect(Presentation);
+            condition = new IdleCondition();
+            condition.Connect(Presentation);
         }
 
         public UnitCore(UnitCore other) {
@@ -28,6 +33,8 @@ namespace NewWorld.Battle.Cores.Unit {
             body.Connect(Presentation);
             durability = other.durability.Clone();
             durability.Connect(Presentation);
+            condition = other.condition.Clone();
+            condition.Connect(Presentation);
         }
 
 
@@ -35,6 +42,7 @@ namespace NewWorld.Battle.Cores.Unit {
 
         public BodyPresentation Body => body.Presentation;
         public DurabilityPresentation Durability => durability.Presentation;
+        public ConditionPresentation Condition => condition.Presentation;
         public UnitPresentation Owner => Presentation;
 
 
@@ -58,7 +66,47 @@ namespace NewWorld.Battle.Cores.Unit {
             ValidateContext();
             body.Update();
             durability.Update();
+            condition.Update();
         }
+
+
+        // Modifying methods.
+
+        public void CauseCondition(ConditionModule condition) {
+            if (condition is null) {
+                throw new ArgumentNullException(nameof(condition));
+            }
+            this.condition.Disconnect();
+            this.condition = condition.Clone();
+            this.condition.Connect(Presentation);
+        }
+
+        public void CauseDamage(DamageCausingAction damageCausing) {
+            if (damageCausing is null) {
+                throw new ArgumentNullException(nameof(damageCausing));
+            }
+            durability.CauseDamage(damageCausing.Damage);
+        }
+
+
+        // Action processing.
+
+        public void ProcessAction(ConditionCausingAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            CauseCondition(action.Condition);
+        }
+
+        public void ProcessAction(DamageCausingAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            CauseCondition(condition);
+        }
+
+        public new void PlanAction(ConditionCausingAction action) => PlanAction(this, action);
+        public new void PlanAction(DamageCausingAction action) => PlanAction(this, action);
 
 
     }

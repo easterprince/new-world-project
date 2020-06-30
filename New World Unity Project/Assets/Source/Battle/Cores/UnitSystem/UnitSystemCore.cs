@@ -145,18 +145,27 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         // Action processing.
 
         public void ProcessAction(UnitAdditionAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
             try {
                 AddUnit(action.Unit, action.Position);
             } catch (InvalidOperationException) {}
         }
 
         public void ProcessAction(UnitMotionAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
             try {
                 MoveUnit(action.Unit, action.Position);
             } catch (InvalidOperationException) {}
         }
 
         public void ProcessAction(UnitRemovalAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
             try {
                 RemoveUnit(action.Unit);
             } catch (InvalidOperationException) {}

@@ -6,19 +6,19 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         // Fields.
 
-        private readonly float damage;
+        private readonly Damage damage;
 
 
         // Constructors.
 
-        public DamageCausingAction(float damage) {
-            this.damage = Mathf.Max(damage, 0);
+        public DamageCausingAction(Damage damage) {
+            this.damage = damage;
         }
 
 
         // Properties.
 
-        public float Damage => damage;
+        public Damage Damage => damage;
 
 
     }
