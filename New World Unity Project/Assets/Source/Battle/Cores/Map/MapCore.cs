@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using NewWorld.Battle.Cores.Battlefield;
+﻿using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Utilities;
+using System;
+using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Map {
 
@@ -24,6 +25,8 @@ namespace NewWorld.Battle.Cores.Map {
         // Constructors.
 
         public MapCore(Vector2Int size = new Vector2Int(), float heightLimit = 0) {
+            ValidateSize(size, nameof(size));
+            ValidateHeightLimit(heightLimit, nameof(heightLimit));
             HeightLimit = heightLimit;
             size = Vector2Int.Max(size, Vector2Int.zero);
             realNodes = new MapNode[size.x, size.y];
@@ -43,7 +46,8 @@ namespace NewWorld.Battle.Cores.Map {
         public float HeightLimit {
             get => heightLimit;
             set {
-                heightLimit = Mathf.Max(0f, value);
+                ValidateHeightLimit(heightLimit, nameof(value));
+                heightLimit = value;
                 foreach (var position in Enumerables.InRange2(Size)) {
                     var node = this[position];
                     node.Height = Mathf.Min(node.Height, heightLimit);
@@ -115,7 +119,33 @@ namespace NewWorld.Battle.Cores.Map {
         }
 
 
+        // Editing methods.
+
+        public void Resize(Vector2Int newSize) {
+            ValidateSize(newSize, nameof(newSize));
+            var newRealNodes = new MapNode[newSize.x, newSize.y];
+            foreach (var position in Enumerables.InRange2(newSize)) {
+                if (position.x < Size.x && position.y < Size.y) {
+                    realNodes[position.x, position.y] = newRealNodes[position.x, position.y];
+                }
+            }
+            realNodes = newRealNodes;
+        }
+
+
         // Support methods.
+
+        private void ValidateHeightLimit(float value, string variableName) {
+            if (float.IsNaN(value)) {
+                throw new ArgumentOutOfRangeException(variableName, "Height limit must not be NaN.");
+            }
+        }
+
+        private void ValidateSize(in Vector2Int value, string variableName) {
+            if (value.x < 0 || value.y < 0) {
+                throw new ArgumentException("Size must be vector with non-negative components.", variableName);
+            }
+        }
 
         private void ValidateRealPosition(in Vector2Int position, string parameterName) {
             if (!IsRealPosition(position)) {
