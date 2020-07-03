@@ -19,8 +19,8 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         // Usage.
 
-        public abstract bool CheckIfUsable(Vector3 position);
-        public abstract void Use(Vector3 position);
+        public abstract bool CheckIfUsable(Vector3 destination);
+        public abstract void Use(Vector3 destination);
 
 
     }

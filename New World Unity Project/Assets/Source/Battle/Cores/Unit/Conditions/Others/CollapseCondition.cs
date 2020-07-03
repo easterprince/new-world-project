@@ -38,7 +38,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         // Presentation generation.
 
         private protected override CollapseConditionPresentation BuildPresentation() {
-            throw new System.NotImplementedException();
+            return new CollapseConditionPresentation(this);
         }
 
 

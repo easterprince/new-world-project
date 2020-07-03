@@ -13,9 +13,9 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Properties.
 
-        public Vector2Int this[UnitCore unit] => Presented[unit];
-        public UnitCore this[Vector2Int position] => Presented[position];
-        public bool HasUnit(UnitCore unit) => Presented.HasUnit(unit);
+        public Vector2Int this[UnitPresentation unitPresentation] => Presented[unitPresentation];
+        public UnitPresentation this[Vector2Int position] => Presented[position];
+        public bool HasUnit(UnitPresentation unitPresentation) => Presented.HasUnit(unitPresentation);
 
 
         // Action planning.

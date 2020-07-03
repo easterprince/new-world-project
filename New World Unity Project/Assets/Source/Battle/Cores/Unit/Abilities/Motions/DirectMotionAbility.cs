@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NewWorld.Battle.Cores.Unit.Body;
+using NewWorld.Battle.Cores.Unit.Conditions;
+using NewWorld.Battle.Cores.Unit.Conditions.Motions;
+using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
@@ -42,14 +45,15 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         // Usage.
 
-        public override bool CheckIfUsable(Vector3 target) {
+        public override bool CheckIfUsable(Vector3 destination) {
             ValidateContext();
-            throw new NotImplementedException();
+            return true;
         }
 
-        public override void Use(Vector3 target) {
+        public override void Use(Vector3 destination) {
             ValidateContext();
-            throw new NotImplementedException();
+            var condition = new DirectMotionCondition(destination, speed);
+            Owner.PlanAction(new ConditionCausingAction(condition));
         }
 
 
