@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
+using NewWorld.Battle.Cores.Unit.AbilityCollection;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Others;
@@ -17,6 +18,7 @@ namespace NewWorld.Battle.Cores.Unit {
         private readonly BodyModule body;
         private readonly DurabilityModule durability;
         private IConditionModule condition;
+        private AbilityCollectionModule abilityCollection;
 
 
         // Constructors.
@@ -28,6 +30,8 @@ namespace NewWorld.Battle.Cores.Unit {
             durability.Connect(Presentation);
             condition = new IdleCondition();
             condition.Connect(Presentation);
+            abilityCollection = new AbilityCollectionModule();
+            abilityCollection.Connect(Presentation);
         }
 
         public UnitCore(UnitCore other) {
@@ -37,6 +41,8 @@ namespace NewWorld.Battle.Cores.Unit {
             durability.Connect(Presentation);
             condition = other.condition.Clone();
             condition.Connect(Presentation);
+            abilityCollection = other.abilityCollection.Clone();
+            abilityCollection.Connect(Presentation);
         }
 
 
@@ -45,6 +51,8 @@ namespace NewWorld.Battle.Cores.Unit {
         public BodyPresentation Body => body.Presentation;
         public DurabilityPresentation Durability => durability.Presentation;
         public IConditionPresentation Condition => condition.Presentation;
+        public AbilityCollectionPresentation AbilityCollection => abilityCollection.Presentation;
+
         public UnitPresentation Owner => Presentation;
 
 
@@ -66,14 +74,20 @@ namespace NewWorld.Battle.Cores.Unit {
 
         public void Update() {
             ValidateContext();
+
+            // Update body.
             body.Update();
+
+            // Update durability.
             durability.Update();
-            condition.Update();
             if (condition.Finished) {
                 condition.Disconnect();
                 condition = new IdleCondition();
                 condition.Connect(Presentation);
             }
+
+            // Update condition.
+            condition.Update();
         }
 
 

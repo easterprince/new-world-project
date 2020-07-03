@@ -16,6 +16,12 @@ namespace NewWorld.Utilities {
             yield return element;
         }
 
+        public static IEnumerable<T> GetAll<T>(IEnumerable<T> elements) {
+            foreach (var element in elements) {
+                yield return element;
+            }
+        }
+
 
         // Unions.
 
