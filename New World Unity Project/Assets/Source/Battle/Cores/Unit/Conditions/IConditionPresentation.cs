@@ -6,6 +6,8 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         // Properties.
 
+        bool Cancellable { get; }
+        bool Finished { get; }
         string Description { get; }
 
 

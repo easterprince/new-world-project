@@ -10,9 +10,11 @@
 
         // Properties.
 
+        public bool Cancellable => Presented.Cancellable;
+        public bool Finished => Presented.Finished;
         public string Description => Presented.Description;
-    
-    
+
+
     }
 
 }

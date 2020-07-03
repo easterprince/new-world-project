@@ -9,6 +9,8 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         // Properties.
 
+        public abstract bool Cancellable { get; }
+        public abstract bool Finished { get; }
         public abstract string Description { get; }
 
         IConditionPresentation ICore<IConditionModule, IConditionPresentation>.Presentation => Presentation;

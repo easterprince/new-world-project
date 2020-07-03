@@ -8,6 +8,9 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         // Properties.
 
+        public override bool Cancellable => true;
+        public override bool Finished => false;
+
         public override string Description => "Idle.";
 
 

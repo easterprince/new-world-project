@@ -25,6 +25,9 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         public float TimeUntilExtinction => timeUntilExtinction;
 
+        public override bool Cancellable => false;
+        public override bool Finished => false;
+
         public override string Description => "Collapsing.";
 
 

@@ -59,6 +59,10 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
         public float AttackRange => attackRange;
         public override Damage DamagePerSecond => singleAttackDamage / attackDuration;
 
+
+        public override bool Cancellable => !attacked;
+        public override bool Finished => false;
+
         public override string Description => $"Attacking target {target}.";
 
 

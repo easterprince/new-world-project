@@ -9,7 +9,7 @@ using System;
 namespace NewWorld.Battle.Cores.Unit {
 
     public class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer,
-        IResponsive<ConditionCausingAction>, IResponsive<DamageCausingAction>,
+        IResponsive<ConditionCausingAction>, IResponsive<ConditionCancellingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction> {
 
         // Fields.
@@ -69,6 +69,11 @@ namespace NewWorld.Battle.Cores.Unit {
             body.Update();
             durability.Update();
             condition.Update();
+            if (condition.Finished) {
+                condition.Disconnect();
+                condition = new IdleCondition();
+                condition.Connect(Presentation);
+            }
         }
 
 
@@ -81,6 +86,14 @@ namespace NewWorld.Battle.Cores.Unit {
             this.condition.Disconnect();
             this.condition = condition.Clone();
             this.condition.Connect(Presentation);
+        }
+
+        public void CancelCondition() {
+            if (condition.Cancellable) {
+                condition.Disconnect();
+                condition = new IdleCondition();
+                condition.Connect(Presentation);
+            }
         }
 
         public void CauseDamage(DamageCausingAction damageCausing) {
@@ -121,10 +134,18 @@ namespace NewWorld.Battle.Cores.Unit {
             body.Rotate(action);
         }
 
+        public void ProcessAction(ConditionCancellingAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            CancelCondition();
+        }
+
         public void PlanAction(ConditionCausingAction action) => PlanAction(this, action);
         public void PlanAction(DamageCausingAction action) => PlanAction(this, action);
         public void PlanAction(MovementAction action) => PlanAction(this, action);
         public void PlanAction(RotationAction action) => PlanAction(this, action);
+        public void PlanAction(ConditionCancellingAction action) => PlanAction(this, action);
 
 
     }
