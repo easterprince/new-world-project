@@ -18,7 +18,7 @@ namespace NewWorld.Battle.Cores {
 
         public TParentPresentation Parent => parent;
         public bool Connected => !(parent is null);
-        public override BattlefieldPresentation Context => parent?.Context;
+        public sealed override BattlefieldPresentation Context => parent?.Context;
 
 
         // Connection management.

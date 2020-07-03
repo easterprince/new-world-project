@@ -48,7 +48,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         public MapPresentation Map => map?.Presentation;
         public UnitSystemPresentation UnitSystem => unitSystem?.Presentation;
-        public override BattlefieldPresentation Context => Presentation;
+        public sealed override BattlefieldPresentation Context => Presentation;
 
 
         // Presentation generation.
