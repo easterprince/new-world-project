@@ -6,19 +6,19 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         // Fields.
 
-        private readonly ConditionModule condition;
+        private readonly IConditionModule condition;
 
 
         // Constructor.
 
-        public ConditionCausingAction(ConditionModule condition) {
+        public ConditionCausingAction(IConditionModule condition) {
             this.condition = condition ?? throw new ArgumentNullException(nameof(condition));
         }
 
 
         // Properties.
 
-        public ConditionModule Condition => condition;
+        public IConditionModule Condition => condition;
 
     
     }

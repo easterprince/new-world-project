@@ -1,9 +1,9 @@
 ﻿using NewWorld.Battle.Cores.UnitSystem;
 using UnityEngine;
 
-namespace NewWorld.Battle.Cores.Unit.Conditions {
+namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
-    public class CollapsingCondition : ConditionModule {
+    public class CollapseCondition : ConditionModuleBase<CollapseCondition, CollapseConditionPresentation> {
 
         // Fields.
 
@@ -12,24 +12,33 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         // Constructor.
 
-        public CollapsingCondition(float timeUntilExtinction = 1f) {
+        public CollapseCondition(float timeUntilExtinction = 1f) {
             this.timeUntilExtinction = Mathf.Max(timeUntilExtinction, 0f);
         }
 
-        public CollapsingCondition(CollapsingCondition other) {
+        public CollapseCondition(CollapseCondition other) {
             timeUntilExtinction = other.timeUntilExtinction;
         }
 
 
         // Properties.
 
+        public float TimeUntilExtinction => timeUntilExtinction;
+
         public override string Description => "Collapsing.";
 
 
         // Cloning.
 
-        public override ConditionModule Clone() {
-            return new CollapsingCondition(this);
+        public override CollapseCondition Clone() {
+            return new CollapseCondition(this);
+        }
+
+
+        // Presentation generation.
+
+        private protected override CollapseConditionPresentation BuildPresentation() {
+            throw new System.NotImplementedException();
         }
 
 

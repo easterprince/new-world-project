@@ -116,6 +116,10 @@ namespace NewWorld.Battle.Cores.Unit.Body {
             }
         }
 
+        public void Rotate(RotationAction rotation) {
+            this.rotation = rotation.Rotation;
+        }
+
 
         // Support methods.
 

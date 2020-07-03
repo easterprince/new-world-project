@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
-    public class SimpleMotionAbility : MotionAbility {
+    public class DirectMotionAbility : MotionAbility {
 
         // Fields.
 
@@ -12,11 +12,11 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         // Constructor.
 
-        public SimpleMotionAbility(float speed = 1f) {
+        public DirectMotionAbility(float speed = 1f) {
             Speed = speed;
         }
 
-        public SimpleMotionAbility(SimpleMotionAbility other) {
+        public DirectMotionAbility(DirectMotionAbility other) {
             speed = other.speed;
         }
 
@@ -36,7 +36,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
         // Cloning.
 
         public override MotionAbility Clone() {
-            return new SimpleMotionAbility(this);
+            return new DirectMotionAbility(this);
         }
 
 

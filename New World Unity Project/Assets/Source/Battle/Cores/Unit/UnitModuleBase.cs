@@ -3,7 +3,8 @@
 namespace NewWorld.Battle.Cores.Unit {
 
     public abstract class UnitModuleBase<TSelf, TPresentation, TParentPresentation> :
-        ConnectableCoreBase<TSelf, TPresentation, TParentPresentation>, IOwnerPointer
+        ConnectableCoreBase<TSelf, TPresentation, TParentPresentation>, IOwnerPointer,
+        IUnitModule<TSelf, TPresentation, TParentPresentation>
         where TSelf : UnitModuleBase<TSelf, TPresentation, TParentPresentation>
         where TPresentation : IContextPointer
         where TParentPresentation : class, IOwnerPointer {

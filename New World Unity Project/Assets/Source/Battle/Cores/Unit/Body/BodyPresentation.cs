@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Unit.Body {
 
-    public class BodyPresentation : UnitPresentationBase<BodyModule> {
+    public class BodyPresentation : UnitModulePresentationBase<BodyModule> {
 
         // Constructor.
 

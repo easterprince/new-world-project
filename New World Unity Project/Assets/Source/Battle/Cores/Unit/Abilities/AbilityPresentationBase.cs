@@ -1,7 +1,7 @@
 ﻿namespace NewWorld.Battle.Cores.Unit.Abilities {
 
-    public abstract class AbilityPresentationBase<TPresented> : UnitPresentationBase<TPresented>, IAbility
-        where TPresented : IOwnerPointer, IAbility {
+    public abstract class AbilityPresentationBase<TPresented> : UnitModulePresentationBase<TPresented>, IAbilityPresentation
+        where TPresented : IAbilityPresentation {
         
         // Constructor.
         

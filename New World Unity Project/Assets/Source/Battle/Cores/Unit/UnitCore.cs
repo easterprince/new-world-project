@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
+using NewWorld.Battle.Cores.Unit.Conditions.Others;
 using NewWorld.Battle.Cores.Unit.Durability;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
@@ -8,13 +9,14 @@ using System;
 namespace NewWorld.Battle.Cores.Unit {
 
     public class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer,
-        IResponsive<ConditionCausingAction>, IResponsive<DamageCausingAction> {
+        IResponsive<ConditionCausingAction>, IResponsive<DamageCausingAction>,
+        IResponsive<MovementAction>, IResponsive<RotationAction> {
 
         // Fields.
 
         private readonly BodyModule body;
         private readonly DurabilityModule durability;
-        private ConditionModule condition;
+        private IConditionModule condition;
 
 
         // Constructors.
@@ -42,7 +44,7 @@ namespace NewWorld.Battle.Cores.Unit {
 
         public BodyPresentation Body => body.Presentation;
         public DurabilityPresentation Durability => durability.Presentation;
-        public ConditionPresentation Condition => condition.Presentation;
+        public IConditionPresentation Condition => condition.Presentation;
         public UnitPresentation Owner => Presentation;
 
 
@@ -72,7 +74,7 @@ namespace NewWorld.Battle.Cores.Unit {
 
         // Modifying methods.
 
-        public void CauseCondition(ConditionModule condition) {
+        public void CauseCondition(IConditionModule condition) {
             if (condition is null) {
                 throw new ArgumentNullException(nameof(condition));
             }
@@ -102,11 +104,27 @@ namespace NewWorld.Battle.Cores.Unit {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
-            CauseCondition(condition);
+            durability.CauseDamage(action.Damage);
         }
 
-        public new void PlanAction(ConditionCausingAction action) => PlanAction(this, action);
-        public new void PlanAction(DamageCausingAction action) => PlanAction(this, action);
+        public void ProcessAction(MovementAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            body.ApplyMovement(action);
+        }
+
+        public void ProcessAction(RotationAction action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            body.Rotate(action);
+        }
+
+        public void PlanAction(ConditionCausingAction action) => PlanAction(this, action);
+        public void PlanAction(DamageCausingAction action) => PlanAction(this, action);
+        public void PlanAction(MovementAction action) => PlanAction(this, action);
+        public void PlanAction(RotationAction action) => PlanAction(this, action);
 
 
     }

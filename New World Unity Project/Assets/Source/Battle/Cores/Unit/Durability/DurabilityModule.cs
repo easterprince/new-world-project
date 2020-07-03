@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Cores.Unit.Conditions;
+using NewWorld.Battle.Cores.Unit.Conditions.Others;
 using System;
 using UnityEngine;
 
@@ -65,7 +66,7 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         public void Update() {
             ValidateContext();
             if (durability < 1f) {
-                var action = new ConditionCausingAction(new CollapsingCondition());
+                var action = new ConditionCausingAction(new CollapseCondition());
                 Owner.PlanAction(action);
             }
         }

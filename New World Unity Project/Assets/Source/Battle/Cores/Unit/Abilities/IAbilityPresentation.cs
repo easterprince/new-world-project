@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Unit.Abilities {
     
-    public interface IAbility {
+    public interface IAbilityPresentation : IOwnerPointer {
 
         string Description { get; }
 

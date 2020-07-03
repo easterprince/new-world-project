@@ -1,6 +1,6 @@
 ﻿namespace NewWorld.Battle.Cores.Unit.Durability {
 
-    public class DurabilityPresentation : UnitPresentationBase<DurabilityModule> {
+    public class DurabilityPresentation : UnitModulePresentationBase<DurabilityModule> {
         
         // Constructor.
         

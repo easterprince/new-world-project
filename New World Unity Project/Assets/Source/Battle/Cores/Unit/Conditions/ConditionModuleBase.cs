@@ -1,0 +1,26 @@
+﻿using UnityEngine;
+
+namespace NewWorld.Battle.Cores.Unit.Conditions {
+
+    public abstract class ConditionModuleBase<TSelf, TPresentation> :
+        UnitModuleBase<TSelf, TPresentation, UnitPresentation>, IConditionModule
+        where TSelf : ConditionModuleBase<TSelf, TPresentation>
+        where TPresentation : IOwnerPointer, IConditionPresentation {
+
+        // Properties.
+
+        public abstract string Description { get; }
+
+        IConditionPresentation ICore<IConditionModule, IConditionPresentation>.Presentation => Presentation;
+
+
+        // Updating.
+
+        public abstract void Update();
+
+        IConditionModule ICore<IConditionModule, IConditionPresentation>.Clone() => Clone();
+
+
+    }
+
+}
