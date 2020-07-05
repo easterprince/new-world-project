@@ -1,24 +1,29 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
+using NewWorld.Battle.Cores.Unit.Abilities;
+using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
+using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.AbilityCollection;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Others;
 using NewWorld.Battle.Cores.Unit.Durability;
+using NewWorld.Battle.Cores.Unit.Intelligence;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace NewWorld.Battle.Cores.Unit {
 
-    public class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer,
-        IResponsive<ConditionCausingAction>, IResponsive<ConditionCancellingAction>, IResponsive<DamageCausingAction>,
-        IResponsive<MovementAction>, IResponsive<RotationAction> {
+    public partial class UnitCore : ConnectableCoreBase<UnitCore, UnitPresentation, UnitSystemPresentation>, IOwnerPointer {
 
         // Fields.
 
         private readonly BodyModule body;
         private readonly DurabilityModule durability;
         private IConditionModule condition;
-        private AbilityCollectionModule abilityCollection;
+        private readonly AbilityCollectionModule abilityCollection;
+        private readonly IntelligenceModule intelligence;
 
 
         // Constructors.
@@ -32,6 +37,8 @@ namespace NewWorld.Battle.Cores.Unit {
             condition.Connect(Presentation);
             abilityCollection = new AbilityCollectionModule();
             abilityCollection.Connect(Presentation);
+            intelligence = new IntelligenceModule();
+            intelligence.Connect(Presentation);
         }
 
         public UnitCore(UnitCore other) {
@@ -43,6 +50,8 @@ namespace NewWorld.Battle.Cores.Unit {
             condition.Connect(Presentation);
             abilityCollection = other.abilityCollection.Clone();
             abilityCollection.Connect(Presentation);
+            intelligence = other.intelligence.Clone();
+            intelligence.Connect(Presentation);
         }
 
 
@@ -88,6 +97,10 @@ namespace NewWorld.Battle.Cores.Unit {
 
             // Update condition.
             condition.Update();
+
+            // Update intelligence.
+            intelligence.Act();
+
         }
 
 
@@ -110,56 +123,23 @@ namespace NewWorld.Battle.Cores.Unit {
             }
         }
 
-        public void CauseDamage(DamageCausingAction damageCausing) {
-            if (damageCausing is null) {
-                throw new ArgumentNullException(nameof(damageCausing));
-            }
-            durability.CauseDamage(damageCausing.Damage);
+        public void CauseDamage(Damage damage) {
+            durability.CauseDamage(damage);
         }
 
-
-        // Action processing.
-
-        public void ProcessAction(ConditionCausingAction action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
+        public void UseAbility(AttackUsageAction attackUsage) {
+            if (attackUsage is null) {
+                throw new ArgumentNullException();
             }
-            CauseCondition(action.Condition);
+            abilityCollection.UseAbility(attackUsage);
         }
 
-        public void ProcessAction(DamageCausingAction action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
+        public void UseAbility(MotionUsageAction motionUsage) {
+            if (motionUsage is null) {
+                throw new ArgumentNullException();
             }
-            durability.CauseDamage(action.Damage);
+            abilityCollection.UseAbility(motionUsage);
         }
-
-        public void ProcessAction(MovementAction action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
-            }
-            body.ApplyMovement(action);
-        }
-
-        public void ProcessAction(RotationAction action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
-            }
-            body.Rotate(action);
-        }
-
-        public void ProcessAction(ConditionCancellingAction action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
-            }
-            CancelCondition();
-        }
-
-        public void PlanAction(ConditionCausingAction action) => PlanAction(this, action);
-        public void PlanAction(DamageCausingAction action) => PlanAction(this, action);
-        public void PlanAction(MovementAction action) => PlanAction(this, action);
-        public void PlanAction(RotationAction action) => PlanAction(this, action);
-        public void PlanAction(ConditionCancellingAction action) => PlanAction(this, action);
 
 
     }

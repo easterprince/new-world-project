@@ -68,6 +68,23 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         }
 
 
+        // Usage.
+
+        public void UseAbility(AttackUsageAction usage) {
+            ValidateContext();
+            if (attacks.TryGetValue(usage.Ability, out AttackAbility ability)) {
+                ability.Use(usage.Target);
+            }
+        }
+
+        public void UseAbility(MotionUsageAction usage) {
+            ValidateContext();
+            if (motions.TryGetValue(usage.Ability, out MotionAbility ability)) {
+                ability.Use(usage.Destination);
+            }
+        }
+
+
     }
 
 }
