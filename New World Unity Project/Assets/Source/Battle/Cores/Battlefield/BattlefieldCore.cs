@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
+using System.Collections.Generic;
 
 namespace NewWorld.Battle.Cores.Battlefield {
 
@@ -11,6 +12,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
         // Structure.
         private float gameTime = 0;
         private float gameTimeDelta = 0;
+        private readonly Queue<Action> actionQueue = new Queue<Action>();
 
         // Subcores.
         private readonly MapCore map;
@@ -19,11 +21,11 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         // Constructors.
 
-        public BattlefieldCore() {
-            map = new MapCore();
-            map.Connect(Presentation);
-            unitSystem = new UnitSystemCore();
-            unitSystem.Connect(Presentation);
+        public BattlefieldCore(MapCore map, UnitSystemCore unitSystem) {
+            this.map = map?.Clone() ?? throw new ArgumentNullException(nameof(map));
+            this.map.Connect(Presentation);
+            this.unitSystem = unitSystem?.Clone() ?? throw new ArgumentNullException(nameof(unitSystem));
+            this.unitSystem.Connect(Presentation);
         }
 
         public BattlefieldCore(BattlefieldCore other) {
@@ -68,15 +70,27 @@ namespace NewWorld.Battle.Cores.Battlefield {
         // Updates.
 
         public void Update() {
+
+            // Game time update.
             gameTime += gameTimeDelta;
+
+            // Update of game entities.
+            actionQueue.Clear();
             unitSystem.Update();
+
+            // Execution of planned game actions.
+            while (actionQueue.Count > 0) {
+                var action = actionQueue.Dequeue();
+                action.Invoke();
+            }
+
         }
 
 
         // Action planning.
 
         public void ExecuteAfterUpdate(Action action) {
-            throw new NotImplementedException();
+            actionQueue.Enqueue(action);
         }
 
 
