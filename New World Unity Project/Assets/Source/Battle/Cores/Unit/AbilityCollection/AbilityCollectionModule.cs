@@ -43,7 +43,7 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         // Cloning.
 
         public override AbilityCollectionModule Clone() {
-            throw new System.NotImplementedException();
+            return new AbilityCollectionModule(this);
         }
 
 
