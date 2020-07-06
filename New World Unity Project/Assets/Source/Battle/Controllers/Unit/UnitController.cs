@@ -12,7 +12,6 @@ namespace NewWorld.Battle.Controllers.Unit {
         private const string prefabPath = "Prefabs/Unit";
 
         private static GameObject prefab = null;
-        private static int builtUnits = 0;
 
         public static UnitController BuildUnit(UnitPresentation presentation) {
             if (presentation is null) {
@@ -23,8 +22,7 @@ namespace NewWorld.Battle.Controllers.Unit {
                 prefab = Resources.Load<GameObject>(prefabPath);
             }
             GameObject unit = Instantiate(prefab);
-            unit.name = $"Unit {builtUnits + 1}";
-            ++builtUnits;
+            unit.name = presentation.Name;
 
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.presentation = presentation;
@@ -43,19 +41,28 @@ namespace NewWorld.Battle.Controllers.Unit {
 
         // Properties.
 
-        public UnitPresentation Presentation => presentation;
+        public UnitPresentation Presentation {
+            get => presentation;
+            set {
+                presentation = value ?? throw new ArgumentNullException(nameof(value));
+                name = presentation.Name;
+            }
+        }
 
 
         // Life cycle.
 
-        private void Awake() {
+        private void Start() {
             animator = GetComponent<Animator>();
             GameObjects.ValidateComponent(animator);
         }
 
         private void Update() {
-            transform.position = Presentation.Body.Position;
-            transform.rotation = Presentation.Body.Rotation;
+            if (presentation is null) {
+                return;
+            }
+            transform.position = presentation.Body.Position;
+            transform.rotation = presentation.Body.Rotation;
         }
 
 

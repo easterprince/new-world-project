@@ -41,6 +41,7 @@ namespace NewWorld.Battle.Cores.Generation.Units {
                 do {
                     position = new Vector2Int(random.Next(map.Size.x), random.Next(map.Size.y));
                 } while (map[position].Type != MapNode.NodeType.Common || unitSystem[position] != null);
+                unit.Name = $"Unit {added + 1}";
                 unitSystem.AddUnit(unit, position);
             }
             return unitSystem;

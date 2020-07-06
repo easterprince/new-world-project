@@ -48,8 +48,8 @@ namespace NewWorld.Battle.Cores.Battlefield {
             set => gameTimeDelta = value;
         }
 
-        public MapPresentation Map => map?.Presentation;
-        public UnitSystemPresentation UnitSystem => unitSystem?.Presentation;
+        public MapPresentation Map => map.Presentation;
+        public UnitSystemPresentation UnitSystem => unitSystem.Presentation;
         public sealed override BattlefieldPresentation Context => Presentation;
 
 
