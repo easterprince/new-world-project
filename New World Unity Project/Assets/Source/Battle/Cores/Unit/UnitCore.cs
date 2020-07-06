@@ -19,16 +19,22 @@ namespace NewWorld.Battle.Cores.Unit {
 
         // Fields.
 
+        // Modules.
         private readonly BodyModule body;
         private readonly DurabilityModule durability;
         private IConditionModule condition;
         private readonly AbilityCollectionModule abilityCollection;
         private readonly IntelligenceModule intelligence;
 
+        // Other.
+        private string name;
+
 
         // Constructors.
 
         public UnitCore() {
+
+            // Modules.
             body = new BodyModule();
             body.Connect(Presentation);
             durability = new DurabilityModule();
@@ -39,9 +45,15 @@ namespace NewWorld.Battle.Cores.Unit {
             abilityCollection.Connect(Presentation);
             intelligence = new IntelligenceModule();
             intelligence.Connect(Presentation);
+
+            // Other.
+            name = "Unit";
+
         }
 
         public UnitCore(UnitCore other) {
+
+            // Modules.
             body = other.body.Clone();
             body.Connect(Presentation);
             durability = other.durability.Clone();
@@ -52,6 +64,10 @@ namespace NewWorld.Battle.Cores.Unit {
             abilityCollection.Connect(Presentation);
             intelligence = other.intelligence.Clone();
             intelligence.Connect(Presentation);
+
+            // Other.
+            name = other.name;
+
         }
 
 
@@ -61,6 +77,12 @@ namespace NewWorld.Battle.Cores.Unit {
         public DurabilityPresentation Durability => durability.Presentation;
         public IConditionPresentation Condition => condition.Presentation;
         public AbilityCollectionPresentation AbilityCollection => abilityCollection.Presentation;
+        public IntelligencePresentation Intelligence => intelligence.Presentation;
+
+        public string Name {
+            get => name;
+            set => name = value ?? "";
+        }
 
         public UnitPresentation Owner => Presentation;
 
