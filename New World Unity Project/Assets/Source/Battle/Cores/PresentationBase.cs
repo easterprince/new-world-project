@@ -3,7 +3,7 @@
 namespace NewWorld.Battle.Cores {
     
     public abstract class PresentationBase<TPresented> : IContextPointer
-        where TPresented : IContextPointer {
+        where TPresented : class, IContextPointer {
 
         // Fields.
 

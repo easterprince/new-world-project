@@ -4,7 +4,7 @@ namespace NewWorld.Battle.Cores {
     
     public interface IContextPointer {
 
-        public BattlefieldPresentation Context { get; }
+        BattlefieldPresentation Context { get; }
 
 
     }

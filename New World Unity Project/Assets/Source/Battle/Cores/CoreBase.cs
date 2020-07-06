@@ -5,7 +5,7 @@ namespace NewWorld.Battle.Cores {
 
     public abstract class CoreBase<TSelf, TPresentation> : ICore<TSelf, TPresentation>
         where TSelf : CoreBase<TSelf, TPresentation>
-        where TPresentation : IContextPointer {
+        where TPresentation : class, IContextPointer {
 
         // Fields.
 

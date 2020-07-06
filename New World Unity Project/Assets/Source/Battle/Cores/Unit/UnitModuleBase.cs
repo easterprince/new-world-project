@@ -6,7 +6,7 @@ namespace NewWorld.Battle.Cores.Unit {
         ConnectableCoreBase<TSelf, TPresentation, TParentPresentation>, IOwnerPointer,
         IUnitModule<TSelf, TPresentation, TParentPresentation>
         where TSelf : UnitModuleBase<TSelf, TPresentation, TParentPresentation>
-        where TPresentation : IContextPointer
+        where TPresentation : class, IContextPointer
         where TParentPresentation : class, IOwnerPointer {
     
         // Properties.

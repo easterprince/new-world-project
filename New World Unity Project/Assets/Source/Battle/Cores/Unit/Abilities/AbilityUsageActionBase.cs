@@ -3,7 +3,7 @@
 namespace NewWorld.Battle.Cores.Unit.Abilities {
     
     public abstract class AbilityUsageActionBase<TAbilityPresentation> : UnitAction, IAbilityUsageAction
-        where TAbilityPresentation : IAbilityPresentation {
+        where TAbilityPresentation : class, IAbilityPresentation {
 
         // Fields.
 

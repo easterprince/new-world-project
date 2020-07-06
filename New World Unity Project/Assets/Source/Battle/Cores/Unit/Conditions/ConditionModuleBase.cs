@@ -5,7 +5,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
     public abstract class ConditionModuleBase<TSelf, TPresentation> :
         UnitModuleBase<TSelf, TPresentation, UnitPresentation>, IConditionModule
         where TSelf : ConditionModuleBase<TSelf, TPresentation>
-        where TPresentation : IOwnerPointer, IConditionPresentation {
+        where TPresentation : class, IOwnerPointer, IConditionPresentation {
 
         // Properties.
 

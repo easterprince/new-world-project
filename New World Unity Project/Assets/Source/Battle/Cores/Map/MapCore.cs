@@ -112,10 +112,13 @@ namespace NewWorld.Battle.Cores.Map {
         }
 
         public float GetHeight(Vector3 point) {
-            return interpolation switch {
-                InterpolationMode.Bilinear => GetHeightByInterpolation(point),
-                _ => GetNearestNodeHeight(point)
-            };
+            switch (interpolation) {
+                case InterpolationMode.Bilinear:
+                    return GetHeightByInterpolation(point);
+                case InterpolationMode.None:
+                default:
+                    return GetNearestNodeHeight(point);
+            }
         }
 
 

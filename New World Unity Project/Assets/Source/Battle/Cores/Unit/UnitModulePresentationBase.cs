@@ -1,7 +1,7 @@
 ﻿namespace NewWorld.Battle.Cores.Unit {
     
     public abstract class UnitModulePresentationBase<TPresented> : PresentationBase<TPresented>, IOwnerPointer
-        where TPresented : IOwnerPointer {
+        where TPresented : class, IOwnerPointer {
         
         // Constructor.
         
