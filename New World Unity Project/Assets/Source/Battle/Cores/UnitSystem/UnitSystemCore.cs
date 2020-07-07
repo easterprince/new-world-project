@@ -1,20 +1,28 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.Unit;
+using NewWorld.Utilities.Events;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.UnitSystem {
 
     public class UnitSystemCore : ConnectableCoreBase<UnitSystemCore, UnitSystemPresentation, BattlefieldPresentation>,
+        IEnumerable<UnitPresentation>,
         IResponsive<UnitAdditionAction>, IResponsive<UnitMotionAction>, IResponsive<UnitRemovalAction> {
 
         // Fields.
 
+        // Structure.
         private readonly Dictionary<UnitCore, Vector2Int> unitsToPositions = new Dictionary<UnitCore, Vector2Int>();
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
         private readonly Dictionary<UnitPresentation, UnitCore> presentationsToUnits = new Dictionary<UnitPresentation, UnitCore>();
+
+        // Events.
+        private readonly GameEvent<UnitPresentation> additionEvent = new GameEvent<UnitPresentation>();
+        private readonly GameEvent<UnitPresentation> removalEvent = new GameEvent<UnitPresentation>();
 
 
         // Constructors.
@@ -23,8 +31,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         public UnitSystemCore(UnitSystemCore other) {
             foreach (var unitAndPosition in other.unitsToPositions) {
-                var unitClone = unitAndPosition.Key.Clone();
-                AddUnit(unitClone, unitAndPosition.Value);
+                AddUnit(unitAndPosition.Key, unitAndPosition.Value);
             }
         }
 
@@ -47,6 +54,22 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 }
                 return unit.Presentation;
             }
+        }
+
+        public GameEvent<UnitPresentation>.Wrapper AdditionEvent => additionEvent.Gate;
+        public GameEvent<UnitPresentation>.Wrapper RemovalEvent => removalEvent.Gate;
+
+
+        // Enumeration.
+
+        public IEnumerator<UnitPresentation> GetEnumerator() {
+            foreach (var unitPresentation in presentationsToUnits.Keys) {
+                yield return unitPresentation;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
 
 
@@ -90,20 +113,16 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             if (unit is null) {
                 throw new ArgumentNullException(nameof(unit));
             }
-            if (HasUnit(unit.Presentation)) {
-                if (position != unitsToPositions[unit]) {
-                    throw new InvalidOperationException($"There is already unit {unit}!");
-                }
-            } else {
-                var onPosition = this[position];
-                if (onPosition != null) {
-                    throw new InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
-                }
-                unit.Connect(Presentation);
-                presentationsToUnits[unit.Presentation] = unit;
-                unitsToPositions[unit] = position;
-                positionsToUnits[position] = unit;
+            var onPosition = this[position];
+            if (onPosition != null) {
+                throw new InvalidOperationException($"Position {position} is already occupied by {onPosition}.");
             }
+            unit = unit.Clone();
+            unit.Connect(Presentation);
+            presentationsToUnits[unit.Presentation] = unit;
+            unitsToPositions[unit] = position;
+            positionsToUnits[position] = unit;
+            additionEvent.Invoke(unit.Presentation);
         }
 
         public void MoveUnit(UnitPresentation unitPresentation, Vector2Int position) {
@@ -138,6 +157,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             presentationsToUnits.Remove(unitPresentation);
             positionsToUnits.Remove(unitsToPositions[unit]);
             unitsToPositions.Remove(unit);
+            removalEvent.Invoke(unitPresentation);
             return unit;
         }
 

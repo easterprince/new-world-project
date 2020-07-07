@@ -1,9 +1,12 @@
 ﻿using NewWorld.Battle.Cores.Unit;
+using NewWorld.Utilities.Events;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.UnitSystem {
 
-    public class UnitSystemPresentation : PresentationBase<UnitSystemCore>,
+    public class UnitSystemPresentation : PresentationBase<UnitSystemCore>, IEnumerable<UnitPresentation>,
         IReceptive<UnitAdditionAction>, IReceptive<UnitMotionAction>, IReceptive<UnitRemovalAction> {
         
         // Constructor.
@@ -15,6 +18,24 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         public Vector2Int this[UnitPresentation unitPresentation] => Presented[unitPresentation];
         public UnitPresentation this[Vector2Int position] => Presented[position];
+
+        public GameEvent<UnitPresentation>.Wrapper AdditionEvent => Presented.AdditionEvent;
+        public GameEvent<UnitPresentation>.Wrapper RemovalEvent => Presented.RemovalEvent;
+
+
+        // Enumeration.
+
+        public IEnumerator<UnitPresentation> GetEnumerator() {
+            return Presented.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
+        }
+
+
+        // Methods.
+
         public bool HasUnit(UnitPresentation unitPresentation) => Presented.HasUnit(unitPresentation);
 
 

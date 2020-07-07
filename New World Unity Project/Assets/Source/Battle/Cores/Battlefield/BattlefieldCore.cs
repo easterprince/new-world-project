@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities.Events;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
         // Structure.
         private float gameTime = 0;
         private float gameTimeDelta = 0;
-        private readonly Queue<Action> actionQueue = new Queue<Action>();
+        private readonly ActionQueue actionQueue = new ActionQueue();
 
         // Subcores.
         private readonly MapCore map;
@@ -79,10 +80,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
             unitSystem.Update();
 
             // Execution of planned game actions.
-            while (actionQueue.Count > 0) {
-                var action = actionQueue.Dequeue();
-                action.Invoke();
-            }
+            actionQueue.RunAll();
 
         }
 
