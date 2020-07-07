@@ -33,7 +33,7 @@ namespace NewWorld.Battle.Cores.Unit {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
-            body.ApplyMovement(action);
+            body.Move(action);
         }
 
         public void ProcessAction(RotationAction action) {

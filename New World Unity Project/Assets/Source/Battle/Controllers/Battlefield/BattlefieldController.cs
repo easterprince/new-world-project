@@ -52,7 +52,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         }
 
         private void Update() {
-            core.Update();
+            core?.Update();
         }
 
 

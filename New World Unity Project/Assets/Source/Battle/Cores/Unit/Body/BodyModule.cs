@@ -93,26 +93,26 @@ namespace NewWorld.Battle.Cores.Unit.Body {
 
         // Movement applying.
 
-        public void ApplyMovement(MovementAction movement) {
-            ValidateContext();
-
-            float timeChange = Context.GameTimeDelta;
+        public void Move(MovementAction movement) {
 
             // Calculate new position.
             Vector3 newPosition = position + movement.PositionChange;
-            if (collidesWith == CollisionMode.Surface) {
+            if (collidesWith == CollisionMode.Surface && !(Context is null)) {
                 LiftAboveSurface(ref newPosition, Context.Map);
             }
 
             // Adjust velocity.
-            if (movement.AdjustVelocity) {
-                velocity = (newPosition - position) / timeChange;
+            if (movement.AdjustVelocity && !(Context is null)) {
+                velocity = (newPosition - position) / Context.GameTimeDelta;
             }
 
             // Adjust rotation.
             if (movement.AdjustRotation) {
                 rotation = Quaternion.LookRotation(newPosition - position);
             }
+
+            // Adjust position.
+            position = newPosition;
 
         }
 

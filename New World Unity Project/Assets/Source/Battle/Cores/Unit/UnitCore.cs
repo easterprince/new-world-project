@@ -128,6 +128,20 @@ namespace NewWorld.Battle.Cores.Unit {
 
         // Modifying methods.
 
+        public void Move(MovementAction movement) {
+            if (movement is null) {
+                throw new ArgumentNullException(nameof(movement));
+            }
+            body.Move(movement);
+        }
+
+        public void Rotate(RotationAction rotation) {
+            if (rotation is null) {
+                throw new ArgumentNullException(nameof(rotation));
+            }
+            body.Rotate(rotation);
+        }
+
         public void CauseCondition(IConditionModule condition) {
             if (condition is null) {
                 throw new ArgumentNullException(nameof(condition));
