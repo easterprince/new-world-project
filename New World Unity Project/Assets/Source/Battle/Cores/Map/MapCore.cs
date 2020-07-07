@@ -35,7 +35,9 @@ namespace NewWorld.Battle.Cores.Map {
         public MapCore(MapCore other) {
             heightLimit = other.heightLimit;
             realNodes = new MapNode[other.realNodes.GetLength(0), other.realNodes.GetLength(1)];
-            other.realNodes.CopyTo(realNodes, 0);
+            foreach (var position in Enumerables.InRange2(other.Size)) {
+                this[position] = other[position];
+            }
         }
 
 
