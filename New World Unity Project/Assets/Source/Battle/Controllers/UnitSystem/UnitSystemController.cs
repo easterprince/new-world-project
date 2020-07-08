@@ -18,7 +18,6 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
         private readonly ActionQueue actionQueue = new ActionQueue();
 
         // Unity references.
-
         [SerializeField]
         private GameObject unitsObject;
 

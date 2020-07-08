@@ -11,14 +11,9 @@ namespace NewWorld.Battle.Controllers.Unit {
 
         private const string prefabPath = "Prefabs/Unit";
 
-        private static GameObject prefab = null;
-
         public static UnitController BuildUnit(UnitPresentation presentation) {
-            if (prefab == null) {
-                prefab = Resources.Load<GameObject>(prefabPath);
-            }
+            GameObject prefab = PrefabSourceController.Instance.UnitPrefab;
             GameObject unit = Instantiate(prefab);
-
             UnitController unitController = unit.GetComponent<UnitController>();
             unitController.Presentation = presentation;
             return unitController;
