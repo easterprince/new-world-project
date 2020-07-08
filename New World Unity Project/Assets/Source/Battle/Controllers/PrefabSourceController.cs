@@ -11,6 +11,8 @@ namespace NewWorld.Battle.Controllers {
         private GameObject unitPrefab;
         [SerializeField]
         private GameObject nodePrefab;
+        [SerializeField]
+        private GameObject clusterPrefab;
 
 
         // Properties.
@@ -23,6 +25,11 @@ namespace NewWorld.Battle.Controllers {
         public GameObject NodePrefab {
             get => nodePrefab;
             set => nodePrefab = value;
+        }
+
+        public GameObject ClusterPrefab {
+            get => clusterPrefab;
+            set => clusterPrefab = value;
         }
 
 
