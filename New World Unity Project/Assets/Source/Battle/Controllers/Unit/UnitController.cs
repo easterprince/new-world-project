@@ -9,15 +9,14 @@ namespace NewWorld.Battle.Controllers.Unit {
 
         // Fabric.
 
-        private const string prefabPath = "Prefabs/Unit";
-
         public static UnitController BuildUnit(UnitPresentation presentation) {
-            GameObject prefab = PrefabSourceController.Instance.UnitPrefab;
-            GameObject unit = Instantiate(prefab);
-            UnitController unitController = unit.GetComponent<UnitController>();
-            unitController.Presentation = presentation;
-            return unitController;
+            GameObject unit = Instantiate(Prefab);
+            UnitController controller = unit.GetComponent<UnitController>();
+            controller.Presentation = presentation;
+            return controller;
         }
+
+        protected static GameObject Prefab => PrefabSourceController.Instance.UnitPrefab;
 
 
         // Fields.
