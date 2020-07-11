@@ -14,6 +14,11 @@ namespace NewWorld.Battle.Cores.Map {
             Bilinear
         }
 
+
+        // Static.
+
+        public static float SurfaceRange => 0.6f;
+
         
         // Fields.
 
@@ -169,32 +174,38 @@ namespace NewWorld.Battle.Cores.Map {
             return node.Height;
         }
 
-        private float GetHeightByInterpolation(Vector3 point) {
-            var mainPosition = new Vector2Int(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.z));
+        private float GetHeightByInterpolation(Vector3 point) => GetHeightByInterpolation(new Vector2(point.x, point.z));
+
+        private float GetHeightByInterpolation(Vector2 point) {
+            var mainPosition = Vector2Int.FloorToInt(point);
 
             // Collect surrounding node heights.
-            float minNonAbyssHeight = float.NegativeInfinity;
+            bool isSurface = false;
+            float minNonAbyssHeight = float.PositiveInfinity;
             var heights = new float[2, 2];
             foreach (var localPosition in Enumerables.InSegment2(1)) {
-                var position = mainPosition + localPosition;
-                var node = this[position];
+                var nodePosition = mainPosition + localPosition;
+                var node = this[nodePosition];
                 float localHeight;
                 if (node.Type == MapNode.NodeType.Abyss) {
                     localHeight = float.NegativeInfinity;
                 } else {
                     localHeight = node.Height;
-                    minNonAbyssHeight = Mathf.Max(minNonAbyssHeight, localHeight);
+                    minNonAbyssHeight = Mathf.Min(minNonAbyssHeight, localHeight);
+                    if (MaximumMetric.GetNorm(point - nodePosition) <= SurfaceRange) {
+                        isSurface = true;
+                    }
                 }
                 heights[localPosition.x, localPosition.y] = localHeight;
             }
 
             // Calculate surface height.
-            if (minNonAbyssHeight == float.NegativeInfinity) {
+            if (!isSurface) {
                 return float.NegativeInfinity;
             }
             float surfaceHeight = 0;
             float xCoefficient = point.x - mainPosition.x;
-            float yCoefficient = point.z - mainPosition.y;
+            float yCoefficient = point.y - mainPosition.y;
             foreach (var localPosition in Enumerables.InSegment2(1)) {
                 float localHeight = Mathf.Max(minNonAbyssHeight, heights[localPosition.x, localPosition.y]);
                 surfaceHeight += localHeight *
