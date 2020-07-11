@@ -42,6 +42,11 @@ namespace NewWorld.Battle.Controllers.Map {
             }
         }
 
+        public GameObject ClustersObject {
+            get => clustersObject;
+            set => clustersObject = value;
+        }
+
 
         // Building.
 

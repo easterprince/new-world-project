@@ -144,6 +144,38 @@ namespace NewWorld.Utilities {
             }
         }
 
+        public static bool IsInSegment2(Vector2Int vector, int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x <= finish && vector.y <= finish;
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, int start, int finish) {
+            return vector.x >= start && vector.y >= start && vector.x <= finish && vector.y <= finish;
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, Vector2Int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x <= finish.x && vector.y <= finish.y;
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, Vector2Int start, Vector2Int finish) {
+            return vector.x >= start.x && vector.y >= start.y && vector.x <= finish.x && vector.y <= finish.y;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x < finish && vector.y < finish;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, int start, int finish) {
+            return vector.x >= start && vector.y >= start && vector.x < finish && vector.y < finish;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, Vector2Int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x < finish.x && vector.y < finish.y;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, Vector2Int start, Vector2Int finish) {
+            return vector.x >= start.x && vector.y >= start.y && vector.x < finish.x && vector.y < finish.y;
+        }
+
 
     }
 
