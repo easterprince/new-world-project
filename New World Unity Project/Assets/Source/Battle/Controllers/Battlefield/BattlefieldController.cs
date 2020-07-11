@@ -12,7 +12,9 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         // Fields.
 
         private BattlefieldCore core = null;
+        private bool ready = false;
 
+        // Controller references.
         [SerializeField]
         private MapController map;
         [SerializeField]
@@ -20,6 +22,10 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
 
         // Properties.
+
+        public BattlefieldPresentation Presentation => core.Presentation;
+
+        public bool Ready => ready;
 
         public MapController Map {
             get => map;
@@ -74,6 +80,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             if (map != null) {
                 map.Presentation = core.Map;
             }
+            ready = true;
 
         }
 
