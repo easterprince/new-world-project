@@ -17,7 +17,7 @@ namespace NewWorld.Battle.Cores.Map {
 
         // Static.
 
-        public static float SurfaceRange => 0.6f;
+        public static float SurfaceRange => 0.76f;
 
         
         // Fields.
@@ -181,17 +181,14 @@ namespace NewWorld.Battle.Cores.Map {
 
             // Collect surrounding node heights.
             bool isSurface = false;
-            float minNonAbyssHeight = float.PositiveInfinity;
+            float placeholderHeight = float.PositiveInfinity;
             var heights = new float[2, 2];
             foreach (var localPosition in Enumerables.InSegment2(1)) {
                 var nodePosition = mainPosition + localPosition;
                 var node = this[nodePosition];
-                float localHeight;
-                if (node.Type == MapNode.NodeType.Abyss) {
-                    localHeight = float.NegativeInfinity;
-                } else {
-                    localHeight = node.Height;
-                    minNonAbyssHeight = Mathf.Min(minNonAbyssHeight, localHeight);
+                float localHeight = node.Height;
+                if (localHeight != float.NegativeInfinity) {
+                    placeholderHeight = Mathf.Min(placeholderHeight, localHeight);
                     if (MaximumMetric.GetNorm(point - nodePosition) <= SurfaceRange) {
                         isSurface = true;
                     }
@@ -207,7 +204,10 @@ namespace NewWorld.Battle.Cores.Map {
             float xCoefficient = point.x - mainPosition.x;
             float yCoefficient = point.y - mainPosition.y;
             foreach (var localPosition in Enumerables.InSegment2(1)) {
-                float localHeight = Mathf.Max(minNonAbyssHeight, heights[localPosition.x, localPosition.y]);
+                float localHeight = heights[localPosition.x, localPosition.y];
+                if (localHeight == float.NegativeInfinity) {
+                    localHeight = placeholderHeight;
+                }
                 surfaceHeight += localHeight *
                     (localPosition.x == 1 ? xCoefficient : 1 - xCoefficient) *
                     (localPosition.y == 1 ? yCoefficient : 1 - yCoefficient);

@@ -106,7 +106,7 @@ namespace NewWorld.Battle.Controllers.Map {
                 holemap[holeIndex.x, holeIndex.y] = true;
             }
             foreach (var pointIndex in Enumerables.InRange2(heightmapResolution)) {
-                var localPoint = (Vector2) pointIndex / heightmapResolution * Size;
+                var localPoint = (Vector2) pointIndex / (heightmapResolution - 1) * Size;
                 float height = presentation.GetHeight(startingPoint + new Vector3(localPoint.x, 0, localPoint.y));
                 if (height != float.NegativeInfinity) {
                     heightmap[pointIndex.y, pointIndex.x] = height / presentation.HeightLimit; // swap x and y!
