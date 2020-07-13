@@ -1,6 +1,8 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Map {
@@ -36,12 +38,16 @@ namespace NewWorld.Battle.Controllers.Map {
         // Fields.
 
         // Description.
-        private MapPresentation presentation;
-        private Vector2Int startingPosition;
+        private MapPresentation presentation = null;
+        private Vector2Int startingPosition = Vector2Int.zero;
 
         // Components.
         private Terrain terrain;
         private TerrainCollider terrainCollider;
+
+        // Tasks.
+        private Task<(float[,], bool[,])> heightmapAndHolemapGeneration = null;
+        private CancellationTokenSource heightmapAndHolemapCancellation = null;
 
 
         // Properties.
@@ -79,6 +85,28 @@ namespace NewWorld.Battle.Controllers.Map {
             terrainCollider.enabled = false;
         }
 
+        private void LateUpdate() {
+
+            // Check if terrain data generation is on.
+            if (heightmapAndHolemapGeneration != null) {
+                if (heightmapAndHolemapGeneration.IsCompleted) {
+
+                    // Set heightmap and holemap.
+                    (var heightmap, var holemap) = heightmapAndHolemapGeneration.Result;
+                    terrain.terrainData.SetHoles(0, 0, holemap);
+                    terrain.terrainData.SetHeights(0, 0, heightmap);
+
+                    Built = true;
+                }
+            }
+
+        }
+
+        private protected override void OnDestroy() {
+            CancelHeightmapAndHolemapGeneration();
+            base.OnDestroy();
+        }
+
 
         // Building.
 
@@ -104,16 +132,35 @@ namespace NewWorld.Battle.Controllers.Map {
             transform.localPosition = startingPoint;
             transform.localRotation = Quaternion.identity;
 
-            // Set heightmap and holemap.
-            int heightmapResolution = terrain.terrainData.heightmapResolution;
-            var heightmap = new float[heightmapResolution, heightmapResolution]; // [0; 1] as height / heightLimit
+            // Start generating terrain data.
             int holemapResolution = terrain.terrainData.holesResolution;
+            int heightmapResolution = terrain.terrainData.heightmapResolution;
+            var clusterSize = Size;
+            CancelHeightmapAndHolemapGeneration();
+            heightmapAndHolemapCancellation = new CancellationTokenSource();
+            var cancellationToken = heightmapAndHolemapCancellation.Token;
+            heightmapAndHolemapGeneration = Task.Run(() =>
+                GenerateHeightmapAndHolemap(heightmapResolution, holemapResolution, clusterSize, cancellationToken));
+
+        }
+
+        private (float[,], bool[,]) GenerateHeightmapAndHolemap(
+            int heightmapResolution, int holemapResolution, Vector2Int clusterSize, CancellationToken cancellationToken) {
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Initialize maps.
+            Vector3 startingPoint = new Vector3(startingPosition.x - 0.5f, 0, startingPosition.y - 0.5f);
+            var heightmap = new float[heightmapResolution, heightmapResolution]; // [0; 1] as height / heightLimit
             var holemap = new bool[holemapResolution, holemapResolution]; // false if hole, true if surface
             foreach (var holeIndex in Enumerables.InRange2(holemapResolution)) {
                 holemap[holeIndex.x, holeIndex.y] = true;
             }
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Set heights.
             foreach (var pointIndex in Enumerables.InRange2(heightmapResolution)) {
-                var localPoint = (Vector2) pointIndex / (heightmapResolution - 1) * Size;
+                var localPoint = (Vector2) pointIndex / (heightmapResolution - 1) * clusterSize;
                 float height = presentation.GetHeight(startingPoint + new Vector3(localPoint.x, 0, localPoint.y));
                 if (height != float.NegativeInfinity) {
                     heightmap[pointIndex.y, pointIndex.x] = height / presentation.HeightLimit; // swap x and y!
@@ -125,11 +172,24 @@ namespace NewWorld.Battle.Controllers.Map {
                         }
                     }
                 }
+                cancellationToken.ThrowIfCancellationRequested();
             }
-            terrain.terrainData.SetHoles(0, 0, holemap);
-            terrain.terrainData.SetHeights(0, 0, heightmap);
 
-            Built = true;
+            return (heightmap, holemap);
+        }
+
+
+        // Support method.
+
+        private void CancelHeightmapAndHolemapGeneration() {
+            if (heightmapAndHolemapGeneration == null) {
+                return;
+            }
+
+            heightmapAndHolemapCancellation.Cancel();
+            heightmapAndHolemapCancellation = null;
+            heightmapAndHolemapGeneration = null;
+
         }
 
 

@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using NewWorld.Battle.Cores.Map;
 using System.Linq;
 using NewWorld.Utilities;
+using System.Threading;
 
 namespace NewWorld.Battle.Cores.Generation.Map {
 
@@ -35,7 +36,10 @@ namespace NewWorld.Battle.Cores.Generation.Map {
             return ((float) Erf(4 * x - 2) + 1) / 2;
         }
 
-        public override MapCore Generate(int seed) {
+        public override MapCore Generate(int seed, CancellationToken? cancellationToken = null) {
+
+            cancellationToken?.ThrowIfCancellationRequested();
+
             var map = new MapCore(Size, HeightLimit); 
             foreach (var position in Enumerables.InRange2(Size)) {
                 float noiseValue = noise.cellular2x2(0.05f * new float2(position.x, position.y)).x;
@@ -45,6 +49,9 @@ namespace NewWorld.Battle.Cores.Generation.Map {
                     var node = new MapNode(MapNode.NodeType.Common, height);
                     map[position] = node;
                 }
+
+                cancellationToken?.ThrowIfCancellationRequested();
+
             }
             return map;
         }

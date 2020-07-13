@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Cores.Map;
+using System.Threading;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Generation.Map {
@@ -26,7 +27,7 @@ namespace NewWorld.Battle.Cores.Generation.Map {
 
         // Methods.
 
-        public abstract MapCore Generate(int seed);
+        public abstract MapCore Generate(int seed, CancellationToken? cancellationToken = null);
 
 
     }

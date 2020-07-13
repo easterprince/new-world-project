@@ -47,7 +47,7 @@ namespace NewWorld.Utilities.Controllers {
 
         // Life cycle.
 
-        private void OnDestroy() {
+        private protected virtual void OnDestroy() {
             onBuilt.Clear();
         }
 

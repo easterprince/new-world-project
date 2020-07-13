@@ -3,7 +3,11 @@ using NewWorld.Battle.Controllers.UnitSystem;
 using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Generation.Map;
 using NewWorld.Battle.Cores.Generation.Units;
+using NewWorld.Battle.Cores.Map;
+using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities.Controllers;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Battlefield {
@@ -20,6 +24,12 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         [SerializeField]
         private UnitSystemController unitSystem;
 
+        // Tasks.
+        private CancellationTokenSource mapGenerationCancellation = null;
+        private Task<MapCore> mapGenerationTask = null;
+        private CancellationTokenSource unitSystemGenerationCancellation = null;
+        private Task<UnitSystemCore> unitSystemGenerationTask = null;
+
 
         // Properties.
 
@@ -30,7 +40,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             set {
                 map = value;
                 if (map != null) {
-                    map.Presentation = core.Map;
+                    map.Presentation = core?.Map;
                 }
             }
         }
@@ -40,7 +50,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             set {
                 unitSystem = value;
                 if (unitSystem != null) {
-                    unitSystem.Presentation = core.UnitSystem;
+                    unitSystem.Presentation = core?.UnitSystem;
                 }
             }
         }
@@ -50,40 +60,94 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
         private void Start() {
 
-            // Generate core.
-            if (core == null) {
-
-                // Generate map.
-                var mapGenerator = new FullOfHolesMapGenerator() {
-                    HeightLimit = 10,
-                    Size = new Vector2Int(40, 40)
-                };
-                var mapCore = mapGenerator.Generate(0);
-
-                // Generate units.
-                var unitSystemGenerator = new UniformUnitSystemGenerator() {
-                    UnitCount = 10
-                };
-                var unitSystemCore = unitSystemGenerator.Generate(0, mapCore);
-
-                // Assemble core.
-                core = new BattlefieldCore(mapCore, unitSystemCore);
-
-            }
-
-            // Assign presentations to controllers.
-            if (unitSystem != null) {
-                unitSystem.Presentation = core.UnitSystem;
-            }
-            if (map != null) {
-                map.Presentation = core.Map;
-                map.ExecuteWhenBuilt(this, () => Built = true);
-            }
+            // Start generating map.
+            var mapGenerator = new FullOfHolesMapGenerator() {
+                HeightLimit = 10,
+                Size = new Vector2Int(100, 100)
+            };
+            mapGenerationCancellation = new CancellationTokenSource();
+            mapGenerationTask = Task.Run(
+                () => mapGenerator.Generate(0, mapGenerationCancellation.Token));
 
         }
 
         private void Update() {
+            
+            // Check core generation progress.
+            if (core == null) {
+
+                // Check map generation task.
+                if (mapGenerationTask != null && unitSystemGenerationTask == null) {
+                    if (mapGenerationTask.IsCompleted) {
+
+                        var mapCore = mapGenerationTask.Result;
+
+                        // Generate units.
+                        var unitSystemGenerator = new UniformUnitSystemGenerator() {
+                            Map = mapCore.Presentation,
+                            UnitCount = 60
+                        };
+                        unitSystemGenerationCancellation = new CancellationTokenSource();
+                        unitSystemGenerationTask = Task.Run(
+                            () => unitSystemGenerator.Generate(0, unitSystemGenerationCancellation.Token));
+
+                    }
+                }
+
+                // Check unit generation task.
+                if (unitSystemGenerationTask != null) {
+                    if (unitSystemGenerationTask.IsCompleted) {
+
+                        var mapCore = mapGenerationTask.Result;
+                        var unitSystemCore = unitSystemGenerationTask.Result;
+                        CancelMapGeneration();
+                        CancelUnitSystemGeneration();
+
+                        // Assemble core.
+                        core = new BattlefieldCore(mapCore, unitSystemCore);
+
+                        // Assign presentations to controllers.
+                        if (unitSystem != null) {
+                            unitSystem.Presentation = core.UnitSystem;
+                        }
+                        if (map != null) {
+                            map.Presentation = core.Map;
+                            map.ExecuteWhenBuilt(this, () => Built = true);
+                        }
+
+                    }
+                }
+
+            }
+
+            // Update core.
             core?.Update();
+
+        }
+
+        private protected override void OnDestroy() {
+            CancelMapGeneration();
+            CancelUnitSystemGeneration();
+            base.OnDestroy();
+        }
+
+
+        // Support methods.
+
+        private void CancelMapGeneration() {
+            if (mapGenerationCancellation != null) {
+                mapGenerationCancellation.Cancel();
+                mapGenerationCancellation = null;
+                mapGenerationTask = null;
+            }
+        }
+
+        private void CancelUnitSystemGeneration() {
+            if (unitSystemGenerationCancellation != null) {
+                unitSystemGenerationCancellation.Cancel();
+                unitSystemGenerationCancellation = null;
+                unitSystemGenerationTask = null;
+            }
         }
 
 
