@@ -32,7 +32,6 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
                 }
                 if (presentation != null) {
                     presentation.AdditionEvent.RemoveSubscriber(actionQueue);
-                    presentation.AdditionEvent.RemoveSubscriber(actionQueue);
                 }
                 DestroyUnits();
                 presentation = value;
