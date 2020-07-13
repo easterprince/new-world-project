@@ -56,8 +56,8 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             }
         }
 
-        public GameEvent<UnitPresentation>.Wrapper AdditionEvent => additionEvent.Gate;
-        public GameEvent<UnitPresentation>.Wrapper RemovalEvent => removalEvent.Gate;
+        public GameEvent<UnitPresentation>.EventWrapper AdditionEvent => additionEvent.Wrapper;
+        public GameEvent<UnitPresentation>.EventWrapper RemovalEvent => removalEvent.Wrapper;
 
 
         // Enumeration.

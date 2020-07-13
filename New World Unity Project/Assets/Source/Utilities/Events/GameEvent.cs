@@ -3,48 +3,42 @@ using System.Collections.Generic;
 
 namespace NewWorld.Utilities.Events {
 
-    public class GameEvent : GameEventBase<Action> {
+    public class GameEvent : SourcedEventBase<ActionQueue, Action> {
 
         // Methods.
 
         public void Invoke() {
-            foreach (var queueAndList in Planned) {
-                var actionQueue = queueAndList.Key;
-                foreach (var action in queueAndList.Value) {
-                    actionQueue.Enqueue(action);
-                }
+            foreach (var queueAndAction in GetSubscribersAndActions()) {
+                var actionQueue = queueAndAction.Key;
+                actionQueue.Enqueue(queueAndAction.Value);
             }
         }
 
 
     }
 
-    public class GameEvent<TArgument> : GameEventBase<Action<TArgument>> {
+    public class GameEvent<TArgument> : SourcedEventBase<ActionQueue, Action<TArgument>> {
 
         // Methods.
 
         public void Invoke(TArgument argument) {
-            foreach (var queueAndList in Planned) {
-                var actionQueue = queueAndList.Key;
-                foreach (var action in queueAndList.Value) {
-                    actionQueue.Enqueue(() => action.Invoke(argument));
-                }
+            foreach (var queueAndAction in GetSubscribersAndActions()) {
+                var actionQueue = queueAndAction.Key;
+                actionQueue.Enqueue(() => queueAndAction.Value.Invoke(argument));
             }
         }
 
 
     }
 
-    public class GameEvent<TArgument1, TArgument2> : GameEventBase<Action<TArgument1, TArgument2>> {
+    public class GameEvent<TArgument1, TArgument2> : SourcedEventBase<ActionQueue, Action<TArgument1, TArgument2>> {
 
         // Methods.
 
         public void Invoke(TArgument1 argument1, TArgument2 argument2) {
-            foreach (var queueAndList in Planned) {
-                var actionQueue = queueAndList.Key;
-                foreach (var action in queueAndList.Value) {
-                    actionQueue.Enqueue(() => action.Invoke(argument1, argument2));
-                }
+            foreach (var queueAndAction in GetSubscribersAndActions()) {
+                var actionQueue = queueAndAction.Key;
+                actionQueue.Enqueue(() => queueAndAction.Value.Invoke(argument1, argument2));
             }
         }
 

@@ -1,24 +1,23 @@
-﻿using NewWorld.Battle.Cores.Generation.Map;
-using NewWorld.Battle.Cores.Map;
+﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Utilities;
+using NewWorld.Utilities.Controllers;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 namespace NewWorld.Battle.Controllers.Map {
     
-    public class ClusterController : MonoBehaviour {
+    public class ClusterController : BuildableController {
 
         // Fabric.
 
-        public static ClusterController BuildCluster() => BuildCluster(null, Vector2Int.zero);
+        public static ClusterController StartBuildingCluster() => StartBuildingCluster(null, Vector2Int.zero);
 
-        public static ClusterController BuildCluster(MapPresentation presentation, Vector2Int startingPosition) {
+        public static ClusterController StartBuildingCluster(MapPresentation presentation, Vector2Int startingPosition) {
 
             // Instantiate GameObjct.
             GameObject cluster = Instantiate(Prefab);
             ClusterController controller = cluster.GetComponent<ClusterController>();
 
-            // Force cloning of TerrainData.
+            // Force duplicating TerrainData.
             var terrainData = controller.terrain.terrainData;
             terrainData = Instantiate(terrainData);
             controller.terrain.terrainData = terrainData;
@@ -55,7 +54,7 @@ namespace NewWorld.Battle.Controllers.Map {
             get => presentation;
             set {
                 presentation = value;
-                Rebuild();
+                StartRebuilding();
             }
         }
 
@@ -64,7 +63,7 @@ namespace NewWorld.Battle.Controllers.Map {
             set {
                 startingPosition = value;
                 gameObject.name = $"Cluster {startingPosition}";
-                Rebuild();
+                StartRebuilding();
             }
         }
 
@@ -83,12 +82,20 @@ namespace NewWorld.Battle.Controllers.Map {
 
         // Building.
 
-        private void Rebuild() {
+        private void StartRebuilding() {
+
+            // Clearing.
+            Built = false;
             if (presentation == null) {
+                
+                // Disable components.
                 terrain.enabled = false;
                 terrainCollider.enabled = false;
+                
                 return;
             }
+
+            // Enable components.
             terrain.enabled = true;
             terrainCollider.enabled = true;
 
@@ -122,6 +129,7 @@ namespace NewWorld.Battle.Controllers.Map {
             terrain.terrainData.SetHoles(0, 0, holemap);
             terrain.terrainData.SetHeights(0, 0, heightmap);
 
+            Built = true;
         }
 
 

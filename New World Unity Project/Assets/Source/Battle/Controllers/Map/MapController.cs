@@ -1,12 +1,11 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Utilities;
-using System.Drawing;
-using UnityEditor.Experimental.GraphView;
+using NewWorld.Utilities.Controllers;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Map {
     
-    public class MapController : MonoBehaviour {
+    public class MapController : BuildableController {
 
         // Fields.
 
@@ -30,7 +29,7 @@ namespace NewWorld.Battle.Controllers.Map {
             get => presentation;
             set {
                 presentation = value;
-                Rebuild();
+                StartRebuilding();
             }
         }
 
@@ -38,7 +37,7 @@ namespace NewWorld.Battle.Controllers.Map {
             get => edgeWidth;
             set {
                 edgeWidth = value;
-                Rebuild();
+                StartRebuilding();
             }
         }
 
@@ -50,27 +49,32 @@ namespace NewWorld.Battle.Controllers.Map {
 
         // Building.
 
-        private void Rebuild() {
+        private void StartRebuilding() {
 
             // Clearing.
+            Built = false;
             foreach (var controller in clusters) {
+                controller.RemoveSubscriber(this);
                 Destroy(controller.gameObject);
             }
             clusters = new ClusterController[0, 0];
-
-            // Building.
             if (presentation == null || clustersObject == null) {
                 return;
             }
             if (edgeWidth == 0 && presentation.Size == Vector2Int.zero) {
                 return;
             }
-            var firstCluster = ClusterController.BuildCluster();
+
+            // Plan clusters.
+            var firstCluster = ClusterController.StartBuildingCluster();
             var clusterSize = firstCluster.Size;
             var clusterCount = presentation.Size + 2 * new Vector2Int(edgeWidth, edgeWidth);
             clusterCount.x = (clusterCount.x + clusterSize.x - 1) / clusterSize.x;
             clusterCount.y = (clusterCount.y + clusterSize.y - 1) / clusterSize.y;
             clusters = new ClusterController[clusterCount.x, clusterCount.y];
+
+            // Start building clusters.
+            int builtCount = 0; // Will be captured by cluster onBuilt handlers.
             foreach (var clusterIndex in Enumerables.InRange2(clusterCount)) {
                 var startingPosition = clusterIndex * clusterSize - new Vector2Int(edgeWidth, edgeWidth);
                 ClusterController cluster;
@@ -79,9 +83,15 @@ namespace NewWorld.Battle.Controllers.Map {
                     cluster.StartingPosition = startingPosition;
                     cluster.Presentation = presentation;
                 } else {
-                    cluster = ClusterController.BuildCluster(presentation, startingPosition);
+                    cluster = ClusterController.StartBuildingCluster(presentation, startingPosition);
                 }
-                cluster.gameObject.transform.parent = clustersObject.transform;
+                cluster.transform.parent = clustersObject.transform;
+                cluster.ExecuteWhenBuilt(this, () => {
+                    ++builtCount;
+                    if (builtCount == clusters.Length) {
+                        Built = true;
+                    }
+                });
             }
 
         }

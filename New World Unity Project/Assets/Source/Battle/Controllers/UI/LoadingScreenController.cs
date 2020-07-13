@@ -49,7 +49,7 @@ namespace NewWorld.Battle.Controllers.UI {
 
         private void LateUpdate() {
             UpdateThings();
-            if (battlefield != null && battlefield.Ready && Input.anyKey) {
+            if (battlefield != null && battlefield.Built && Input.anyKey) {
                 gameObject.SetActive(false);
             }
         }
@@ -65,7 +65,7 @@ namespace NewWorld.Battle.Controllers.UI {
                 if (logo != null) {
                     logo.CurrentCondition = LoadingLogoController.Condition.Waiting;
                 }
-            } else if (!battlefield.Ready) {
+            } else if (!battlefield.Built) {
                 if (readyTextPanel != null) {
                     readyTextPanel.SetActive(false);
                 }

@@ -3,16 +3,16 @@ using NewWorld.Battle.Controllers.UnitSystem;
 using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Generation.Map;
 using NewWorld.Battle.Cores.Generation.Units;
+using NewWorld.Utilities.Controllers;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Battlefield {
 
-    public class BattlefieldController : MonoBehaviour {
+    public class BattlefieldController : BuildableController {
 
         // Fields.
 
         private BattlefieldCore core = null;
-        private bool ready = false;
 
         // Controller references.
         [SerializeField]
@@ -24,8 +24,6 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         // Properties.
 
         public BattlefieldPresentation Presentation => core.Presentation;
-
-        public bool Ready => ready;
 
         public MapController Map {
             get => map;
@@ -79,8 +77,8 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             }
             if (map != null) {
                 map.Presentation = core.Map;
+                map.ExecuteWhenBuilt(this, () => Built = true);
             }
-            ready = true;
 
         }
 

@@ -19,8 +19,8 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         public Vector2Int this[UnitPresentation unitPresentation] => Presented[unitPresentation];
         public UnitPresentation this[Vector2Int position] => Presented[position];
 
-        public GameEvent<UnitPresentation>.Wrapper AdditionEvent => Presented.AdditionEvent;
-        public GameEvent<UnitPresentation>.Wrapper RemovalEvent => Presented.RemovalEvent;
+        public GameEvent<UnitPresentation>.EventWrapper AdditionEvent => Presented.AdditionEvent;
+        public GameEvent<UnitPresentation>.EventWrapper RemovalEvent => Presented.RemovalEvent;
 
 
         // Enumeration.

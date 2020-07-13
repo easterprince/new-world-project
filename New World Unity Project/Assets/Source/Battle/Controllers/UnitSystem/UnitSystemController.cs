@@ -31,8 +31,8 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
                     return;
                 }
                 if (presentation != null) {
-                    presentation.AdditionEvent.RemoveReceiver(actionQueue);
-                    presentation.AdditionEvent.RemoveReceiver(actionQueue);
+                    presentation.AdditionEvent.RemoveSubscriber(actionQueue);
+                    presentation.AdditionEvent.RemoveSubscriber(actionQueue);
                 }
                 DestroyUnits();
                 presentation = value;
