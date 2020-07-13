@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battle.Controllers.Battlefield;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace NewWorld.Battle.Controllers.UI {
     
@@ -16,6 +17,8 @@ namespace NewWorld.Battle.Controllers.UI {
         private GameObject readyTextPanel;
         [SerializeField]
         private LoadingLogoController logo;
+        [SerializeField]
+        private Text loadingProgress;
 
 
         // Properties.
@@ -44,6 +47,11 @@ namespace NewWorld.Battle.Controllers.UI {
             }
         }
 
+        public Text LoadingProgress {
+            get => loadingProgress;
+            set => loadingProgress = value;
+        }
+
 
         // Life cycle.
 
@@ -65,6 +73,9 @@ namespace NewWorld.Battle.Controllers.UI {
                 if (logo != null) {
                     logo.CurrentCondition = LoadingLogoController.Condition.Waiting;
                 }
+                if (loadingProgress != null) {
+                    loadingProgress.text = "...";
+                }
             } else if (!battlefield.Built) {
                 if (readyTextPanel != null) {
                     readyTextPanel.SetActive(false);
@@ -72,12 +83,18 @@ namespace NewWorld.Battle.Controllers.UI {
                 if (logo != null) {
                     logo.CurrentCondition = LoadingLogoController.Condition.Loading;
                 }
+                if (loadingProgress != null) {
+                    loadingProgress.text = battlefield.LoadingStatus;
+                }
             } else {
                 if (readyTextPanel != null) {
                     readyTextPanel.SetActive(true);
                 }
                 if (logo != null) {
                     logo.CurrentCondition = LoadingLogoController.Condition.Ready;
+                }
+                if (loadingProgress != null) {
+                    loadingProgress.text = battlefield.LoadingStatus;
                 }
             }
         }

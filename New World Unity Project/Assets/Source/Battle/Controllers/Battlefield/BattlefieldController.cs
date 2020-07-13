@@ -17,6 +17,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         // Fields.
 
         private BattlefieldCore core = null;
+        private string loadingStatus = "Not loading yet...";
 
         // Controller references.
         [SerializeField]
@@ -35,7 +36,9 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
         public BattlefieldPresentation Presentation => core.Presentation;
 
-        public MapController Map {
+        public string LoadingStatus => loadingStatus;
+
+        /*public MapController Map {
             get => map;
             set {
                 map = value;
@@ -43,9 +46,9 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                     map.Presentation = core?.Map;
                 }
             }
-        }
+        }*/
 
-        public UnitSystemController UnitSystem {
+        /*public UnitSystemController UnitSystem {
             get => unitSystem;
             set {
                 unitSystem = value;
@@ -53,7 +56,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                     unitSystem.Presentation = core?.UnitSystem;
                 }
             }
-        }
+        }*/
 
 
         // Life cycle.
@@ -61,6 +64,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         private void Start() {
 
             // Start generating map.
+            loadingStatus = "Generating map...";
             var mapGenerator = new FullOfHolesMapGenerator() {
                 HeightLimit = 10,
                 Size = new Vector2Int(100, 100)
@@ -83,6 +87,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                         var mapCore = mapGenerationTask.Result;
 
                         // Generate units.
+                        loadingStatus = "Generating units...";
                         var unitSystemGenerator = new UniformUnitSystemGenerator() {
                             Map = mapCore.Presentation,
                             UnitCount = 60
@@ -107,12 +112,16 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                         core = new BattlefieldCore(mapCore, unitSystemCore);
 
                         // Assign presentations to controllers.
+                        loadingStatus = "Drawing everything...";
                         if (unitSystem != null) {
                             unitSystem.Presentation = core.UnitSystem;
                         }
                         if (map != null) {
                             map.Presentation = core.Map;
-                            map.ExecuteWhenBuilt(this, () => Built = true);
+                            map.ExecuteWhenBuilt(this, () => {
+                                loadingStatus = "Ready!";
+                                Built = true;
+                            });
                         }
 
                     }
