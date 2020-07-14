@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Controllers.Map;
+using NewWorld.Battle.Controllers.UI;
 using NewWorld.Battle.Controllers.UnitSystem;
 using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Generation.Map;
@@ -19,11 +20,14 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         private BattlefieldCore core = null;
         private string loadingStatus = "Waiting...";
 
-        // Controller references.
+        // References.
         [SerializeField]
         private MapController map;
         [SerializeField]
         private UnitSystemController unitSystem;
+        [Space]
+        [SerializeField]
+        private LoadingScreenController loadingScreen;
 
         // Tasks.
         private CancellationTokenSource coreGenerationCancellation = null;
@@ -45,6 +49,13 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             get => unitSystem;
             set => unitSystem = value;
         }
+
+        public LoadingScreenController LoadingScreen {
+            get => loadingScreen;
+            set => loadingScreen = value;
+        }
+
+        public bool Started => Built && loadingScreen == null;
 
 
         // Life cycle.
@@ -80,7 +91,14 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
             // Update core.
             if (Built) {
-                core?.Update();
+                if (loadingScreen != null) {
+                    if (loadingScreen.gameObject.activeSelf) {
+                        loadingScreen = null;
+                    }
+                }
+                if (loadingScreen == null) {
+                    core?.Update();
+                }
             }
 
         }

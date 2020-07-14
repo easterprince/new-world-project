@@ -305,6 +305,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   map: {fileID: 1081232764}
   unitSystem: {fileID: 384659614}
+  loadingScreen: {fileID: 0}
 --- !u!1 &193998976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,7 +1520,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1122689470}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d759f5ea3d90f346a69409fa881bd7b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5026a61917557874a90d19b7239f8370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1253931590
@@ -3180,6 +3181,16 @@ PrefabInstance:
       propertyPath: followSurface
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: battlefield
+      value: 
+      objectReference: {fileID: 164957703}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: map
+      value: 
+      objectReference: {fileID: 1081232764}
     - target: {fileID: 6360018168204447803, guid: 8f6948f59d8b05a448992230ebf95042,
         type: 3}
       propertyPath: m_RootOrder

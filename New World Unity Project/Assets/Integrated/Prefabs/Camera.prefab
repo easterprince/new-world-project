@@ -115,13 +115,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6360018168204447812}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d759f5ea3d90f346a69409fa881bd7b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5026a61917557874a90d19b7239f8370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cameraHolder: {fileID: 6360018168005193998}
+  battlefield: {fileID: 0}
+  map: {fileID: 0}
   isControlledByInput: 0
-  motionSpeed: 15
-  zoomingSpeed: 200
-  rotationSpeed: 0.2
-  minViewingDistance: 5
+  followSurface: 0
+  motionSpeed: 10
+  zoomingSpeed: 100
+  rotationSpeed: 0.1
+  minViewingDistance: 10
   maxViewingDistance: 20
