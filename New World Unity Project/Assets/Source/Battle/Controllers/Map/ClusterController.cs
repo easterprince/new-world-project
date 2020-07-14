@@ -96,6 +96,7 @@ namespace NewWorld.Battle.Controllers.Map {
                     (var heightmap, var holemap) = heightmapAndHolemapGeneration.Result;
                     terrain.terrainData.SetHoles(0, 0, holemap);
                     terrain.terrainData.SetHeights(0, 0, heightmap);
+                    CancelHeightmapAndHolemapGeneration();
 
                     gameObject.name = $"Cluster {startingPosition}";
 

@@ -3191,6 +3191,26 @@ PrefabInstance:
       propertyPath: map
       value: 
       objectReference: {fileID: 1081232764}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: zoomingSpeed
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: motionSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6360018168204447800, guid: 8f6948f59d8b05a448992230ebf95042,
+        type: 3}
+      propertyPath: minViewingDistance
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6360018168204447803, guid: 8f6948f59d8b05a448992230ebf95042,
         type: 3}
       propertyPath: m_RootOrder
