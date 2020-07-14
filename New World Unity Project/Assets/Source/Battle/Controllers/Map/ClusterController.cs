@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,12 +12,11 @@ namespace NewWorld.Battle.Controllers.Map {
 
         // Fabric.
 
-        public static ClusterController StartBuildingCluster() => StartBuildingCluster(null, Vector2Int.zero);
-
-        public static ClusterController StartBuildingCluster(MapPresentation presentation, Vector2Int startingPosition) {
+        public static ClusterController MakeEmptyCluster() {
 
             // Instantiate GameObjct.
             GameObject cluster = Instantiate(Prefab);
+            cluster.name = "Empty cluster";
             ClusterController controller = cluster.GetComponent<ClusterController>();
 
             // Force duplicating TerrainData.
@@ -25,9 +25,19 @@ namespace NewWorld.Battle.Controllers.Map {
             controller.terrain.terrainData = terrainData;
             controller.terrainCollider.terrainData = terrainData;
 
-            // Set game info.
-            controller.StartingPosition = startingPosition;
-            controller.Presentation = presentation;
+            return controller;
+        }
+
+        public static ClusterController StartBuildingCluster(MapPresentation presentation, Vector2Int startingPosition) {
+            if (presentation == null) {
+                throw new ArgumentNullException(nameof(presentation));
+            }
+
+            // Instantiate cluster.
+            ClusterController controller = MakeEmptyCluster();
+
+            // Start building cluster.
+            controller.StartBuilding(presentation, startingPosition);
 
             return controller;
         }
@@ -56,22 +66,9 @@ namespace NewWorld.Battle.Controllers.Map {
             Mathf.FloorToInt(terrain.terrainData.size.x),
             Mathf.FloorToInt(terrain.terrainData.size.z));
 
-        public MapPresentation Presentation {
-            get => presentation;
-            set {
-                presentation = value;
-                StartRebuilding();
-            }
-        }
+        public MapPresentation Presentation => presentation;
 
-        public Vector2Int StartingPosition {
-            get => startingPosition;
-            set {
-                startingPosition = value;
-                gameObject.name = $"Cluster {startingPosition}";
-                StartRebuilding();
-            }
-        }
+        public Vector2Int StartingPosition => startingPosition;
 
 
         // Life cycle.
@@ -91,10 +88,16 @@ namespace NewWorld.Battle.Controllers.Map {
             if (heightmapAndHolemapGeneration != null) {
                 if (heightmapAndHolemapGeneration.IsCompleted) {
 
+                    // Enable components.
+                    terrain.enabled = true;
+                    terrainCollider.enabled = true;
+
                     // Set heightmap and holemap.
                     (var heightmap, var holemap) = heightmapAndHolemapGeneration.Result;
                     terrain.terrainData.SetHoles(0, 0, holemap);
                     terrain.terrainData.SetHeights(0, 0, heightmap);
+
+                    gameObject.name = $"Cluster {startingPosition}";
 
                     Built = true;
                 }
@@ -110,22 +113,17 @@ namespace NewWorld.Battle.Controllers.Map {
 
         // Building.
 
-        private void StartRebuilding() {
-
-            // Clearing.
-            Built = false;
+        public void StartBuilding(MapPresentation presentation, Vector2Int startingPosition) {
             if (presentation == null) {
-                
-                // Disable components.
-                terrain.enabled = false;
-                terrainCollider.enabled = false;
-                
-                return;
+                throw new ArgumentNullException(nameof(presentation));
             }
+            if (this.presentation != null) {
+                throw new InvalidOperationException("Presentation has been already set!");
+            }
+            this.presentation = presentation;
+            this.startingPosition = startingPosition;
 
-            // Enable components.
-            terrain.enabled = true;
-            terrainCollider.enabled = true;
+            Built = false;
 
             // Set transform.
             Vector3 startingPoint = new Vector3(startingPosition.x - 0.5f, 0, startingPosition.y - 0.5f);
@@ -182,14 +180,11 @@ namespace NewWorld.Battle.Controllers.Map {
         // Support method.
 
         private void CancelHeightmapAndHolemapGeneration() {
-            if (heightmapAndHolemapGeneration == null) {
-                return;
+            if (heightmapAndHolemapCancellation != null) {
+                heightmapAndHolemapCancellation.Cancel();
+                heightmapAndHolemapCancellation = null;
+                heightmapAndHolemapGeneration = null;
             }
-
-            heightmapAndHolemapCancellation.Cancel();
-            heightmapAndHolemapCancellation = null;
-            heightmapAndHolemapGeneration = null;
-
         }
 
 

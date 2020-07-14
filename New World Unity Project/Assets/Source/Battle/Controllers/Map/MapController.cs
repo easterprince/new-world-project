@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
+using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Map {
@@ -27,46 +28,38 @@ namespace NewWorld.Battle.Controllers.Map {
 
         public MapPresentation Presentation {
             get => presentation;
-            set {
-                presentation = value;
-                StartRebuilding();
-            }
+        }
+
+        public GameObject ClustersObject {
+            get => clustersObject;
+            set => clustersObject = value;
         }
 
         public int EdgeWidth {
             get => edgeWidth;
-            set {
-                edgeWidth = value;
-                StartRebuilding();
-            }
+            set => edgeWidth = value;
         }
-
-        /*public GameObject ClustersObject {
-            get => clustersObject;
-            set => clustersObject = value;
-        }*/
 
 
         // Building.
 
-        private void StartRebuilding() {
+        public void StartBuilding(MapPresentation presentation) {
+            if (presentation == null) {
+                throw new ArgumentNullException(nameof(presentation));
+            }
+            if (this.presentation != null) {
+                throw new InvalidOperationException("Presentation has been already set!");
+            }
+            this.presentation = presentation;
 
-            // Clearing.
-            Built = false;
-            foreach (var controller in clusters) {
-                controller.RemoveSubscriber(this);
-                Destroy(controller.gameObject);
-            }
-            clusters = new ClusterController[0, 0];
-            if (presentation == null || clustersObject == null) {
-                return;
-            }
-            if (edgeWidth == 0 && presentation.Size == Vector2Int.zero) {
+            // Check if there's nothing to build.
+            if (clustersObject == null || edgeWidth == 0 && presentation.Size == Vector2Int.zero) {
+                Built = true;
                 return;
             }
 
             // Plan clusters.
-            var firstCluster = ClusterController.StartBuildingCluster();
+            var firstCluster = ClusterController.MakeEmptyCluster();
             var clusterSize = firstCluster.Size;
             var clusterCount = presentation.Size + 2 * new Vector2Int(edgeWidth, edgeWidth);
             clusterCount.x = (clusterCount.x + clusterSize.x - 1) / clusterSize.x;
@@ -80,8 +73,7 @@ namespace NewWorld.Battle.Controllers.Map {
                 ClusterController cluster;
                 if (clusterIndex == Vector2Int.zero) {
                     cluster = firstCluster;
-                    cluster.StartingPosition = startingPosition;
-                    cluster.Presentation = presentation;
+                    cluster.StartBuilding(presentation, startingPosition);
                 } else {
                     cluster = ClusterController.StartBuildingCluster(presentation, startingPosition);
                 }
