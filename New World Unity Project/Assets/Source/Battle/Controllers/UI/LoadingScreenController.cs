@@ -27,7 +27,7 @@ namespace NewWorld.Battle.Controllers.UI {
             get => battlefield;
             set {
                 battlefield = value;
-                LateUpdate();
+                UpdateThings();
             }
         }
 
@@ -35,7 +35,7 @@ namespace NewWorld.Battle.Controllers.UI {
             get => readyTextPanel;
             set {
                 readyTextPanel = value;
-                LateUpdate();
+                UpdateThings();
             }
         }
 
@@ -43,7 +43,7 @@ namespace NewWorld.Battle.Controllers.UI {
             get => logo;
             set {
                 logo = value;
-                LateUpdate();
+                UpdateThings();
             }
         }
 
