@@ -97,7 +97,8 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                     }
                 }
                 if (loadingScreen == null) {
-                    core?.Update();
+                    float gameTimeDelta = Mathf.Min(Time.deltaTime, Time.fixedDeltaTime);
+                    core?.Update(gameTimeDelta);
                 }
             }
 

@@ -46,7 +46,6 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         public float GameTimeDelta {
             get => gameTimeDelta;
-            set => gameTimeDelta = value;
         }
 
         public MapPresentation Map => map.Presentation;
@@ -70,9 +69,10 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         // Updates.
 
-        public void Update() {
+        public void Update(float gameTimeDelta) {
 
             // Game time update.
+            this.gameTimeDelta = gameTimeDelta;
             gameTime += gameTimeDelta;
 
             // Update of game entities.
