@@ -26,6 +26,7 @@ namespace NewWorld.Battle.Controllers.Unit {
 
         // Gameobject components.
         private Animator animator;
+        private new Collider collider;
 
 
         // Properties.
@@ -38,12 +39,24 @@ namespace NewWorld.Battle.Controllers.Unit {
             }
         }
 
+        public Vector3 Center {
+            get {
+                if (collider == null) {
+                    return transform.position;
+                }
+                return collider.bounds.center;
+            }
+        }
+
+        public Collider Collider => collider;
+
 
         // Rebuilding method.
 
         public void Rebuild() {
             name = presentation?.Name ?? "Unit";
             animator = GetComponent<Animator>();
+            collider = GetComponent<Collider>();
         }
 
 

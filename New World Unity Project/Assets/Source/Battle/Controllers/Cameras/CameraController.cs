@@ -18,7 +18,7 @@ namespace NewWorld.Battle.Controllers.Cameras {
         // Fields.
 
         // Components.
-        private Camera cameraComponent;
+        private new Camera camera;
 
         // Location.
         private CameraLocation currentLocation;
@@ -90,7 +90,7 @@ namespace NewWorld.Battle.Controllers.Cameras {
             set => defaultLocation = value;
         }
 
-        public Camera CameraComponent => cameraComponent;
+        public Camera Camera => camera;
 
         public GameObject CameraHolder {
             get => cameraHolder;
@@ -160,8 +160,8 @@ namespace NewWorld.Battle.Controllers.Cameras {
 
         private void Start() {
             GameObjects.ValidateReference(cameraHolder, nameof(cameraHolder));
-            cameraComponent = cameraHolder.GetComponent<Camera>();
-            GameObjects.ValidateComponent(cameraComponent, nameof(cameraHolder));
+            camera = cameraHolder.GetComponent<Camera>();
+            GameObjects.ValidateComponent(camera, nameof(cameraHolder));
         }
 
         private void LateUpdate() {

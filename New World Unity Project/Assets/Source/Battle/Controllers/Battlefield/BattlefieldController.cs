@@ -1,5 +1,5 @@
 ﻿using NewWorld.Battle.Controllers.Map;
-using NewWorld.Battle.Controllers.UI;
+using NewWorld.Battle.Controllers.UI.Loading;
 using NewWorld.Battle.Controllers.UnitSystem;
 using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Generation.Map;

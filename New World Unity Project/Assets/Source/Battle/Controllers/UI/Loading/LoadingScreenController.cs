@@ -2,8 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NewWorld.Battle.Controllers.UI {
-    
+namespace NewWorld.Battle.Controllers.UI.Loading {
+
     public class LoadingScreenController : MonoBehaviour {
 
         // Fields.

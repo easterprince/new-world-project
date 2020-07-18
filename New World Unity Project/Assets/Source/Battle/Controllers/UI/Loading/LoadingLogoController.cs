@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NewWorld.Battle.Controllers.UI {
+namespace NewWorld.Battle.Controllers.UI.Loading {
 
     public class LoadingLogoController : MonoBehaviour {
 
