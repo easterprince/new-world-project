@@ -2016,6 +2016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe4e09f6887f40429fefb9b01c63de0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 1122689474}
   portraitCamera: {fileID: 166693879}
   cameraView: {fileID: 546169383}
 --- !u!1 &1613590099
