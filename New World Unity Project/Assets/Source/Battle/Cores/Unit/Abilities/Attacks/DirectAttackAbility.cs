@@ -60,6 +60,8 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
 
         public override Damage DamagePerSecond => singleAttackDamage / attackDuration;
 
+
+        public override string Name => "Direct attack";
         public override string Description => "Directly attack target.";
 
 

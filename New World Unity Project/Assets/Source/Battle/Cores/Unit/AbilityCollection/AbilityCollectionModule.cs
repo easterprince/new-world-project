@@ -27,7 +27,10 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         }
 
         public AbilityCollectionModule(AbilityCollectionModule other) : this() {
-            foreach (var ability in other.abilities.Values) {
+            foreach (var ability in other.attacks.Values) {
+                AddAbility(ability);
+            }
+            foreach (var ability in other.motions.Values) {
                 AddAbility(ability);
             }
         }
@@ -35,9 +38,9 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
 
         // Properties.
 
-        public IEnumerable<IAbilityPresentation> Abilities => Enumerables.GetAll(abilities.Keys);
-        public IEnumerable<MotionAbilityPresentation> Motions => Enumerables.GetAll(motions.Keys);
-        public IEnumerable<AttackAbilityPresentation> Attacks => Enumerables.GetAll(attacks.Keys);
+        public List<IAbilityPresentation> Abilities => new List<IAbilityPresentation>(abilities.Keys);
+        public List<MotionAbilityPresentation> Motions => new List<MotionAbilityPresentation>(motions.Keys);
+        public List<AttackAbilityPresentation> Attacks => new List<AttackAbilityPresentation>(attacks.Keys);
 
 
         // Cloning.
@@ -56,15 +59,16 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
 
         // Modifying.
 
-        public void AddAbility(IAbilityModule ability) {
+        public void AddAbility(AttackAbility ability) {
             var cloned = ability.Clone();
             abilities[cloned.Presentation] = cloned;
-            if (cloned is MotionAbility motion) {
-                motions[motion.Presentation] = motion;
-            }
-            if (cloned is AttackAbility attack) {
-                attacks[attack.Presentation] = attack;
-            }
+            attacks[cloned.Presentation] = cloned;
+        }
+
+        public void AddAbility(MotionAbility ability) {
+            var cloned = ability.Clone();
+            abilities[cloned.Presentation] = cloned;
+            motions[cloned.Presentation] = cloned;
         }
 
 

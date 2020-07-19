@@ -103,12 +103,10 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             // Update description.
             if (presentation != null) {
                 unitDescriptionText.text = "There are some abilities... ?";
-                // TODO. Write actual abilities.
-                /*var stringBuilder = new StringBuilder();
+                var stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"Current condition: {presentation.Condition.Description}");
                 stringBuilder.AppendLine();
-                var abilities = presentation.AbilityCollection;
-                ***
+                var abilities = presentation.AbilityCollection.Abilities;
                 if (abilities.Count == 0) {
                     stringBuilder.AppendLine("No abilities.");
                 } else {
@@ -117,7 +115,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
                         stringBuilder.AppendLine(ability.Name);
                     }
                 }
-                unitDescriptionText.text = stringBuilder.ToString();*/
+                unitDescriptionText.text = stringBuilder.ToString();
             } else {
                 unitDescriptionText.text = "Click on unit to get its description.";
             }

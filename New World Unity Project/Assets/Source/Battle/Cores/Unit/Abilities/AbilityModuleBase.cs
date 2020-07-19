@@ -10,6 +10,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities {
 
         // Properties.
 
+        public abstract string Name { get; }
         public abstract string Description { get; }
 
         IAbilityPresentation ICore<IAbilityModule, IAbilityPresentation>.Presentation => Presentation;

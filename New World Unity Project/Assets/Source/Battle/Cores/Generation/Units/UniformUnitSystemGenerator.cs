@@ -1,5 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.Unit;
+using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
+using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
@@ -21,6 +23,10 @@ namespace NewWorld.Battle.Cores.Generation.Units {
 
             // Generate unit template.
             var template = new UnitCore();
+            var attack = new DirectAttackAbility();
+            template.AddAbility(attack);
+            var motion = new DirectMotionAbility();
+            template.AddAbility(motion);
 
             // Count free nodes.
             int freeNodes = 0;

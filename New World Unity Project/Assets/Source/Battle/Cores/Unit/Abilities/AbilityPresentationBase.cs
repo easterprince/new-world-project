@@ -10,6 +10,7 @@
 
         // Properties.
 
+        public string Name => Presented.Name;
         public string Description => Presented.Description;
 
 

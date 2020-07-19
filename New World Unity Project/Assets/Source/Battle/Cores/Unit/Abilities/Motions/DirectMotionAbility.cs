@@ -33,6 +33,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         public override float MovementPerSecond => speed;
 
+        public override string Name => "Direct motion";
         public override string Description => "Move to target position.";
 
 

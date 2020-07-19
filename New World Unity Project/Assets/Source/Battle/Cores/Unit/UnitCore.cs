@@ -163,6 +163,14 @@ namespace NewWorld.Battle.Cores.Unit {
             durability.CauseDamage(damage);
         }
 
+        public void AddAbility(AttackAbility ability) {
+            abilityCollection.AddAbility(ability);
+        }
+
+        public void AddAbility(MotionAbility ability) {
+            abilityCollection.AddAbility(ability);
+        }
+
         public void UseAbility(AttackUsageAction attackUsage) {
             if (attackUsage is null) {
                 throw new ArgumentNullException();
