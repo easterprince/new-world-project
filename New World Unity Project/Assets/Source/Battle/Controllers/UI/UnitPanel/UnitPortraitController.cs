@@ -16,6 +16,8 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
 
         // Steady references.
         [SerializeField]
+        private CameraController mainCamera;
+        [SerializeField]
         private CameraController portraitCamera;
         [SerializeField]
         private GameObject cameraView;
@@ -37,6 +39,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         // Life cycle.
 
         private void Start() {
+            GameObjects.ValidateReference(mainCamera, nameof(mainCamera));
             GameObjects.ValidateReference(portraitCamera, nameof(portraitCamera));
             GameObjects.ValidateReference(cameraView, nameof(cameraView));
         }
@@ -50,9 +53,11 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
                 if (!cameraView.activeSelf) {
                     cameraView.SetActive(true);
                 }
-                var location = portraitCamera.CurrentLocation;
-                location.ViewedPosition = followed.Collider.bounds.center;
-                location.ViewingDistance = 2;
+                var location = new CameraLocation() {
+                    ViewedPosition = followed.Collider.bounds.center,
+                    ViewingDistance = 2,
+                    Rotation = mainCamera.CurrentLocation.Rotation
+                };
                 portraitCamera.CurrentLocation = location;
             }
         }

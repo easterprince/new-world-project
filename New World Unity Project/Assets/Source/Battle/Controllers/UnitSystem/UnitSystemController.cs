@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Controllers.Unit;
 using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities;
 using NewWorld.Utilities.Events;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
             }
             GameObject unit = UnitController.BuildUnit(unitPresentation).gameObject;
             unit.transform.parent = unitsObject.transform;
-            unit.layer = unitsObject.layer;
+            GameObjects.SetLayerRecursively(unit, unitsObject.layer);
             presentationsToUnits[unitPresentation] = unit;
         }
 
