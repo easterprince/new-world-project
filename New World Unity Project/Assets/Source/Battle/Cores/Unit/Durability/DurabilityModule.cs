@@ -9,8 +9,8 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         // Fields.
 
-        private float durabilityLimit;
-        private float durability;
+        private float durabilityLimit = 1;
+        private float durability = 1;
 
 
         // Constructors.

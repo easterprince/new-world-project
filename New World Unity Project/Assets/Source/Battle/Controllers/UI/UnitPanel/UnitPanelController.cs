@@ -31,6 +31,8 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         private Text unitDescriptionText;
         [SerializeField]
         private BarController durabilityBar;
+        [SerializeField]
+        private Text durabilityValueText;
         [Header("Outer")]
         [SerializeField]
         private CameraController mainCamera;
@@ -46,6 +48,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             GameObjects.ValidateReference(unitNameText, nameof(unitNameText));
             GameObjects.ValidateReference(unitDescriptionText, nameof(unitDescriptionText));
             GameObjects.ValidateReference(durabilityBar, nameof(durabilityBar));
+            GameObjects.ValidateReference(durabilityValueText, nameof(durabilityValueText));
             portrait.ClickEvent.AddAction(this, ProcessPortraitClick);
             pointerInterceptor.ClickEvent.AddAction(this, ProcessInterceptorClick);
         }
@@ -123,7 +126,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
 
             // Update durability info.
             if (presentation != null) {
-                durabilityBar.gameObject.SetActive(true);
+                durabilityBar.Filled = presentation.Durability.Durability / presentation.Durability.DurabilityLimit;
                 // TODO. Write actual durability.
                 /*var unitDurability = selectedUnit.Durability;
                 if (unitDurability == null) {
@@ -138,9 +141,8 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
                     durabilityBar.ValueText = $"{unitDurability.Durability}/{unitDurability.DurabilityLimit}";
                 }*/
             } else {
-                durabilityBar.gameObject.SetActive(false);
-                /*durabilityBar.Filled = 0;
-                durabilityBar.TypeText = "";
+                durabilityBar.Filled = 0;
+                /*durabilityBar.TypeText = "";
                 durabilityBar.ValueText = "";*/
             }
 

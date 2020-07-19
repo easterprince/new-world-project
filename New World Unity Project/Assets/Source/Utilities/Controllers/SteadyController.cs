@@ -30,6 +30,11 @@ namespace NewWorld.Utilities.Controllers {
 
         private protected virtual void OnStart() {}
 
+        private protected void ForceBeingStarted() {
+            calledStart = true;
+            finishedStart = true;
+        }
+
         private protected void ValidateBeingNotFixed() {
             if (calledStart) {
                 throw new InvalidOperationException("Operation is forbidden after script started (after Start() was called).");
