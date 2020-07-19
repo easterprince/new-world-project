@@ -45,7 +45,7 @@ namespace NewWorld.Battle.Controllers.Cameras {
         [Range(1f, 100.0f)]
         private float motionSpeed = 10.0f;
         [SerializeField]
-        [Range(10f, 1000.0f)]
+        [Range(10f, 5000.0f)]
         private float zoomingSpeed = 100.0f;
         [SerializeField]
         [Range(0.01f, 1.0f)]
