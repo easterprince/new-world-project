@@ -5,6 +5,7 @@ using NewWorld.Battle.Controllers.Unit;
 using NewWorld.Battle.Cores.Unit;
 using NewWorld.Utilities;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -30,9 +31,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         [SerializeField]
         private Text unitDescriptionText;
         [SerializeField]
-        private BarController durabilityBar;
-        [SerializeField]
-        private Text durabilityValueText;
+        private DurabilitySectionController durabilitySection;
         [Header("Outer")]
         [SerializeField]
         private CameraController mainCamera;
@@ -47,8 +46,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             GameObjects.ValidateReference(portrait, nameof(portrait));
             GameObjects.ValidateReference(unitNameText, nameof(unitNameText));
             GameObjects.ValidateReference(unitDescriptionText, nameof(unitDescriptionText));
-            GameObjects.ValidateReference(durabilityBar, nameof(durabilityBar));
-            GameObjects.ValidateReference(durabilityValueText, nameof(durabilityValueText));
+            GameObjects.ValidateReference(durabilitySection, nameof(durabilitySection));
             portrait.ClickEvent.AddAction(this, ProcessPortraitClick);
             pointerInterceptor.ClickEvent.AddAction(this, ProcessInterceptorClick);
         }
@@ -126,24 +124,12 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
 
             // Update durability info.
             if (presentation != null) {
-                durabilityBar.Filled = presentation.Durability.Durability / presentation.Durability.DurabilityLimit;
-                // TODO. Write actual durability.
-                /*var unitDurability = selectedUnit.Durability;
-                if (unitDurability == null) {
-                    durabilityBar.Filled = 1;
-                    durabilityBar.Color = Color.white;
-                    durabilityBar.TypeText = "DUR";
-                    durabilityBar.ValueText = "Indestructible";
-                } else {
-                    durabilityBar.Filled = unitDurability.Durability / unitDurability.DurabilityLimit;
-                    durabilityBar.Color = Color.red;
-                    durabilityBar.TypeText = "DUR";
-                    durabilityBar.ValueText = $"{unitDurability.Durability}/{unitDurability.DurabilityLimit}";
-                }*/
+                var durabilityModule = presentation.Durability;
+                durabilitySection.gameObject.SetActive(true);
+                durabilitySection.SetDurability(durabilityModule);
             } else {
-                durabilityBar.Filled = 0;
-                /*durabilityBar.TypeText = "";
-                durabilityBar.ValueText = "";*/
+                durabilitySection.gameObject.SetActive(false);
+                durabilitySection.SetDurability(null);
             }
 
         }

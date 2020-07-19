@@ -949,6 +949,7 @@ GameObject:
   m_Component:
   - component: {fileID: 727092554}
   - component: {fileID: 727092555}
+  - component: {fileID: 727092556}
   m_Layer: 5
   m_Name: Durability Section
   m_TagString: Untagged
@@ -985,6 +986,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 727092553}
   m_CullTransparentMesh: 0
+--- !u!114 &727092556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727092553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86b2f2ac5b263b4ca2fe91e27214757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainBar: {fileID: 1025984468}
+  durabilityKind: {fileID: 1939377469}
+  durabilityValue: {fileID: 1730994671}
 --- !u!1 &750632329
 GameObject:
   m_ObjectHideFlags: 0
@@ -1777,8 +1793,7 @@ MonoBehaviour:
   portrait: {fileID: 1609000782}
   unitNameText: {fileID: 1253931592}
   unitDescriptionText: {fileID: 125972348}
-  durabilityBar: {fileID: 1025984468}
-  durabilityValueText: {fileID: 1730994671}
+  durabilitySection: {fileID: 727092556}
   mainCamera: {fileID: 1122689474}
 --- !u!1 &1547847116
 GameObject:
