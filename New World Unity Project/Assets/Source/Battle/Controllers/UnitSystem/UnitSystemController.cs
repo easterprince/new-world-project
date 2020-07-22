@@ -2,6 +2,7 @@
 using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
+using NewWorld.Utilities.Controllers;
 using NewWorld.Utilities.Events;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.UnitSystem {
 
-    public class UnitSystemController : MonoBehaviour {
+    public class UnitSystemController : BuildableController {
 
         // Fields.
 
@@ -41,6 +42,7 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
                     presentation.AdditionEvent.AddAction(actionQueue, CreateUnit);
                     presentation.AdditionEvent.AddAction(actionQueue, DestroyUnit);
                 }
+                Built = (presentation != null);
             }
         }
 
@@ -58,12 +60,6 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
 
         private void LateUpdate() {
             actionQueue.RunAll();
-        }
-
-        private void OnDestroy() {
-            Presentation = null;
-            Destroy(unitsObject);
-            UnitsObject = null;
         }
 
 

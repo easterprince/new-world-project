@@ -22,6 +22,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Events.
         private readonly GameEvent<UnitPresentation> additionEvent = new GameEvent<UnitPresentation>();
+        private readonly GameEvent<UnitPresentation> motionEvent = new GameEvent<UnitPresentation>();
         private readonly GameEvent<UnitPresentation> removalEvent = new GameEvent<UnitPresentation>();
 
 
@@ -57,6 +58,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         }
 
         public GameEvent<UnitPresentation>.EventWrapper AdditionEvent => additionEvent.Wrapper;
+        public GameEvent<UnitPresentation>.EventWrapper MotionEvent => motionEvent.Wrapper;
         public GameEvent<UnitPresentation>.EventWrapper RemovalEvent => removalEvent.Wrapper;
 
 
@@ -139,9 +141,11 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 }
             } else {
                 UnitCore unit = presentationsToUnits[unitPresentation];
-                positionsToUnits.Remove(unitsToPositions[unit]);
+                var oldPosition = unitsToPositions[unit];
+                positionsToUnits.Remove(oldPosition);
                 unitsToPositions[unit] = position;
                 positionsToUnits[position] = unit;
+                motionEvent.Invoke(unitPresentation);
             }
         }
 
@@ -155,7 +159,8 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             UnitCore unit = presentationsToUnits[unitPresentation];
             unit.Disconnect();
             presentationsToUnits.Remove(unitPresentation);
-            positionsToUnits.Remove(unitsToPositions[unit]);
+            var position = unitsToPositions[unit];
+            positionsToUnits.Remove(position);
             unitsToPositions.Remove(unit);
             removalEvent.Invoke(unitPresentation);
             return unit;

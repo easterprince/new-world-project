@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2490630306417466746}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c2a713fa91c2b24fa5762d3decb22f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 3545789e0669fb24cbc2d2cc1e195875, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  map: {fileID: 0}
   meshRenderer: {fileID: 8982250457356444244}
 --- !u!1001 &5886646747632665715
 PrefabInstance:
@@ -114,6 +115,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102093851644264345, guid: b4507578bcf55924291daf7d018cab3d,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102093851644264345, guid: b4507578bcf55924291daf7d018cab3d,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102093851644264345, guid: b4507578bcf55924291daf7d018cab3d,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4507578bcf55924291daf7d018cab3d, type: 3}

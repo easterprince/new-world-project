@@ -20,6 +20,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         public UnitPresentation this[Vector2Int position] => Presented[position];
 
         public GameEvent<UnitPresentation>.EventWrapper AdditionEvent => Presented.AdditionEvent;
+        public GameEvent<UnitPresentation>.EventWrapper MotionEvent => Presented.MotionEvent;
         public GameEvent<UnitPresentation>.EventWrapper RemovalEvent => Presented.RemovalEvent;
 
 
