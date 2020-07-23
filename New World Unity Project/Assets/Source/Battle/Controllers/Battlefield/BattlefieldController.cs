@@ -6,9 +6,11 @@ using NewWorld.Battle.Cores.Generation.Map;
 using NewWorld.Battle.Cores.Generation.Units;
 using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Battlefield {
@@ -18,16 +20,14 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         // Fields.
 
         private BattlefieldCore core = null;
+        private bool paused = true;
         private string loadingStatus = "Waiting...";
 
-        // References.
+        // Steady references.
         [SerializeField]
         private MapController map;
         [SerializeField]
         private UnitSystemController unitSystem;
-        [Space]
-        [SerializeField]
-        private LoadingScreenController loadingScreen;
 
         // Tasks.
         private CancellationTokenSource coreGenerationCancellation = null;
@@ -42,25 +42,33 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
         public MapController Map {
             get => map;
-            set => map = value;
+            set {
+                ValidateBeingNotFixed();
+                map = value;
+            }
         }
 
         public UnitSystemController UnitSystem {
             get => unitSystem;
-            set => unitSystem = value;
+            set {
+                ValidateBeingNotFixed();
+                unitSystem = value;
+            }
         }
 
-        public LoadingScreenController LoadingScreen {
-            get => loadingScreen;
-            set => loadingScreen = value;
+        public bool Paused {
+            get => paused;
+            set => paused = value;
         }
-
-        public bool Started => Built && loadingScreen == null;
 
 
         // Life cycle.
 
-        private void Start() {
+        private protected override void OnStart() {
+            base.OnStart();
+            GameObjects.ValidateReference(map, nameof(map));
+            GameObjects.ValidateReference(unitSystem, nameof(unitSystem));
+            ForceBeingStarted();
 
             // Start generating map.
             StartCoreGeneration();
@@ -70,36 +78,26 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         private void Update() {
             
             // Check core generation progress.
-            if (core == null && coreGenerationTask.IsCompleted) {
+            if (StartedBuilding && !FinishedBuilding) {
+                if (coreGenerationTask != null && coreGenerationTask.IsCompleted) {
 
-                loadingStatus = "Drawing everything...";
-                core = coreGenerationTask.Result;
-                CancelCoreGeneration();
+                    loadingStatus = "Drawing everything...";
+                    core = coreGenerationTask.Result;
+                    CancelCoreGeneration();
 
-                if (map != null) {
+                    SetStartedBuilding();
                     map.StartBuilding(core.Map);
-                    map.ExecuteWhenBuilt(this, UpdateWhenBuilt);
+                    map.ExecuteWhenBuilt(this, UpdateIfBuilt);
+                    unitSystem.Build(core.UnitSystem);
+                    unitSystem.ExecuteWhenBuilt(this, UpdateIfBuilt);
+
                 }
-
-                if (unitSystem != null) {
-                    unitSystem.Presentation = core.UnitSystem;
-                }
-
-                UpdateWhenBuilt();
-
             }
 
             // Update core.
-            if (Built) {
-                if (loadingScreen != null) {
-                    if (loadingScreen.gameObject.activeSelf) {
-                        loadingScreen = null;
-                    }
-                }
-                if (loadingScreen == null) {
-                    float gameTimeDelta = Mathf.Min(Time.deltaTime, Time.fixedDeltaTime);
-                    core?.Update(gameTimeDelta);
-                }
+            if (FinishedBuilding && !paused) {
+                float gameTimeDelta = Mathf.Min(Time.deltaTime, Time.fixedDeltaTime);
+                core?.Update(gameTimeDelta);
             }
 
         }
@@ -113,6 +111,8 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         // Core generation.
 
         private void StartCoreGeneration() {
+            ValidateBeingStarted();
+            SetStartedBuilding();
             loadingStatus = "Generating game data...";
             CancelCoreGeneration();
             coreGenerationCancellation = new CancellationTokenSource();
@@ -155,13 +155,13 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
         // Built status check.
 
-        private void UpdateWhenBuilt() {
-            if (Built) {
+        private void UpdateIfBuilt() {
+            if (FinishedBuilding) {
                 return;
             }
-            if (core != null && (map == null || map.Built) && (unitSystem == null || unitSystem.Presentation != null)) {
+            if (core != null && map.FinishedBuilding && unitSystem.FinishedBuilding) {
                 loadingStatus = "Ready!";
-                Built = true;
+                SetFinishedBuilding();
             }
         }
 

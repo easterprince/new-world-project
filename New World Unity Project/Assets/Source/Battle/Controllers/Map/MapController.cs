@@ -10,15 +10,14 @@ namespace NewWorld.Battle.Controllers.Map {
 
         // Fields.
 
-        // Presentation.
-        private MapPresentation presentation;
-
-        // Unity references.
-        [SerializeField]
-        private GameObject clustersObject;
+        private MapPresentation presentation = null;
         private ClusterController[,] clusters = new ClusterController[0, 0];
 
-        // Parameters.
+        // Steady references.
+        [SerializeField]
+        private GameObject clustersObject;
+
+        // Building parameters.
         [SerializeField]
         [Range(0, 10)]
         private int edgeWidth = 0;
@@ -32,12 +31,26 @@ namespace NewWorld.Battle.Controllers.Map {
 
         public GameObject ClustersObject {
             get => clustersObject;
-            set => clustersObject = value;
+            set {
+                ValidateBeingNotFixed();
+                clustersObject = value;
+            }
         }
 
         public int EdgeWidth {
             get => edgeWidth;
-            set => edgeWidth = value;
+            set {
+                ValidateNotStartedBuilding();
+                edgeWidth = Mathf.Max(0, value);
+            }
+        }
+
+
+        // Life cycle.
+
+        private protected override void OnStart() {
+            base.OnStart();
+            GameObjects.ValidateReference(clustersObject, nameof(clustersObject));
         }
 
 
@@ -47,14 +60,16 @@ namespace NewWorld.Battle.Controllers.Map {
             if (presentation == null) {
                 throw new ArgumentNullException(nameof(presentation));
             }
-            if (this.presentation != null) {
-                throw new InvalidOperationException("Presentation has been already set!");
-            }
+            ValidateBeingStarted();
+            ValidateNotStartedBuilding();
+
+            // Set fields.
+            SetStartedBuilding();
             this.presentation = presentation;
 
-            // Check if there's nothing to build.
-            if (clustersObject == null || edgeWidth == 0 && presentation.Size == Vector2Int.zero) {
-                Built = true;
+            // Check if there's anything to build at all.
+            if (edgeWidth == 0 && presentation.Size == Vector2Int.zero) {
+                SetFinishedBuilding();
                 return;
             }
 
@@ -81,7 +96,7 @@ namespace NewWorld.Battle.Controllers.Map {
                 cluster.ExecuteWhenBuilt(this, () => {
                     ++builtCount;
                     if (builtCount == clusters.Length) {
-                        Built = true;
+                        SetFinishedBuilding();
                     }
                 });
             }

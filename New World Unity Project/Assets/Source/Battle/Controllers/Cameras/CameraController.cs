@@ -168,7 +168,7 @@ namespace NewWorld.Battle.Controllers.Cameras {
 
             // Process input.
             float deltaTime = Time.unscaledDeltaTime;
-            if (isControlledByInput && (battlefield == null || battlefield.Started)) {
+            if (isControlledByInput && (battlefield == null || !battlefield.Paused)) {
 
                 // Process input.
                 if (Input.GetAxisRaw("Cancel") == 0) {

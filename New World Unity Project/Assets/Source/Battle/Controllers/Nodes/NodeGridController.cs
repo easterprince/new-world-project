@@ -5,9 +5,7 @@ using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Events;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace NewWorld.Battle.Controllers.Nodes {
     
@@ -15,8 +13,8 @@ namespace NewWorld.Battle.Controllers.Nodes {
 
         // Fields.
 
-        private ActionQueue actionQueue = new ActionQueue();
-        private Dictionary<UnitPresentation, NodeController> unitsToNodes = new Dictionary<UnitPresentation, NodeController>();
+        private readonly ActionQueue actionQueue = new ActionQueue();
+        private readonly Dictionary<UnitPresentation, NodeController> unitsToNodes = new Dictionary<UnitPresentation, NodeController>();
         private UnitSystemPresentation unitSystemPresentation = null;
 
         // Steady references.
@@ -52,9 +50,11 @@ namespace NewWorld.Battle.Controllers.Nodes {
         }
 
         private void OnDestroy() {
-            unitSystemPresentation.AdditionEvent.RemoveSubscriber(actionQueue);
-            unitSystemPresentation.MotionEvent.RemoveSubscriber(actionQueue);
-            unitSystemPresentation.RemovalEvent.RemoveSubscriber(actionQueue);
+            if (unitSystemPresentation != null) {
+                unitSystemPresentation.AdditionEvent.RemoveSubscriber(actionQueue);
+                unitSystemPresentation.MotionEvent.RemoveSubscriber(actionQueue);
+                unitSystemPresentation.RemovalEvent.RemoveSubscriber(actionQueue);
+            }
         }
 
 

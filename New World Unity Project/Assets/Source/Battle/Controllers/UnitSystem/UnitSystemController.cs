@@ -19,70 +19,73 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
         private readonly Dictionary<UnitPresentation, GameObject> presentationsToUnits = new Dictionary<UnitPresentation, GameObject>();
         private readonly ActionQueue actionQueue = new ActionQueue();
 
-        // Unity references.
+        // Steady references.
         [SerializeField]
         private GameObject unitsObject;
 
 
         // Properties.
 
-        public UnitSystemPresentation Presentation {
-            get => presentation;
-            set {
-                if (presentation == value) {
-                    return;
-                }
-                if (presentation != null) {
-                    presentation.AdditionEvent.RemoveSubscriber(actionQueue);
-                }
-                DestroyUnits();
-                presentation = value;
-                CreateUnits();
-                if (presentation != null) {
-                    presentation.AdditionEvent.AddAction(actionQueue, CreateUnit);
-                    presentation.AdditionEvent.AddAction(actionQueue, DestroyUnit);
-                }
-                Built = (presentation != null);
-            }
-        }
+        public UnitSystemPresentation Presentation => presentation;
 
         public GameObject UnitsObject {
             get => unitsObject;
             set {
-                DestroyUnits();
+                ValidateBeingNotFixed();
                 unitsObject = value;
-                CreateUnits();
             }
         }
 
 
         // Life cycle.
 
+        private protected override void OnStart() {
+            base.OnStart();
+            GameObjects.ValidateReference(unitsObject, nameof(unitsObject));
+        }
+
         private void LateUpdate() {
             actionQueue.RunAll();
+        }
+
+        private protected override void OnDestroy() {
+            if (presentation != null) {
+                presentation.AdditionEvent.RemoveSubscriber(actionQueue);
+                presentation.RemovalEvent.RemoveSubscriber(actionQueue);
+            }
+            base.OnDestroy();
+        }
+
+
+        // Building.
+
+        public void Build(UnitSystemPresentation presentation) {
+            if (presentation == null) {
+                throw new ArgumentNullException(nameof(presentation));
+            }
+            ValidateBeingStarted();
+            ValidateNotStartedBuilding();
+
+            // Set fields.
+            SetStartedBuilding();
+            this.presentation = presentation;
+
+            // Create unit objects.
+            foreach (var unitPresentation in presentation) {
+                CreateUnit(unitPresentation);
+            }
+            presentation.AdditionEvent.AddAction(actionQueue, CreateUnit);
+            presentation.RemovalEvent.AddAction(actionQueue, DestroyUnit);
+
+            SetFinishedBuilding();
+
         }
 
 
         // Support methods.
 
-        private void CreateUnits() {
-            if (presentation == null || unitsObject == null) {
-                return;
-            }
-            foreach (var unitPresentation in presentation) {
-                CreateUnit(unitPresentation);
-            }
-        }
-
-        private void DestroyUnits() {
-            var unitPresentations = new List<UnitPresentation>(presentationsToUnits.Keys);
-            foreach (var unit in unitPresentations) {
-                DestroyUnit(unit);
-            }
-        }
-
         private void CreateUnit(UnitPresentation unitPresentation) {
-            if (unitsObject == null || presentationsToUnits.ContainsKey(unitPresentation)) {
+            if (presentationsToUnits.ContainsKey(unitPresentation)) {
                 return;
             }
             GameObject unit = UnitController.BuildUnit(unitPresentation).gameObject;

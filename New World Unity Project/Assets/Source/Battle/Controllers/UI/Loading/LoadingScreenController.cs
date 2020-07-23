@@ -57,7 +57,8 @@ namespace NewWorld.Battle.Controllers.UI.Loading {
 
         private void LateUpdate() {
             UpdateThings();
-            if (battlefield != null && battlefield.Built && Input.anyKey) {
+            if (battlefield != null && battlefield.FinishedBuilding && Input.anyKey) {
+                battlefield.Paused = false;
                 gameObject.SetActive(false);
             }
         }
@@ -66,7 +67,7 @@ namespace NewWorld.Battle.Controllers.UI.Loading {
         // Support method.
 
         private void UpdateThings() {
-            if (battlefield == null) {
+            if (battlefield == null || !battlefield.StartedBuilding) {
                 if (readyTextPanel != null) {
                     readyTextPanel.SetActive(false);
                 }
@@ -76,7 +77,7 @@ namespace NewWorld.Battle.Controllers.UI.Loading {
                 if (loadingProgress != null) {
                     loadingProgress.text = "...";
                 }
-            } else if (!battlefield.Built) {
+            } else if (battlefield.StartedBuilding && !battlefield.FinishedBuilding) {
                 if (readyTextPanel != null) {
                     readyTextPanel.SetActive(false);
                 }

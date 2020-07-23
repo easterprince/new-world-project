@@ -19,7 +19,10 @@ namespace NewWorld.Utilities.Controllers {
 
         // Life cycle.
 
-        private void Start() {
+        public void Start() {
+            if (calledStart) {
+                return;
+            }
             calledStart = true;
             OnStart();
             finishedStart = true;

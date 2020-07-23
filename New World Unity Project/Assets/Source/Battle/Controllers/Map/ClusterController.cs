@@ -16,7 +16,6 @@ namespace NewWorld.Battle.Controllers.Map {
 
             // Instantiate GameObjct.
             GameObject cluster = Instantiate(Prefab);
-            cluster.name = "Empty cluster";
             ClusterController controller = cluster.GetComponent<ClusterController>();
 
             // Force duplicating TerrainData.
@@ -80,13 +79,15 @@ namespace NewWorld.Battle.Controllers.Map {
             terrainCollider = GetComponent<TerrainCollider>();
             GameObjects.ValidateComponent(terrainCollider);
             terrainCollider.enabled = false;
+            gameObject.name = "Empty cluster";
         }
 
         private void LateUpdate() {
 
-            // Check if terrain data generation is on.
-            if (heightmapAndHolemapGeneration != null) {
-                if (heightmapAndHolemapGeneration.IsCompleted) {
+            if (StartedBuilding && !FinishedBuilding) {
+
+                // Check if terrain data generation is on.
+                if (heightmapAndHolemapGeneration != null && heightmapAndHolemapGeneration.IsCompleted) {
 
                     // Enable components.
                     terrain.enabled = true;
@@ -100,8 +101,10 @@ namespace NewWorld.Battle.Controllers.Map {
 
                     gameObject.name = $"Cluster {startingPosition}";
 
-                    Built = true;
+                    SetFinishedBuilding();
+
                 }
+
             }
 
         }
@@ -118,13 +121,12 @@ namespace NewWorld.Battle.Controllers.Map {
             if (presentation == null) {
                 throw new ArgumentNullException(nameof(presentation));
             }
-            if (this.presentation != null) {
-                throw new InvalidOperationException("Presentation has been already set!");
-            }
+            ValidateNotStartedBuilding();
+
+            // Set fields.
+            SetStartedBuilding();
             this.presentation = presentation;
             this.startingPosition = startingPosition;
-
-            Built = false;
 
             // Set transform.
             Vector3 startingPoint = new Vector3(startingPosition.x - 0.5f, 0, startingPosition.y - 0.5f);
