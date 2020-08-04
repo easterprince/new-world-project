@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,17 +7,17 @@ namespace NewWorld.Utilities {
 
     public static class Enumerables {
 
-        // Trivial.
+        // Trivial enumerables.
 
-        public static IEnumerable<T> GetNothing<T>() {
+        public static IEnumerable<T> TakeNothing<T>() {
             yield break;
         }
 
-        public static IEnumerable<T> GetSingle<T>(T element) {
+        public static IEnumerable<T> TakeSingle<T>(T element) {
             yield return element;
         }
 
-        public static IEnumerable<T> GetAll<T>(IEnumerable<T> elements) {
+        public static IEnumerable<T> TakeAll<T>(IEnumerable<T> elements) {
             foreach (var element in elements) {
                 yield return element;
             }
