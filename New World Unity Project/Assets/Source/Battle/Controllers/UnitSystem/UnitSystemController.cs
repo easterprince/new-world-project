@@ -31,7 +31,7 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
         public GameObject UnitsObject {
             get => unitsObject;
             set {
-                ValidateBeingNotFixed();
+                ValidateBeingNotStarted();
                 unitsObject = value;
             }
         }

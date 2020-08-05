@@ -38,7 +38,7 @@ namespace NewWorld.Utilities.Controllers {
             finishedStart = true;
         }
 
-        private protected void ValidateBeingNotFixed() {
+        private protected void ValidateBeingNotStarted() {
             if (calledStart) {
                 throw new InvalidOperationException("Operation is forbidden after script started (after Start() was called).");
             }

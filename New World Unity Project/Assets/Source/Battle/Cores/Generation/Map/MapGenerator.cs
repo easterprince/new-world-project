@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Generation.Map {
@@ -28,6 +29,13 @@ namespace NewWorld.Battle.Cores.Generation.Map {
         // Methods.
 
         public abstract MapCore Generate(int seed, CancellationToken? cancellationToken = null);
+
+        public async Task<MapCore> GenerateAsync(int seed, CancellationToken? cancellationToken = null) {
+            cancellationToken?.ThrowIfCancellationRequested();
+            var task = Task.Run(() => Generate(seed, cancellationToken));
+            MapCore map = await task;
+            return map;
+        }
 
 
     }

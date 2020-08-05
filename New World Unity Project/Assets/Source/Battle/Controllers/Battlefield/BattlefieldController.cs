@@ -8,6 +8,7 @@ using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -30,8 +31,8 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         private UnitSystemController unitSystem;
 
         // Tasks.
-        private CancellationTokenSource coreGenerationCancellation = null;
         private Task<BattlefieldCore> coreGenerationTask = null;
+        private readonly CancellationTokenSource taskCancellation = new CancellationTokenSource();
 
 
         // Properties.
@@ -43,7 +44,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         public MapController Map {
             get => map;
             set {
-                ValidateBeingNotFixed();
+                ValidateBeingNotStarted();
                 map = value;
             }
         }
@@ -51,7 +52,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         public UnitSystemController UnitSystem {
             get => unitSystem;
             set {
-                ValidateBeingNotFixed();
+                ValidateBeingNotStarted();
                 unitSystem = value;
             }
         }
@@ -68,28 +69,37 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             base.OnStart();
             GameObjects.ValidateReference(map, nameof(map));
             GameObjects.ValidateReference(unitSystem, nameof(unitSystem));
-            ForceBeingStarted();
 
-            // Start generating map.
-            StartCoreGeneration();
+            // Start generating core.
+            SetStartedBuilding();
+            loadingStatus = "Generating game data...";
+            coreGenerationTask = GenerateCoreAsync(taskCancellation.Token);
 
         }
 
         private void Update() {
-            
+
+            void updateOnBuilding() {
+                if (map.FinishedBuilding && unitSystem.FinishedBuilding) {
+                    loadingStatus = "Ready!";
+                    SetFinishedBuilding();
+                }
+            }
+
             // Check core generation progress.
             if (StartedBuilding && !FinishedBuilding) {
                 if (coreGenerationTask != null && coreGenerationTask.IsCompleted) {
 
-                    loadingStatus = "Drawing everything...";
+                    // Get task result.
                     core = coreGenerationTask.Result;
-                    CancelCoreGeneration();
+                    coreGenerationTask = null;
 
-                    SetStartedBuilding();
+                    // Start building dependent controllers.
+                    loadingStatus = "Drawing everything...";
                     map.StartBuilding(core.Map);
-                    map.ExecuteWhenBuilt(this, UpdateIfBuilt);
+                    map.ExecuteWhenBuilt(this, updateOnBuilding);
                     unitSystem.Build(core.UnitSystem);
-                    unitSystem.ExecuteWhenBuilt(this, UpdateIfBuilt);
+                    unitSystem.ExecuteWhenBuilt(this, updateOnBuilding);
 
                 }
             }
@@ -103,24 +113,27 @@ namespace NewWorld.Battle.Controllers.Battlefield {
         }
 
         private protected override void OnDestroy() {
-            CancelCoreGeneration();
+            
+            // Remove event handlers.
+            if (map != null) {
+                map.RemoveSubscriber(this);
+            }
+            if (unitSystem != null) {
+                unitSystem.RemoveSubscriber(this);
+            }
+
+            // Cancel tasks.
+            if (!taskCancellation.IsCancellationRequested) {
+                taskCancellation.Cancel();
+            }
+
             base.OnDestroy();
         }
 
 
         // Core generation.
 
-        private void StartCoreGeneration() {
-            ValidateBeingStarted();
-            SetStartedBuilding();
-            loadingStatus = "Generating game data...";
-            CancelCoreGeneration();
-            coreGenerationCancellation = new CancellationTokenSource();
-            var cancellationToken = coreGenerationCancellation.Token;
-            coreGenerationTask = Task.Run(() => GenerateCore(cancellationToken));
-        }
-
-        private static BattlefieldCore GenerateCore(CancellationToken cancellationToken) {
+        private static async Task<BattlefieldCore> GenerateCoreAsync(CancellationToken cancellationToken) {
             cancellationToken.ThrowIfCancellationRequested();
 
             // Generate map.
@@ -128,7 +141,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                 HeightLimit = 10,
                 Size = new Vector2Int(100, 100)
             };
-            var map = mapGenerator.Generate(0, cancellationToken);
+            var map = await mapGenerator.GenerateAsync(0, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
             // Generate unit system.
@@ -136,33 +149,12 @@ namespace NewWorld.Battle.Controllers.Battlefield {
                 Map = map.Presentation,
                 UnitCount = 60
             };
-            var unitSystem = unitSystemGenerator.Generate(0, cancellationToken);
+            var unitSystem = await unitSystemGenerator.GenerateAsync(0, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
             // Assemble core.
             var core = new BattlefieldCore(map, unitSystem);
             return core;
-        }
-
-        private void CancelCoreGeneration() {
-            if (coreGenerationCancellation != null) {
-                coreGenerationCancellation.Cancel();
-                coreGenerationCancellation = null;
-                coreGenerationTask = null;
-            }
-        }
-
-
-        // Built status check.
-
-        private void UpdateIfBuilt() {
-            if (FinishedBuilding) {
-                return;
-            }
-            if (core != null && map.FinishedBuilding && unitSystem.FinishedBuilding) {
-                loadingStatus = "Ready!";
-                SetFinishedBuilding();
-            }
         }
 
 

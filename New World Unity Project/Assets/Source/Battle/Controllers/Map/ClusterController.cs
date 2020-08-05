@@ -56,7 +56,7 @@ namespace NewWorld.Battle.Controllers.Map {
 
         // Tasks.
         private Task<(float[,], bool[,])> heightmapAndHolemapGeneration = null;
-        private CancellationTokenSource heightmapAndHolemapCancellation = null;
+        private readonly CancellationTokenSource taskCancellation = new CancellationTokenSource();
 
 
         // Properties.
@@ -84,33 +84,36 @@ namespace NewWorld.Battle.Controllers.Map {
 
         private void LateUpdate() {
 
+            // Check if building progress.
             if (StartedBuilding && !FinishedBuilding) {
-
-                // Check if terrain data generation is on.
                 if (heightmapAndHolemapGeneration != null && heightmapAndHolemapGeneration.IsCompleted) {
+
+                    // Set heightmap and holemap.
+                    (var heightmap, var holemap) = heightmapAndHolemapGeneration.Result;
+                    heightmapAndHolemapGeneration = null;
+                    terrain.terrainData.SetHoles(0, 0, holemap);
+                    terrain.terrainData.SetHeights(0, 0, heightmap);
 
                     // Enable components.
                     terrain.enabled = true;
                     terrainCollider.enabled = true;
-
-                    // Set heightmap and holemap.
-                    (var heightmap, var holemap) = heightmapAndHolemapGeneration.Result;
-                    terrain.terrainData.SetHoles(0, 0, holemap);
-                    terrain.terrainData.SetHeights(0, 0, heightmap);
-                    CancelHeightmapAndHolemapGeneration();
 
                     gameObject.name = $"Cluster {startingPosition}";
 
                     SetFinishedBuilding();
 
                 }
-
             }
 
         }
 
         private protected override void OnDestroy() {
-            CancelHeightmapAndHolemapGeneration();
+
+            // Cancel tasks.
+            if (!taskCancellation.IsCancellationRequested) {
+                taskCancellation.Cancel();
+            }
+
             base.OnDestroy();
         }
 
@@ -134,60 +137,50 @@ namespace NewWorld.Battle.Controllers.Map {
             transform.localRotation = Quaternion.identity;
 
             // Start generating terrain data.
-            int holemapResolution = terrain.terrainData.holesResolution;
-            int heightmapResolution = terrain.terrainData.heightmapResolution;
-            var clusterSize = Size;
-            CancelHeightmapAndHolemapGeneration();
-            heightmapAndHolemapCancellation = new CancellationTokenSource();
-            var cancellationToken = heightmapAndHolemapCancellation.Token;
-            heightmapAndHolemapGeneration = Task.Run(() =>
-                GenerateHeightmapAndHolemap(heightmapResolution, holemapResolution, clusterSize, cancellationToken));
+            heightmapAndHolemapGeneration = GenerateHeightmapAndHolemapAsync(
+                terrain.terrainData.heightmapResolution, terrain.terrainData.holesResolution, Size, taskCancellation.Token);
 
         }
 
-        private (float[,], bool[,]) GenerateHeightmapAndHolemap(
+        private async Task<(float[,], bool[,])> GenerateHeightmapAndHolemapAsync(
             int heightmapResolution, int holemapResolution, Vector2Int clusterSize, CancellationToken cancellationToken) {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            // Initialize maps.
-            Vector3 startingPoint = new Vector3(startingPosition.x - 0.5f, 0, startingPosition.y - 0.5f);
-            var heightmap = new float[heightmapResolution, heightmapResolution]; // [0; 1] as height / heightLimit
-            var holemap = new bool[holemapResolution, holemapResolution]; // false if hole, true if surface
-            foreach (var holeIndex in Enumerables.InRange2(holemapResolution)) {
-                holemap[holeIndex.x, holeIndex.y] = true;
-            }
-            cancellationToken.ThrowIfCancellationRequested();
+            float[,] heightmap = null;
+            bool[,] holemap = null;
 
-            // Set heights.
-            foreach (var pointIndex in Enumerables.InRange2(heightmapResolution)) {
-                var localPoint = (Vector2) pointIndex / (heightmapResolution - 1) * clusterSize;
-                float height = presentation.GetHeight(startingPoint + new Vector3(localPoint.x, 0, localPoint.y));
-                if (height != float.NegativeInfinity) {
-                    heightmap[pointIndex.y, pointIndex.x] = height / presentation.HeightLimit; // swap x and y!
-                } else {
-                    foreach (var difference in Enumerables.InRange2(2)) {
-                        var holeIndex = pointIndex - difference;
-                        if (Enumerables.IsInRange2(holeIndex, holemapResolution)) {
-                            holemap[holeIndex.y, holeIndex.x] = false; // swap x and y!
-                        }
-                    }
+            await Task.Run(() => {
+
+                // Initialize maps.
+                Vector3 startingPoint = new Vector3(startingPosition.x - 0.5f, 0, startingPosition.y - 0.5f);
+                heightmap = new float[heightmapResolution, heightmapResolution]; // [0; 1] as height / heightLimit
+                holemap = new bool[holemapResolution, holemapResolution]; // false if hole, true if surface
+                foreach (var holeIndex in Enumerables.InRange2(holemapResolution)) {
+                    holemap[holeIndex.x, holeIndex.y] = true;
                 }
                 cancellationToken.ThrowIfCancellationRequested();
-            }
+
+                // Set heights.
+                foreach (var pointIndex in Enumerables.InRange2(heightmapResolution)) {
+                    var localPoint = (Vector2) pointIndex / (heightmapResolution - 1) * clusterSize;
+                    float height = presentation.GetHeight(startingPoint + new Vector3(localPoint.x, 0, localPoint.y));
+                    if (height != float.NegativeInfinity) {
+                        heightmap[pointIndex.y, pointIndex.x] = height / presentation.HeightLimit; // swap x and y!
+                    } else {
+                        foreach (var difference in Enumerables.InRange2(2)) {
+                            var holeIndex = pointIndex - difference;
+                            if (Enumerables.IsInRange2(holeIndex, holemapResolution)) {
+                                holemap[holeIndex.y, holeIndex.x] = false; // swap x and y!
+                            }
+                        }
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+
+            });
 
             return (heightmap, holemap);
-        }
-
-
-        // Support method.
-
-        private void CancelHeightmapAndHolemapGeneration() {
-            if (heightmapAndHolemapCancellation != null) {
-                heightmapAndHolemapCancellation.Cancel();
-                heightmapAndHolemapCancellation = null;
-                heightmapAndHolemapGeneration = null;
-            }
         }
 
 

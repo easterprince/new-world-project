@@ -26,7 +26,7 @@ namespace NewWorld.Battle.Controllers.UI.Selection {
         public CameraController MainCamera {
             get => mainCamera;
             set {
-                ValidateBeingNotFixed();
+                ValidateBeingNotStarted();
                 mainCamera = value;
             }
         }

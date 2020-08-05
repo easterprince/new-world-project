@@ -30,7 +30,7 @@ namespace NewWorld.Battle.Controllers.UI.Selection {
         public SelectionController MainSelection {
             get => mainSelection;
             set {
-                ValidateBeingNotFixed();
+                ValidateBeingNotStarted();
                 mainSelection = value;
             }
         }

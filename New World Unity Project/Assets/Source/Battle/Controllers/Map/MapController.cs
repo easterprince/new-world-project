@@ -32,7 +32,7 @@ namespace NewWorld.Battle.Controllers.Map {
         public GameObject ClustersObject {
             get => clustersObject;
             set {
-                ValidateBeingNotFixed();
+                ValidateBeingNotStarted();
                 clustersObject = value;
             }
         }
