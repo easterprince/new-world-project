@@ -32,6 +32,8 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
         // Tasks.
         private Task<BattlefieldCore> coreGenerationTask = null;
+        private object coreGenerationConditionLock = new object();
+        private string coreGenerationCondition = null;
         private readonly CancellationTokenSource taskCancellation = new CancellationTokenSource();
 
 
@@ -72,8 +74,13 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
             // Start generating core.
             SetStartedBuilding();
-            loadingStatus = "Generating game data...";
-            coreGenerationTask = GenerateCoreAsync(taskCancellation.Token);
+            coreGenerationCondition = "Generating game data...";
+            var progress = new Progress<string>(condition => {
+                lock (coreGenerationConditionLock) {
+                    coreGenerationCondition = condition;
+                }
+            });
+            coreGenerationTask = GenerateCoreAsync(progress, taskCancellation.Token);
 
         }
 
@@ -87,8 +94,11 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             }
 
             // Check core generation progress.
-            if (StartedBuilding && !FinishedBuilding) {
-                if (coreGenerationTask != null && coreGenerationTask.IsCompleted) {
+            if (StartedBuilding && !FinishedBuilding && coreGenerationTask != null) {
+                lock (coreGenerationConditionLock) {
+                    loadingStatus = coreGenerationCondition;
+                }
+                if (coreGenerationTask.IsCompleted) {
 
                     // Get task result.
                     core = coreGenerationTask.Result;
@@ -133,10 +143,11 @@ namespace NewWorld.Battle.Controllers.Battlefield {
 
         // Core generation.
 
-        private static async Task<BattlefieldCore> GenerateCoreAsync(CancellationToken cancellationToken) {
+        private static async Task<BattlefieldCore> GenerateCoreAsync(IProgress<string> progress, CancellationToken cancellationToken) {
             cancellationToken.ThrowIfCancellationRequested();
 
             // Generate map.
+            progress.Report("Generating map...");
             var mapGenerator = new FullOfHolesMapGenerator() {
                 HeightLimit = 10,
                 Size = new Vector2Int(100, 100)
@@ -145,10 +156,12 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             cancellationToken.ThrowIfCancellationRequested();
 
             // Generate layout.
+            progress.Report("Generating layout...");
             var layout = await LayoutCore.CreateLayoutAsync(map.Presentation, 5, 0.3f, 0.1f, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
             // Generate unit system.
+            progress.Report("Generating units...");
             var unitSystemGenerator = new UniformUnitSystemGenerator() {
                 Map = map.Presentation,
                 UnitCount = 60
@@ -157,6 +170,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             cancellationToken.ThrowIfCancellationRequested();
 
             // Assemble core.
+            progress.Report("Finishing game data generation...");
             var core = new BattlefieldCore(map, layout, unitSystem);
             return core;
         }
