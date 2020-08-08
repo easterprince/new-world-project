@@ -1,4 +1,5 @@
-﻿using NewWorld.Battle.Cores.Map;
+﻿using NewWorld.Battle.Cores.Layout;
+using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities.Events;
 using System;
@@ -17,14 +18,17 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         // Subcores.
         private readonly MapCore map;
+        private readonly LayoutCore layout;
         private readonly UnitSystemCore unitSystem;
 
 
         // Constructors.
 
-        public BattlefieldCore(MapCore map, UnitSystemCore unitSystem) {
+        public BattlefieldCore(MapCore map, LayoutCore layout, UnitSystemCore unitSystem) {
             this.map = map?.Clone() ?? throw new ArgumentNullException(nameof(map));
             this.map.Connect(Presentation);
+            this.layout = layout?.Clone() ?? throw new ArgumentNullException(nameof(layout));
+            this.layout.Connect(Presentation);
             this.unitSystem = unitSystem?.Clone() ?? throw new ArgumentNullException(nameof(unitSystem));
             this.unitSystem.Connect(Presentation);
         }
@@ -32,6 +36,8 @@ namespace NewWorld.Battle.Cores.Battlefield {
         public BattlefieldCore(BattlefieldCore other) {
             map = other.map.Clone();
             map.Connect(Presentation);
+            layout = other.layout.Clone();
+            layout.Connect(Presentation);
             unitSystem = other.unitSystem.Clone();
             unitSystem.Connect(Presentation);
         }
@@ -49,6 +55,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
         }
 
         public MapPresentation Map => map.Presentation;
+        public LayoutPresentation Layout => layout.Presentation;
         public UnitSystemPresentation UnitSystem => unitSystem.Presentation;
         public sealed override BattlefieldPresentation Context => Presentation;
 

@@ -71,6 +71,22 @@ namespace NewWorld.Utilities {
         }
 
 
+        // Index.
+
+        public static IEnumerable<Vector2Int> Index<T>(T[,] array) {
+            Vector2Int vector = Vector2Int.zero;
+            for (vector.x = 0; vector.x < array.GetLength(0); ++vector.x) {
+                for (vector.y = 0; vector.y < array.GetLength(1); ++vector.y) {
+                    yield return vector;
+                }
+            }
+        }
+
+        public static bool IsIndex<T>(Vector2Int index, T[,] array) {
+            return index.x >= 0 && index.y >= 0 && index.x < array.GetLength(0) && index.y < array.GetLength(1);
+        }
+
+
         // Vector2Int.
 
         public static IEnumerable<Vector2Int> InSegment2(int finish) {

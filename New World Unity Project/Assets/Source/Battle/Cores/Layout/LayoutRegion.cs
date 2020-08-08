@@ -5,12 +5,13 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Layout {
 
-    public partial class LayoutRegion {
+    public partial class LayoutRegion : IWeightedGraphVertex<LayoutRegion, float> {
 
         // Fields.
 
         private readonly Vector2Int center;
-        private readonly Dictionary<LayoutRegion, float> adjacency;
+        private readonly List<LayoutNode> nodes = new List<LayoutNode>();
+        private readonly Dictionary<LayoutRegion, float> adjacency = new Dictionary<LayoutRegion, float>();
 
         // Wrapper.
         private readonly RegionWrapper wrapper;
@@ -19,9 +20,9 @@ namespace NewWorld.Battle.Cores.Layout {
         // Properties.
 
         public Vector2Int Center => center;
-
+        public IEnumerable<LayoutNode> Nodes => nodes.AsReadOnly();
         public IReadOnlyDictionary<LayoutRegion, float> Adjacency => new ReadOnlyDictionary<LayoutRegion, float>(adjacency);
-
+        IEnumerable<KeyValuePair<LayoutRegion, float>> IWeightedGraphVertex<LayoutRegion, float>.Adjacency => Adjacency;
         public RegionWrapper Wrapper => wrapper;
 
 
@@ -29,19 +30,22 @@ namespace NewWorld.Battle.Cores.Layout {
 
         public LayoutRegion(Vector2Int center) {
             this.center = center;
-            adjacency = new Dictionary<LayoutRegion, float>();
             wrapper = new RegionWrapper(this);
         }
 
 
         // Methods.
 
-        public float GetHeuristic(LayoutRegion destination) {
-            return (center - destination.center).magnitude;
+        public float GetDistance(LayoutRegion other) {
+            return (center - other.center).magnitude;
         }
 
         public void AddAdjacent(LayoutRegion adjacent) {
             adjacency[adjacent] = (adjacent.center - center).magnitude;
+        }
+
+        public void AddNode(LayoutNode node) {
+            nodes.Add(node);
         }
 
 

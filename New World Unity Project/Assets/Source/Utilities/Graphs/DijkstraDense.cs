@@ -2,37 +2,34 @@
 
 namespace NewWorld.Utilities.Graphs {
     
-    public static class AStarDense {
+    public class DijkstraDense {
 
         private class Report<TVertex> {
 
             public float Traversed { get; set; }
-            public float Heuristic { get; set; }
             public TVertex Predecessor { get; set; }
             public bool Finalized { get; set; }
-
-            public float Cost => Traversed + Heuristic;
 
         }
 
 
-        public static List<TVertex> TryFindShortestPath<TVertex>(TVertex start, TVertex finish, HeuristicDelegate<TVertex> heuristic)
+        public static Dictionary<TVertex, float> FindAllReachable<TVertex>(TVertex origin, float distanceLimit)
             where TVertex : class, IWeightedGraphVertex<TVertex, float> {
 
-            if (start == null || finish == null) {
-                return null;
+            var reachable = new Dictionary<TVertex, float>();
+            if (origin == null || distanceLimit < 0) {
+                return reachable;
             }
 
             // Initialize collections.
             var reports = new Dictionary<TVertex, Report<TVertex>>();
             var toFinalize = new HashSet<TVertex>();
-            var startReport = new Report<TVertex> {
+            var originReport = new Report<TVertex> {
                 Traversed = 0,
-                Heuristic = heuristic(start),
                 Predecessor = null
             };
-            reports[start] = startReport;
-            toFinalize.Add(start);
+            reports[origin] = originReport;
+            toFinalize.Add(origin);
 
             // Build partial paths.
             while (toFinalize.Count > 0) {
@@ -42,12 +39,12 @@ namespace NewWorld.Utilities.Graphs {
                 float leastCost = float.PositiveInfinity;
                 foreach (var otherVertex in toFinalize) {
                     var otherReport = reports[otherVertex];
-                    if (otherReport.Cost < leastCost) {
+                    if (otherReport.Traversed < leastCost) {
                         currentVertex = otherVertex;
-                        leastCost = otherReport.Cost;
+                        leastCost = otherReport.Traversed;
                     }
                 }
-                if (currentVertex == null) {
+                if (currentVertex == null || leastCost > distanceLimit) {
                     break;
                 }
                 toFinalize.Remove(currentVertex);
@@ -55,16 +52,15 @@ namespace NewWorld.Utilities.Graphs {
                 // Update costs of adjacent vertices.
                 var currentReport = reports[currentVertex];
                 currentReport.Finalized = true;
-                if (currentVertex == finish) {
-                    break;
-                }
                 foreach (var vertexAndWeight in currentVertex.Adjacency) {
                     var otherVertex = vertexAndWeight.Key;
                     float traversed = currentReport.Traversed + vertexAndWeight.Value;
+                    if (traversed > distanceLimit) {
+                        continue;
+                    }
                     if (!reports.TryGetValue(otherVertex, out var otherReport)) {
                         otherReport = new Report<TVertex>() {
                             Traversed = traversed,
-                            Heuristic = heuristic(otherVertex),
                             Predecessor = currentVertex
                         };
                         reports[otherVertex] = otherReport;
@@ -82,21 +78,14 @@ namespace NewWorld.Utilities.Graphs {
 
             }
 
-            // Return resulting path.
-            if (!reports.ContainsKey(finish)) {
-                return null;
+            // Return reachable vertices.
+            foreach (var vertexAndReport in reports) {
+                reachable[vertexAndReport.Key] = vertexAndReport.Value.Traversed;
             }
-            var path = new List<TVertex>();
-            var pathVertex = finish;
-            path.Add(pathVertex);
-            while (pathVertex != null) {
-                pathVertex = reports[pathVertex].Predecessor;
-                path.Add(pathVertex);
-            }
-            return path;
+            return reachable;
         }
 
-    
+
     }
 
 }

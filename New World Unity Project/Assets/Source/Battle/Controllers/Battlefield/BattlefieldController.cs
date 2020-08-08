@@ -1,9 +1,9 @@
 ﻿using NewWorld.Battle.Controllers.Map;
-using NewWorld.Battle.Controllers.UI.Loading;
 using NewWorld.Battle.Controllers.UnitSystem;
 using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Generation.Map;
 using NewWorld.Battle.Cores.Generation.Units;
+using NewWorld.Battle.Cores.Layout;
 using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
@@ -144,6 +144,10 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             var map = await mapGenerator.GenerateAsync(0, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
+            // Generate layout.
+            var layout = await LayoutCore.CreateLayoutAsync(map.Presentation, 5, 0.3f, 0.1f, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
             // Generate unit system.
             var unitSystemGenerator = new UniformUnitSystemGenerator() {
                 Map = map.Presentation,
@@ -153,7 +157,7 @@ namespace NewWorld.Battle.Controllers.Battlefield {
             cancellationToken.ThrowIfCancellationRequested();
 
             // Assemble core.
-            var core = new BattlefieldCore(map, unitSystem);
+            var core = new BattlefieldCore(map, layout, unitSystem);
             return core;
         }
 

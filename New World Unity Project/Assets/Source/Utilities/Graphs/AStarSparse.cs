@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine.UIElements;
 
 namespace NewWorld.Utilities.Graphs {
     
@@ -30,8 +29,8 @@ namespace NewWorld.Utilities.Graphs {
         }
 
 
-        public static List<TVertex> TryFindShortestPath<TVertex>(TVertex start, TVertex finish)
-            where TVertex : class, ILocatedGraphVertex<TVertex> {
+        public static List<TVertex> TryFindShortestPath<TVertex>(TVertex start, TVertex finish, HeuristicDelegate<TVertex> heuristic)
+            where TVertex : class, IWeightedGraphVertex<TVertex, float> {
 
             if (start == null || finish == null) {
                 return null;
@@ -45,7 +44,7 @@ namespace NewWorld.Utilities.Graphs {
                 Vertex = start,
                 Index = unusedIndex++,
                 Traversed = 0,
-                Heuristic = start.GetHeuristic(finish),
+                Heuristic = heuristic(start),
                 Predecessor = null
             };
             reports[start] = startReport;
@@ -75,7 +74,7 @@ namespace NewWorld.Utilities.Graphs {
                             Vertex = otherVertex,
                             Index = unusedIndex++,
                             Traversed = traversed,
-                            Heuristic = otherVertex.GetHeuristic(finish),
+                            Heuristic = heuristic(otherVertex),
                             Predecessor = currentVertex
                         };
                         reports[otherVertex] = otherReport;

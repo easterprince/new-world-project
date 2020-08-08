@@ -8,7 +8,7 @@ namespace NewWorld.Battle.Cores.Layout {
 
         // Wrapper.
 
-        public class RegionWrapper : ClassWrapper<LayoutRegion>, ILocatedGraphVertex<RegionWrapper> {
+        public class RegionWrapper : ClassWrapper<LayoutRegion>, IWeightedGraphVertex<RegionWrapper, float> {
 
             // Constructor.
 
@@ -28,7 +28,7 @@ namespace NewWorld.Battle.Cores.Layout {
 
             // Methods.
 
-            public float GetHeuristic(RegionWrapper destination) => Wrapped.GetHeuristic(destination.Wrapped);
+            public float GetDistance(RegionWrapper destination) => Wrapped.GetDistance(destination.Wrapped);
 
 
         }

@@ -1,4 +1,5 @@
-﻿using NewWorld.Battle.Cores.Map;
+﻿using NewWorld.Battle.Cores.Layout;
+using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
 
@@ -16,6 +17,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
         public float GameTime => Presented.GameTime;
         public float GameTimeDelta => Presented.GameTimeDelta;
         public MapPresentation Map => Presented.Map;
+        public LayoutPresentation Layout => Presented.Layout;
         public UnitSystemPresentation UnitSystem => Presented.UnitSystem;
 
 
