@@ -1,6 +1,6 @@
 ﻿using NewWorld.Utilities;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -41,7 +41,9 @@ namespace NewWorld.Battle.Cores.Layout {
             foreach (var position in Enumerables.Index(visionPaths)) {
                 TrackVision(position);
             }
-        
+
+            /*WriteDebugInFile();*/
+
         }
 
 
@@ -118,7 +120,7 @@ namespace NewWorld.Battle.Cores.Layout {
                 var distances = new float[corners.Length];
                 int lastNonZeroSign = 0;
                 for (int i = 0; i < corners.Length; ++i) {
-                    distances[i] = (destination.y * passedPosition.x - destination.x * passedPosition.y) / pathDistance;
+                    distances[i] = (destination.y * corners[i].x - destination.x * corners[i].y) / pathDistance;
                     if (distances[i] != 0) {
                         int sign = (int) Mathf.Sign(distances[i]);
                         if (lastNonZeroSign == 0) {
@@ -149,6 +151,39 @@ namespace NewWorld.Battle.Cores.Layout {
 
             }
 
+        }
+
+
+        // Debug.
+
+        private static int written = 0;
+
+        private void WriteDebugInFile() {
+            int index = ++written;
+            var output = File.CreateText($"stencil{index}.txt");
+            output.WriteLine("STENCIL");
+            output.WriteLine($"visionRadius = {visionRadius}");
+            output.WriteLine($"bodyRadius = {bodyRadius}");
+            output.WriteLine($"toleranceRadius = {toleranceRadius}");
+            output.WriteLine();
+            foreach (var destination in Enumerables.Index(visionPaths)) {
+                var path = visionPaths[destination.x, destination.y];
+                if (path != null) {
+                    var passed = new bool[destination.x + 1, destination.y + 1];
+                    foreach (var position in path) {
+                        passed[position.x, position.y] = true;
+                    }
+                    output.WriteLine($"{destination}");
+                    foreach (var position in Enumerables.Index(passed)) {
+                        output.Write(passed[position.x, position.y] ? "1" : "0");
+                        if (position.y == destination.y) {
+                            output.WriteLine();
+                        }
+                    }
+                    output.WriteLine();
+                }
+            }
+            output.Close();
         }
 
 
