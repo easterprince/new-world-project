@@ -1,4 +1,6 @@
 ﻿using NewWorld.Battle.Cores.Unit.Abilities;
+using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using System.Collections.Generic;
 
@@ -6,11 +8,21 @@ namespace NewWorld.Battle.Cores.Unit.Intelligence {
 
     public class IntelligenceModule : UnitModuleBase<IntelligenceModule, IntelligencePresentation, UnitPresentation> {
 
+        // Fields.
+
+        private IBehaviourModule currentBehaviour = null;
+
+
         // Constructors.
 
         public IntelligenceModule() {}
 
-        public IntelligenceModule(IntelligenceModule other) {}
+        public IntelligenceModule(IntelligenceModule other) {
+            if (other.currentBehaviour != null) {
+                currentBehaviour = other.currentBehaviour.Clone();
+                currentBehaviour.Connect(Presentation);
+            }
+        }
 
 
         // Cloning.
@@ -27,9 +39,25 @@ namespace NewWorld.Battle.Cores.Unit.Intelligence {
         }
 
 
-        // Updating.
+        // Methods.
 
-        public void Act() {}
+        public void Act() {
+            if (currentBehaviour != null) {
+                currentBehaviour.Act(out var goalStatus);
+                if (goalStatus != GoalStatus.Active) {
+                    currentBehaviour = null;
+                }
+            }
+        }
+
+        public void SetGoal(RelocationGoal goal) {
+            var newBehaviour = new RelocationBehaviour {
+                Goal = goal
+            };
+            currentBehaviour?.Disconnect();
+            currentBehaviour = newBehaviour;
+            currentBehaviour.Connect(Presentation);
+        }
 
 
     }
