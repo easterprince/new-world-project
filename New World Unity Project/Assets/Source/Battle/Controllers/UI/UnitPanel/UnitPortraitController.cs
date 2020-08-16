@@ -9,6 +9,11 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
 
     public class UnitPortraitController : MonoBehaviour, IPointerClickHandler {
 
+        // Event types.
+
+        public class PointerEvent : ControllerEvent<PointerEventData> {}
+
+
         // Fields.
 
         private UnitController followed;
@@ -22,12 +27,12 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         private GameObject cameraView;
 
         // Events.
-        private readonly ControllerEvent clickEvent = new ControllerEvent();
+        private readonly PointerEvent clickEvent = new PointerEvent();
 
 
         // Properties.
 
-        public ControllerEvent.EventWrapper ClickEvent => clickEvent.Wrapper;
+        public PointerEvent.EventWrapper ClickEvent => clickEvent.Wrapper;
 
         public UnitController Followed {
             get => followed;
@@ -65,7 +70,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         // Event handlers.
 
         public void OnPointerClick(PointerEventData eventData) {
-            clickEvent.Invoke();
+            clickEvent.Invoke(eventData);
         }
 
 

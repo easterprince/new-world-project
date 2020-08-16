@@ -9,12 +9,12 @@ namespace NewWorld.Battle.Controllers.UI {
 
         // Event types.
 
-        public class PointerEvent : ControllerEvent<PointerEventData> { }
+        public class PointerEvent : ControllerEvent<PointerEventData> {}
 
 
         // Fields.
 
-        private PointerEvent clickEvent = new PointerEvent();
+        private readonly PointerEvent clickEvent = new PointerEvent();
 
 
         // Properties.

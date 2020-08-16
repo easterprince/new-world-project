@@ -64,27 +64,37 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         // Event handlers.
 
         private void ProcessInterceptorClick(PointerEventData pointerEventData) {
-            var pointerPosition = pointerEventData.position;
-            var pointerRay = mainCamera.Camera.ScreenPointToRay(pointerPosition);
-            var layerMask = LayerMask.GetMask("Units");
-            Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
-            var colliderHit = raycastHit.collider;
-            if (colliderHit != null) {
-                selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
-            } else {
-                selectedUnit = null;
+
+            // Process unit selection.
+            if (pointerEventData.button == PointerEventData.InputButton.Left) {
+                var pointerPosition = pointerEventData.position;
+                var pointerRay = mainCamera.Camera.ScreenPointToRay(pointerPosition);
+                var layerMask = LayerMask.GetMask("Units");
+                Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
+                var colliderHit = raycastHit.collider;
+                if (colliderHit != null) {
+                    selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
+                } else {
+                    selectedUnit = null;
+                }
+                portrait.Followed = selectedUnit;
+                selectionSystem.MainSelected = selectedUnit;
             }
-            portrait.Followed = selectedUnit;
-            selectionSystem.MainSelected = selectedUnit;
+
         }
 
-        private void ProcessPortraitClick() {
-            if (selectedUnit == null) {
-                return;
+        private void ProcessPortraitClick(PointerEventData pointerEventData) {
+
+            // Process camera relocation.
+            if (pointerEventData.button == PointerEventData.InputButton.Left) {
+                if (selectedUnit == null) {
+                    return;
+                }
+                var location = mainCamera.CurrentLocation;
+                location.ViewedPosition = selectedUnit.Center;
+                mainCamera.CurrentLocation = location;
             }
-            var location = mainCamera.CurrentLocation;
-            location.ViewedPosition = selectedUnit.Center;
-            mainCamera.CurrentLocation = location;
+
         }
 
 
