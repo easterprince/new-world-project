@@ -12,8 +12,8 @@ namespace NewWorld.Battle.Cores.Layout {
 
         // Informational methods.
 
-        public List<Vector2Int> TryFindShortestPath(Vector2Int origin, Vector2Int distance) =>
-            Presented.TryFindShortestPath(origin, distance);
+        public List<Vector2Int> TryFindShortestPath(Vector2Int origin, Vector2Int destination) =>
+            Presented.TryFindShortestPath(origin, destination);
 
 
     }

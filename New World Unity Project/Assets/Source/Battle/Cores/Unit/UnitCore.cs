@@ -3,6 +3,7 @@ using NewWorld.Battle.Cores.Unit.Abilities;
 using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.AbilityCollection;
+using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Others;
@@ -188,6 +189,13 @@ namespace NewWorld.Battle.Cores.Unit {
                 throw new ArgumentNullException();
             }
             abilityCollection.UseAbility(motionUsage);
+        }
+
+        public void SetGoal(RelocationGoal goal) {
+            if (goal is null) {
+                throw new ArgumentNullException();
+            }
+            intelligence.SetGoal(goal);
         }
 
 

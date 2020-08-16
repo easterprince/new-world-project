@@ -1,6 +1,8 @@
 ﻿using NewWorld.Battle.Cores.Unit.Abilities;
 using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
+using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Durability;
@@ -11,7 +13,8 @@ namespace NewWorld.Battle.Cores.Unit {
     public partial class UnitCore :
         IResponsive<ConditionCausingAction>, IResponsive<ConditionCancellingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction>,
-        IResponsive<AttackUsageAction>, IResponsive<MotionUsageAction> {
+        IResponsive<AttackUsageAction>, IResponsive<MotionUsageAction>,
+        IResponsive<GoalSettingAction<RelocationGoal>> {
 
         // Action processing.
 
@@ -51,11 +54,15 @@ namespace NewWorld.Battle.Cores.Unit {
         }
 
         public void ProcessAction(AttackUsageAction action) {
-            UseAbility(action);
+            UseAbility(action ?? throw new ArgumentNullException(nameof(action)));
         }
 
         public void ProcessAction(MotionUsageAction action) {
-            UseAbility(action);
+            UseAbility(action ?? throw new ArgumentNullException(nameof(action)));
+        }
+
+        public void ProcessAction(GoalSettingAction<RelocationGoal> action) {
+            intelligence.SetGoal(action?.Goal ?? throw new ArgumentNullException(nameof(action)));
         }
 
 
@@ -68,6 +75,7 @@ namespace NewWorld.Battle.Cores.Unit {
         public void PlanAction(ConditionCancellingAction action) => PlanAction(this, action);
         public void PlanAction(AttackUsageAction action) => PlanAction(this, action);
         public void PlanAction(MotionUsageAction action) => PlanAction(this, action);
+        public void PlanAction(GoalSettingAction<RelocationGoal> action) => PlanAction(this, action);
 
 
     }
