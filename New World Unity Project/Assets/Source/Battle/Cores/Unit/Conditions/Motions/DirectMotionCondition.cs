@@ -1,4 +1,5 @@
-﻿using NewWorld.Battle.Cores.Unit.Body;
+﻿using NewWorld.Battle.Cores.Map;
+using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
         // Static.
 
+        public float ToleratedDestinationOffset => 0.001f;
         public float ToleratedNodeOffset => 0.6f;
 
 
@@ -49,7 +51,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
             ValidateContext();
             Vector3 curPosition = Owner.Body.Position;
             Vector3 toMove = destination - curPosition;
-            if (toMove.magnitude <= ToleratedNodeOffset) {
+            if (toMove.magnitude <= ToleratedDestinationOffset) {
                 finished = true;
             }
             float willMove = speed * Context.GameTimeDelta;
@@ -60,8 +62,10 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
             Vector2Int curNodePosition = Context.UnitSystem[Owner];
             Vector2Int newNodePosition = Context.Map.GetNearestPosition(newPosition);
             if (curNodePosition != newNodePosition) {
-                Context.UnitSystem.PlanAction(new UnitMotionAction(Owner, newNodePosition));
-                float curNodeDistance = (new Vector2(curPosition.x, curPosition.z) - newNodePosition).magnitude;
+                if (Context.Map[newNodePosition].Type == MapNode.NodeType.Common) {
+                    Context.UnitSystem.PlanAction(new UnitMotionAction(Owner, newNodePosition));
+                }
+                float curNodeDistance = (new Vector2(newPosition.x, newPosition.z) - curNodePosition).magnitude;
                 if (curNodeDistance > ToleratedNodeOffset) {
                     return;
                 }

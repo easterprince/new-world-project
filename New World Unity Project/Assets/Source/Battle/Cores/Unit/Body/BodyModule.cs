@@ -107,7 +107,7 @@ namespace NewWorld.Battle.Cores.Unit.Body {
             }
 
             // Adjust rotation.
-            if (movement.AdjustRotation) {
+            if (movement.AdjustRotation && newPosition != position) {
                 rotation = Quaternion.LookRotation(newPosition - position);
             }
 

@@ -3,6 +3,7 @@ using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.Body;
+using NewWorld.Battle.Cores.Unit.Durability;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
 using System;
@@ -22,7 +23,15 @@ namespace NewWorld.Battle.Cores.Generation.Units {
             cancellationToken?.ThrowIfCancellationRequested();
 
             // Generate unit template.
-            var template = new UnitCore();
+            var template = new UnitCore(
+                body: new BodyModule() {
+                    CollidesWith = BodyModule.CollisionMode.Surface
+                },
+                durability: new DurabilityModule() {
+                    DurabilityLimit = 300,
+                    Durability = 250
+                }
+            );
             var attack = new DirectAttackAbility();
             template.AddAbility(attack);
             var motion = new DirectMotionAbility();

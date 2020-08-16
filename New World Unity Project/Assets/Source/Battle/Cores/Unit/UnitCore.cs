@@ -33,41 +33,32 @@ namespace NewWorld.Battle.Cores.Unit {
 
         // Constructors.
 
-        public UnitCore() {
+        public UnitCore(
+            BodyModule body = null,
+            DurabilityModule durability = null,
+            IConditionModule condition = null,
+            AbilityCollectionModule abilityCollection = null,
+            IntelligenceModule intelligence = null) {
 
             // Modules.
-            body = new BodyModule();
-            body.Connect(Presentation);
-            durability = new DurabilityModule();
-            durability.Connect(Presentation);
-            condition = new IdleCondition();
-            condition.Connect(Presentation);
-            abilityCollection = new AbilityCollectionModule();
-            abilityCollection.Connect(Presentation);
-            intelligence = new IntelligenceModule();
-            intelligence.Connect(Presentation);
-
-            // Other.
-            name = "Unit";
+            this.body = body?.Clone() ?? new BodyModule();
+            this.body.Connect(Presentation);
+            this.durability = durability?.Clone() ?? new DurabilityModule();
+            this.durability.Connect(Presentation);
+            this.condition = condition?.Clone() ?? new IdleCondition();
+            this.condition.Connect(Presentation);
+            this.abilityCollection = abilityCollection?.Clone() ?? new AbilityCollectionModule();
+            this.abilityCollection.Connect(Presentation);
+            this.intelligence = intelligence?.Clone() ?? new IntelligenceModule();
+            this.intelligence.Connect(Presentation);
 
         }
 
-        public UnitCore(UnitCore other) {
-
-            // Modules.
-            body = other.body.Clone();
-            body.Connect(Presentation);
-            durability = other.durability.Clone();
-            durability.Connect(Presentation);
-            condition = other.condition.Clone();
-            condition.Connect(Presentation);
-            abilityCollection = other.abilityCollection.Clone();
-            abilityCollection.Connect(Presentation);
-            intelligence = other.intelligence.Clone();
-            intelligence.Connect(Presentation);
+        public UnitCore(UnitCore other) :
+            this(other?.body, other?.durability, other?.condition, other?.abilityCollection, other?.intelligence) {
 
             // Other.
-            name = other.name;
+            name = other?.name ?? "Unit";
 
         }
 

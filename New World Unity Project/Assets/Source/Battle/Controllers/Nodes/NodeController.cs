@@ -51,7 +51,7 @@ namespace NewWorld.Battle.Controllers.Nodes {
                 position = value;
                 float y = 0;
                 if (map != null && map.Presentation != null) {
-                    y = map.Presentation[position].Height;
+                    y = Mathf.Max(map.Presentation[position].Height, 0);
                 }
                 transform.position = new Vector3(position.x, y, position.y);
                 name = $"Node ({position.x}, {position.y})";

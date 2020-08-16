@@ -101,7 +101,7 @@ namespace NewWorld.Utilities.Graphs {
             var path = new List<TVertex>();
             var pathVertex = finish;
             path.Add(pathVertex);
-            while (pathVertex != null) {
+            while (reports[pathVertex].Predecessor != null) {
                 pathVertex = reports[pathVertex].Predecessor;
                 path.Add(pathVertex);
             }

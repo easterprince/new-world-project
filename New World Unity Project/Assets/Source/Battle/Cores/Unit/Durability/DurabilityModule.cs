@@ -24,6 +24,9 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         }
 
         public DurabilityModule(DurabilityModule other) {
+            if (other is null) {
+                throw new ArgumentNullException(nameof(other));
+            }
             durabilityLimit = other.durabilityLimit;
             durability = other.durability;
         }
@@ -34,7 +37,7 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         public float DurabilityLimit {
             get => durabilityLimit;
             set {
-                durabilityLimit = Mathf.Max(durabilityLimit, 1);
+                durabilityLimit = Mathf.Max(value, 1);
                 Durability = durability;
             }
         }

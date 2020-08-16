@@ -1,8 +1,11 @@
 ﻿using NewWorld.Battle.Controllers.Cameras;
+using NewWorld.Battle.Controllers.Map;
 using NewWorld.Battle.Controllers.UI.Bars;
 using NewWorld.Battle.Controllers.UI.Selection;
 using NewWorld.Battle.Controllers.Unit;
 using NewWorld.Battle.Cores.Unit;
+using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Utilities;
 using System.Text;
 using TMPro;
@@ -79,6 +82,24 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
                 }
                 portrait.Followed = selectedUnit;
                 selectionSystem.MainSelected = selectedUnit;
+            }
+
+            // Process unit goal.
+            if (pointerEventData.button == PointerEventData.InputButton.Right) {
+                var pointerPosition = pointerEventData.position;
+                var pointerRay = mainCamera.Camera.ScreenPointToRay(pointerPosition);
+                var layerMask = LayerMask.GetMask("Terrain");
+                Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
+                var colliderHit = raycastHit.collider;
+                ClusterController cluster = null;
+                if (colliderHit != null) {
+                    cluster = colliderHit.transform.gameObject.GetComponent<ClusterController>();
+                }
+                if (cluster != null && cluster.Presentation != null && selectedUnit != null && selectedUnit.Presentation != null) {
+                    var destination = raycastHit.point;
+                    var action = new GoalSettingAction<RelocationGoal>(new RelocationGoal(destination));
+                    selectedUnit.Presentation.PlanAction(action);
+                }
             }
 
         }

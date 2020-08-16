@@ -63,12 +63,14 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
             var cloned = ability.Clone();
             abilities[cloned.Presentation] = cloned;
             attacks[cloned.Presentation] = cloned;
+            cloned.Connect(Presentation);
         }
 
         public void AddAbility(MotionAbility ability) {
             var cloned = ability.Clone();
             abilities[cloned.Presentation] = cloned;
             motions[cloned.Presentation] = cloned;
+            cloned.Connect(Presentation);
         }
 
 

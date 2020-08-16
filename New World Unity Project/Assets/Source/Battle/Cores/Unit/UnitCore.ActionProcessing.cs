@@ -22,12 +22,18 @@ namespace NewWorld.Battle.Cores.Unit {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
+            if (Context is null) {
+                return;
+            }
             CauseCondition(action.Condition);
         }
 
         public void ProcessAction(DamageCausingAction action) {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
+            }
+            if (Context is null) {
+                return;
             }
             CauseDamage(action.Damage);
         }
@@ -36,33 +42,60 @@ namespace NewWorld.Battle.Cores.Unit {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
-            body.Move(action);
+            if (Context is null) {
+                return;
+            }
+            Move(action);
         }
 
         public void ProcessAction(RotationAction action) {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
-            body.Rotate(action);
+            if (Context is null) {
+                return;
+            }
+            Rotate(action);
         }
 
         public void ProcessAction(ConditionCancellingAction action) {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
+            if (Context is null) {
+                return;
+            }
             CancelCondition();
         }
 
         public void ProcessAction(AttackUsageAction action) {
-            UseAbility(action ?? throw new ArgumentNullException(nameof(action)));
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (Context is null) {
+                return;
+            }
+            UseAbility(action);
         }
 
         public void ProcessAction(MotionUsageAction action) {
-            UseAbility(action ?? throw new ArgumentNullException(nameof(action)));
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (Context is null) {
+                return;
+            }
+            UseAbility(action);
         }
 
         public void ProcessAction(GoalSettingAction<RelocationGoal> action) {
-            intelligence.SetGoal(action?.Goal ?? throw new ArgumentNullException(nameof(action)));
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (Context is null) {
+                return;
+            }
+            SetGoal(action.Goal);
         }
 
 

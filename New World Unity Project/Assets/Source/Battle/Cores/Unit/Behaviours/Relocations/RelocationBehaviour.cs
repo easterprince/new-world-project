@@ -81,7 +81,6 @@ namespace NewWorld.Battle.Cores.Unit.Behaviours.Relocations {
                         goalStatus = GoalStatus.Impossible;
                         return;
                     }
-                    path.Reverse();
                     plannedPath = new Stack<Vector2Int>(path);
                 }
 

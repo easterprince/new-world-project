@@ -239,6 +239,9 @@ namespace NewWorld.Battle.Cores.Layout {
             }
             var nodePath = AStarSparse.TryFindShortestPath(
                 originNode.AsVision, destinationNode.AsVision, destinationNode.AsVision.CalculateDistance);
+            if (nodePath == null) {
+                return null;
+            }
             var path = new List<Vector2Int>(nodePath.ConvertAll((node) => node.Position));
             return path;
         }
