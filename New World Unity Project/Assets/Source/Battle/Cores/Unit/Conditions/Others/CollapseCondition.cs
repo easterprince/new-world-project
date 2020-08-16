@@ -47,7 +47,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         // Updating.
 
-        public override void Update() {
+        public override void Act() {
             ValidateContext();
             timeUntilExtinction = Mathf.Max(timeUntilExtinction - Context.GameTimeDelta, 0f);
             if (timeUntilExtinction == 0f) {

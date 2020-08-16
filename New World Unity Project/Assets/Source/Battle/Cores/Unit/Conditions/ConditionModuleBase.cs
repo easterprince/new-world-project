@@ -18,7 +18,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         // Updating.
 
-        public abstract void Update();
+        public abstract void Act();
 
         IConditionModule ICore<IConditionModule, IConditionPresentation>.Clone() => Clone();
 

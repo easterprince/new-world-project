@@ -45,7 +45,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
         // Updating.
 
-        public override void Update() {
+        public override void Act() {
             ValidateContext();
             Vector3 curPosition = Owner.Body.Position;
             Vector3 toMove = destination - curPosition;

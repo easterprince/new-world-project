@@ -75,7 +75,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
         // Updating.
 
-        public override void Update() {
+        public override void Act() {
             ValidateContext();
             UpdateRotation();
             accumulatedTime += Context.GameTimeDelta;

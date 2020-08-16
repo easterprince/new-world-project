@@ -106,6 +106,9 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             foreach (var unit in unitsToPositions.Keys) {
                 unit.Update();
             }
+            foreach (var unit in unitsToPositions.Keys) {
+                unit.Act();
+            }
         }
 
 

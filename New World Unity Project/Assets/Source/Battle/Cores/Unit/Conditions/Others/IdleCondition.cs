@@ -30,7 +30,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         // Updating.
 
-        public override void Update() {
+        public override void Act() {
             ValidateContext();
             Vector2Int setNodePosition = Context.UnitSystem[Owner];
             Vector2Int realNodePosition = Context.Map.GetNearestPosition(Owner.Body.Position);

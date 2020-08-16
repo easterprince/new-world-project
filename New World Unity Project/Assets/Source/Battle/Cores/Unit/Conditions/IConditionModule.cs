@@ -7,7 +7,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         // Properties.
 
-        void Update();
+        void Act();
 
 
     }

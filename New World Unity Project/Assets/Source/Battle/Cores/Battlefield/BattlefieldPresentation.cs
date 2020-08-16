@@ -23,7 +23,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         // Methods.
 
-        public void ExecuteAfterUpdate(Action action) => Presented.ExecuteAfterUpdate(action);
+        public void ExecuteAfterUpdate(Action action) => Presented.ExecuteLater(action);
 
 
     }

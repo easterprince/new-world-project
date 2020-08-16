@@ -78,15 +78,17 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         public void Update(float gameTimeDelta) {
 
-            // Game time update.
+            // Update game time.
             this.gameTimeDelta = gameTimeDelta;
             gameTime += gameTimeDelta;
 
-            // Update of game entities.
-            actionQueue.Clear();
+            // Execute externally obtained actions.
+            actionQueue.RunAll();
+
+            // Update game entities.
             unitSystem.Update();
 
-            // Execution of planned game actions.
+            // Execute internally obtained actions.
             actionQueue.RunAll();
 
         }
@@ -94,7 +96,7 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         // Action planning.
 
-        public void ExecuteAfterUpdate(Action action) {
+        public void ExecuteLater(Action action) {
             actionQueue.Enqueue(action);
         }
 

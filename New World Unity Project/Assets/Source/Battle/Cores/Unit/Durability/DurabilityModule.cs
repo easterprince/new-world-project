@@ -63,7 +63,7 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         // Updating.
 
-        public void Update() {
+        public void Act() {
             ValidateContext();
             if (durability < 1f) {
                 var action = new ConditionCausingAction(new CollapseCondition());

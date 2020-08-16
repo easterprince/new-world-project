@@ -109,19 +109,24 @@ namespace NewWorld.Battle.Cores.Unit {
             // Update body.
             body.Update();
 
-            // Update durability.
-            durability.Update();
+        }
+
+        public void Act() {
+            ValidateContext();
+
+            // Let durability act.
+            durability.Act();
+
+            // Let intelligence act.
+            intelligence.Act();
+
+            // Let condition act.
+            condition.Act();
             if (condition.Finished) {
                 condition.Disconnect();
                 condition = new IdleCondition();
                 condition.Connect(Presentation);
             }
-
-            // Update condition.
-            condition.Update();
-
-            // Update intelligence.
-            intelligence.Act();
 
         }
 
