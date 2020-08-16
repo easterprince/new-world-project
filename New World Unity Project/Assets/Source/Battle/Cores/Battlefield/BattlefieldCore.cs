@@ -78,12 +78,12 @@ namespace NewWorld.Battle.Cores.Battlefield {
 
         public void Update(float gameTimeDelta) {
 
+            // Execute externally obtained actions.
+            actionQueue.RunAll();
+
             // Update game time.
             this.gameTimeDelta = gameTimeDelta;
             gameTime += gameTimeDelta;
-
-            // Execute externally obtained actions.
-            actionQueue.RunAll();
 
             // Update game entities.
             unitSystem.Update();
