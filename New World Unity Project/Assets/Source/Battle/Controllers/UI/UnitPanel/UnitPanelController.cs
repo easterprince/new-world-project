@@ -24,10 +24,6 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         // Steady references.
         [Header("Inner")]
         [SerializeField]
-        private PointerInterceptorController pointerInterceptor;
-        [SerializeField]
-        private SelectionSystemController selectionSystem;
-        [SerializeField]
         private UnitPortraitController portrait;
         [SerializeField]
         private Text unitNameText;
@@ -37,21 +33,23 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         private DurabilitySectionController durabilitySection;
         [Header("Outer")]
         [SerializeField]
+        private SelectionSystemController selectionSystem;
+        [SerializeField]
         private CameraController mainCamera;
 
 
         // Life cycle.
 
         private void Start() {
-            GameObjects.ValidateReference(pointerInterceptor, nameof(pointerInterceptor));
-            GameObjects.ValidateReference(selectionSystem, nameof(selectionSystem));
-            GameObjects.ValidateReference(mainCamera, nameof(mainCamera));
             GameObjects.ValidateReference(portrait, nameof(portrait));
             GameObjects.ValidateReference(unitNameText, nameof(unitNameText));
             GameObjects.ValidateReference(unitDescriptionText, nameof(unitDescriptionText));
             GameObjects.ValidateReference(durabilitySection, nameof(durabilitySection));
+            GameObjects.ValidateReference(selectionSystem, nameof(selectionSystem));
+            GameObjects.ValidateReference(mainCamera, nameof(mainCamera));
             portrait.ClickEvent.AddAction(this, ProcessPortraitClick);
-            pointerInterceptor.ClickEvent.AddAction(this, ProcessInterceptorClick);
+            selectionSystem.UnitSelectedEvent.AddAction(this, ProcessSelectionChange);
+            selectionSystem.PositionTargetedEvent.AddAction(this, ProcessTargetSet);
         }
 
         private void LateUpdate() {
@@ -60,48 +58,25 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
 
         private void OnDestroy() {
             portrait.ClickEvent.RemoveSubscriber(this);
-            pointerInterceptor.ClickEvent.RemoveSubscriber(this);
+            selectionSystem.UnitSelectedEvent.RemoveSubscriber(this);
+            selectionSystem.UnitTargetedEvent.RemoveSubscriber(this);
+            selectionSystem.PositionTargetedEvent.RemoveSubscriber(this);
         }
 
 
         // Event handlers.
 
-        private void ProcessInterceptorClick(PointerEventData pointerEventData) {
+        private void ProcessSelectionChange(UnitController unit) {
+            selectedUnit = unit;
+            portrait.Followed = unit;
+        }
 
-            // Process unit selection.
-            if (pointerEventData.button == PointerEventData.InputButton.Left) {
-                var pointerPosition = pointerEventData.position;
-                var pointerRay = mainCamera.Camera.ScreenPointToRay(pointerPosition);
-                var layerMask = LayerMask.GetMask("Units");
-                Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
-                var colliderHit = raycastHit.collider;
-                if (colliderHit != null) {
-                    selectedUnit = colliderHit.transform.gameObject.GetComponent<UnitController>();
-                } else {
-                    selectedUnit = null;
-                }
-                portrait.Followed = selectedUnit;
-                selectionSystem.MainSelected = selectedUnit;
+        private void ProcessTargetSet(Vector3 target) {
+            if (selectedUnit != null && selectedUnit.Presentation != null) {
+                var destination = target;
+                var action = new GoalSettingAction<RelocationGoal>(new RelocationGoal(destination));
+                selectedUnit.Presentation.PlanAction(action);
             }
-
-            // Process unit goal.
-            if (pointerEventData.button == PointerEventData.InputButton.Right) {
-                var pointerPosition = pointerEventData.position;
-                var pointerRay = mainCamera.Camera.ScreenPointToRay(pointerPosition);
-                var layerMask = LayerMask.GetMask("Terrain");
-                Physics.Raycast(pointerRay, out RaycastHit raycastHit, float.PositiveInfinity, layerMask);
-                var colliderHit = raycastHit.collider;
-                ClusterController cluster = null;
-                if (colliderHit != null) {
-                    cluster = colliderHit.transform.gameObject.GetComponent<ClusterController>();
-                }
-                if (cluster != null && cluster.Presentation != null && selectedUnit != null && selectedUnit.Presentation != null) {
-                    var destination = raycastHit.point;
-                    var action = new GoalSettingAction<RelocationGoal>(new RelocationGoal(destination));
-                    selectedUnit.Presentation.PlanAction(action);
-                }
-            }
-
         }
 
         private void ProcessPortraitClick(PointerEventData pointerEventData) {
