@@ -1,18 +1,12 @@
 ﻿using NewWorld.Battle.Controllers.Cameras;
 using NewWorld.Battle.Controllers.Unit;
 using NewWorld.Utilities;
-using NewWorld.Utilities.Events;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace NewWorld.Battle.Controllers.UI.UnitPanel {
 
     public class UnitPortraitController : MonoBehaviour, IPointerClickHandler {
-
-        // Event types.
-
-        public class PointerEvent : ControllerEvent<PointerEventData> {}
-
 
         // Fields.
 
@@ -26,13 +20,8 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         [SerializeField]
         private GameObject cameraView;
 
-        // Events.
-        private readonly PointerEvent clickEvent = new PointerEvent();
-
 
         // Properties.
-
-        public PointerEvent.EventWrapper ClickEvent => clickEvent.Wrapper;
 
         public UnitController Followed {
             get => followed;
@@ -70,7 +59,17 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         // Event handlers.
 
         public void OnPointerClick(PointerEventData eventData) {
-            clickEvent.Invoke(eventData);
+
+            // Process camera relocation.
+            if (eventData.button == PointerEventData.InputButton.Left) {
+                if (followed == null) {
+                    return;
+                }
+                var location = mainCamera.CurrentLocation;
+                location.ViewedPosition = followed.Center;
+                mainCamera.CurrentLocation = location;
+            }
+
         }
 
 

@@ -1,6 +1,4 @@
 ﻿using NewWorld.Battle.Controllers.Cameras;
-using NewWorld.Battle.Controllers.Map;
-using NewWorld.Battle.Controllers.UI.Bars;
 using NewWorld.Battle.Controllers.UI.Selection;
 using NewWorld.Battle.Controllers.Unit;
 using NewWorld.Battle.Cores.Unit;
@@ -8,9 +6,7 @@ using NewWorld.Battle.Cores.Unit.Behaviours;
 using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Utilities;
 using System.Text;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace NewWorld.Battle.Controllers.UI.UnitPanel {
@@ -47,7 +43,6 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             GameObjects.ValidateReference(durabilitySection, nameof(durabilitySection));
             GameObjects.ValidateReference(selectionSystem, nameof(selectionSystem));
             GameObjects.ValidateReference(mainCamera, nameof(mainCamera));
-            portrait.ClickEvent.AddAction(this, ProcessPortraitClick);
             selectionSystem.UnitSelectedEvent.AddAction(this, ProcessSelectionChange);
             selectionSystem.PositionTargetedEvent.AddAction(this, ProcessTargetSet);
         }
@@ -57,7 +52,6 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
         }
 
         private void OnDestroy() {
-            portrait.ClickEvent.RemoveSubscriber(this);
             selectionSystem.UnitSelectedEvent.RemoveSubscriber(this);
             selectionSystem.UnitTargetedEvent.RemoveSubscriber(this);
             selectionSystem.PositionTargetedEvent.RemoveSubscriber(this);
@@ -77,20 +71,6 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
                 var action = new GoalSettingAction<RelocationGoal>(new RelocationGoal(destination));
                 selectedUnit.Presentation.PlanAction(action);
             }
-        }
-
-        private void ProcessPortraitClick(PointerEventData pointerEventData) {
-
-            // Process camera relocation.
-            if (pointerEventData.button == PointerEventData.InputButton.Left) {
-                if (selectedUnit == null) {
-                    return;
-                }
-                var location = mainCamera.CurrentLocation;
-                location.ViewedPosition = selectedUnit.Center;
-                mainCamera.CurrentLocation = location;
-            }
-
         }
 
 
