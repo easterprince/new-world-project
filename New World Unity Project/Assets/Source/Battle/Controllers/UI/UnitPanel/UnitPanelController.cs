@@ -90,6 +90,8 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             if (presentation != null) {
                 unitDescriptionText.text = "There are some abilities... ?";
                 var stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine($"Current goal: {presentation.Intelligence.CurrentGoal.Name}");
+                stringBuilder.AppendLine();
                 stringBuilder.AppendLine($"Current condition: {presentation.Condition.Description}");
                 stringBuilder.AppendLine();
                 var abilities = presentation.AbilityCollection.Abilities;

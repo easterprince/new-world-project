@@ -25,6 +25,11 @@ namespace NewWorld.Battle.Cores.Unit.Intelligence {
         }
 
 
+        // Properties.
+
+        public UnitGoal CurrentGoal => currentBehaviour?.Goal ?? IdleGoal.Instance;
+
+
         // Cloning.
         
         public override IntelligenceModule Clone() {
