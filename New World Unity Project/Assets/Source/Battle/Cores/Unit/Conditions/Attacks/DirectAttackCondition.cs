@@ -63,7 +63,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
         public override bool Cancellable => !attacked;
         public override bool Finished => false;
 
-        public override string Description => $"Attacking target {target}.";
+        public override string Description => $"Attacking target {target.Name}.";
 
 
         // Cloning.
@@ -103,14 +103,14 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
         private void UpdateRotation() {
             Vector3 ownerPosition = Owner.Body.Position;
-            Vector3 targetPosition = Owner.Body.Position;
+            Vector3 targetPosition = Target.Body.Position;
             Quaternion rotation = Quaternion.LookRotation(targetPosition - ownerPosition);
             Owner.PlanAction(new RotationAction(rotation));
         }
 
         private void TryAttack() {
             Vector3 ownerPosition = Owner.Body.Position;
-            Vector3 targetPosition = Owner.Body.Position;
+            Vector3 targetPosition = Target.Body.Position;
             if ((ownerPosition - targetPosition).magnitude <= attackRange) {
                 target.PlanAction(new DamageCausingAction(singleAttackDamage));
             }

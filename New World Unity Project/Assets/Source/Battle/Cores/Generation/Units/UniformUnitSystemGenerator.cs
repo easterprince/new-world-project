@@ -32,7 +32,9 @@ namespace NewWorld.Battle.Cores.Generation.Units {
                     Durability = 250
                 }
             );
-            var attack = new DirectAttackAbility();
+            var attack = new DirectAttackAbility() {
+                SingleAttackDamage = new Damage(50)
+            };
             template.AddAbility(attack);
             var motion = new DirectMotionAbility();
             template.AddAbility(motion);

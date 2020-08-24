@@ -3,7 +3,7 @@
 namespace NewWorld.Battle.Cores.Unit.Behaviours {
     
     public interface IBehaviourModule :
-        IUnitModule<IBehaviourModule, IBehaviourPresentation, IntelligencePresentation>, IBehaviourPresentation {
+        IUnitModule<IBehaviourModule, IBehaviourPresentation, IOwnerPointer>, IBehaviourPresentation {
 
         void Act(out GoalStatus goalStatus);
 

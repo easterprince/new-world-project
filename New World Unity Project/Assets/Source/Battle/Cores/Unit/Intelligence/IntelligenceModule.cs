@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battle.Cores.Unit.Abilities;
 using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Offensives;
 using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using System.Collections.Generic;
@@ -56,11 +57,18 @@ namespace NewWorld.Battle.Cores.Unit.Intelligence {
         }
 
         public void SetGoal(RelocationGoal goal) {
-            var newBehaviour = new RelocationBehaviour {
+            currentBehaviour?.Disconnect();
+            currentBehaviour = new RelocationBehaviour {
                 Goal = goal
             };
+            currentBehaviour.Connect(Presentation);
+        }
+
+        public void SetGoal(OffensiveGoal goal) {
             currentBehaviour?.Disconnect();
-            currentBehaviour = newBehaviour;
+            currentBehaviour = new OffensiveBehaviour {
+                Goal = goal
+            };
             currentBehaviour.Connect(Presentation);
         }
 

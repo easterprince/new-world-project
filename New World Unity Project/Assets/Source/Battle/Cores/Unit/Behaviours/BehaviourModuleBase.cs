@@ -3,7 +3,7 @@
 namespace NewWorld.Battle.Cores.Unit.Behaviours {
     
     public abstract class BehaviourModuleBase<TSelf, TPresentation, TGoal> :
-        UnitModuleBase<TSelf, TPresentation, IntelligencePresentation>, IBehaviourModule
+        UnitModuleBase<TSelf, TPresentation, IOwnerPointer>, IBehaviourModule
         where TSelf : BehaviourModuleBase<TSelf, TPresentation, TGoal>
         where TPresentation : BehaviourPresentationBase<TPresentation, TSelf, TGoal>
         where TGoal : UnitGoal {

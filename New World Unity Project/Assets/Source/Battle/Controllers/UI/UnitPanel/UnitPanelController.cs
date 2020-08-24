@@ -3,6 +3,7 @@ using NewWorld.Battle.Controllers.UI.Selection;
 using NewWorld.Battle.Controllers.Unit;
 using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Offensives;
 using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Utilities;
 using System.Text;
@@ -44,6 +45,7 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             GameObjects.ValidateReference(selectionSystem, nameof(selectionSystem));
             GameObjects.ValidateReference(mainCamera, nameof(mainCamera));
             selectionSystem.UnitSelectedEvent.AddAction(this, ProcessSelectionChange);
+            selectionSystem.UnitTargetedEvent.AddAction(this, ProcessTargetSet);
             selectionSystem.PositionTargetedEvent.AddAction(this, ProcessTargetSet);
         }
 
@@ -69,6 +71,13 @@ namespace NewWorld.Battle.Controllers.UI.UnitPanel {
             if (selectedUnit != null && selectedUnit.Presentation != null) {
                 var destination = target;
                 var action = new GoalSettingAction<RelocationGoal>(new RelocationGoal(destination));
+                selectedUnit.Presentation.PlanAction(action);
+            }
+        }
+
+        private void ProcessTargetSet(UnitController target) {
+            if (selectedUnit != null && selectedUnit.Presentation != null) {
+                var action = new GoalSettingAction<OffensiveGoal>(new OffensiveGoal(target.Presentation));
                 selectedUnit.Presentation.PlanAction(action);
             }
         }

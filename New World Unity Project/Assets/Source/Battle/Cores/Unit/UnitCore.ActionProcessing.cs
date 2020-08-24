@@ -2,6 +2,7 @@
 using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Offensives;
 using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
@@ -14,7 +15,7 @@ namespace NewWorld.Battle.Cores.Unit {
         IResponsive<ConditionCausingAction>, IResponsive<ConditionCancellingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction>,
         IResponsive<AttackUsageAction>, IResponsive<MotionUsageAction>,
-        IResponsive<GoalSettingAction<RelocationGoal>> {
+        IResponsive<GoalSettingAction<RelocationGoal>>, IResponsive<GoalSettingAction<OffensiveGoal>> {
 
         // Action processing.
 
@@ -98,6 +99,16 @@ namespace NewWorld.Battle.Cores.Unit {
             SetGoal(action.Goal);
         }
 
+        public void ProcessAction(GoalSettingAction<OffensiveGoal> action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (Context is null) {
+                return;
+            }
+            SetGoal(action.Goal);
+        }
+
 
         // Action planning.
 
@@ -109,6 +120,7 @@ namespace NewWorld.Battle.Cores.Unit {
         public void PlanAction(AttackUsageAction action) => PlanAction(this, action);
         public void PlanAction(MotionUsageAction action) => PlanAction(this, action);
         public void PlanAction(GoalSettingAction<RelocationGoal> action) => PlanAction(this, action);
+        public void PlanAction(GoalSettingAction<OffensiveGoal> action) => PlanAction(this, action);
 
 
     }

@@ -8,6 +8,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
         // Properties.
 
         public abstract Damage DamagePerSecond { get; }
+        public abstract float EffectiveRange { get; }
 
 
         // Presentation generation.

@@ -2,6 +2,7 @@
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.AbilityCollection;
 using NewWorld.Battle.Cores.Unit.Behaviours;
+using NewWorld.Battle.Cores.Unit.Behaviours.Offensives;
 using NewWorld.Battle.Cores.Unit.Behaviours.Relocations;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
@@ -14,7 +15,7 @@ namespace NewWorld.Battle.Cores.Unit {
         IReceptive<DamageCausingAction>, IReceptive<ConditionCausingAction>,
         IReceptive<MovementAction>, IReceptive<RotationAction>,
         IReceptive<AttackUsageAction>, IReceptive<MotionUsageAction>,
-        IReceptive<GoalSettingAction<RelocationGoal>> {
+        IReceptive<GoalSettingAction<RelocationGoal>>, IReceptive<GoalSettingAction<OffensiveGoal>> {
 
         // Constructor.
 
@@ -41,6 +42,7 @@ namespace NewWorld.Battle.Cores.Unit {
         public void PlanAction(AttackUsageAction action) => Presented.PlanAction(action);
         public void PlanAction(MotionUsageAction action) => Presented.PlanAction(action);
         public void PlanAction(GoalSettingAction<RelocationGoal> action) => Presented.PlanAction(action);
+        public void PlanAction(GoalSettingAction<OffensiveGoal> action) => Presented.PlanAction(action);
 
 
     }

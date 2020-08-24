@@ -13,6 +13,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
         // Properties.
 
         public Damage DamagePerSecond => Presented.DamagePerSecond;
+        public float EffectiveRange => Presented.EffectiveRange;
 
 
     }

@@ -21,7 +21,7 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         public float DamageValue {
             get => damageValue;
-            set => damageValue = Mathf.Max(damageValue, 0f);
+            set => damageValue = Mathf.Max(value);
         }
 
 
