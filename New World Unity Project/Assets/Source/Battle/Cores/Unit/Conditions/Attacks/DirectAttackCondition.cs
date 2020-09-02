@@ -104,8 +104,11 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
         private void UpdateRotation() {
             Vector3 ownerPosition = Owner.Body.Position;
             Vector3 targetPosition = Target.Body.Position;
-            Quaternion rotation = Quaternion.LookRotation(targetPosition - ownerPosition);
-            Owner.PlanAction(new RotationAction(rotation));
+            Vector3 look = targetPosition - ownerPosition;
+            if (look != Vector3.zero) {
+                Quaternion rotation = Quaternion.LookRotation(targetPosition - ownerPosition);
+                Owner.PlanAction(new RotationAction(rotation));
+            }
         }
 
         private void TryAttack() {
