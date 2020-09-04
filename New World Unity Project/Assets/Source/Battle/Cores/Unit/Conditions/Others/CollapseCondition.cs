@@ -28,7 +28,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         public override bool Cancellable => false;
         public override bool Finished => false;
 
-        public override string Description => "Collapsing.";
+        public override string Description => $"Collapsing. Until extinction: {timeUntilExtinction}s.";
 
 
         // Cloning.

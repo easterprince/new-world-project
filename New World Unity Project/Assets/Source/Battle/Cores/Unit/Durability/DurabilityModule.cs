@@ -7,15 +7,20 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
     public class DurabilityModule : UnitModuleBase<DurabilityModule, DurabilityPresentation, UnitPresentation> {
 
+        // Constants.
+
+        private const float durabilityThreshold = 1;
+
+
         // Fields.
 
-        private float durabilityLimit = 1;
-        private float durability = 1;
+        private float durabilityLimit = durabilityThreshold;
+        private float durability = durabilityThreshold;
 
 
         // Constructors.
 
-        public DurabilityModule(float durabilityLimit = 1) {
+        public DurabilityModule(float durabilityLimit = durabilityThreshold) {
             DurabilityLimit = durabilityLimit;
         }
 
@@ -37,17 +42,25 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         public float DurabilityLimit {
             get => durabilityLimit;
             set {
-                durabilityLimit = Mathf.Max(value, 1);
+                if (float.IsNaN(value)) {
+                    value = durabilityThreshold;
+                }
+                durabilityLimit = Mathf.Max(value, durabilityThreshold);
                 Durability = durability;
             }
         }
 
         public float Durability {
             get => durability;
-            set => durability = Mathf.Clamp(value, 0, durabilityLimit);
+            set {
+                if (float.IsNaN(value)) {
+                    value = durabilityThreshold;
+                }
+                durability = Mathf.Clamp(value, 0, durabilityLimit);
+            }
         }
 
-        public bool Fallen => durability < 1f;
+        public bool Fallen => durability < durabilityThreshold;
 
 
         // Cloning.
@@ -67,10 +80,24 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         // Updating.
 
         public void Act() {
-            ValidateContext();
-            if (durability < 1f) {
-                var action = new ConditionCausingAction(new CollapseCondition());
+            if (Owner == null) {
+                return;
+            }
+
+            // Cause collapse.
+            if (Fallen && !(Owner.Condition is CollapseConditionPresentation)) {
+                var action = new ConditionChangingAction(CreateCollapseCondition(), forceChange: true);
                 Owner.PlanAction(action);
+            }
+
+        }
+
+        public IConditionModule CreateUsualCondition() {
+            ValidateContext();
+            if (!Fallen) {
+                return new IdleCondition();
+            } else {
+                return CreateCollapseCondition();
             }
         }
 
@@ -78,7 +105,24 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         // Modifying methods.
 
         public void CauseDamage(Damage damage) {
+            
+            // Modify durability.
+            bool fallenBefore = Fallen;
             Durability -= damage.DamageValue;
+            bool fallenAfter = Fallen;
+
+            // React to damage.
+            if (!fallenBefore && fallenAfter) {
+                Act();
+            }
+
+        }
+
+
+        // Internal methods.
+
+        private CollapseCondition CreateCollapseCondition() {
+            return new CollapseCondition(timeUntilExtinction: 5f);
         }
 
 

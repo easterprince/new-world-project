@@ -111,7 +111,9 @@ namespace NewWorld.Battle.Cores.Unit {
             durability.Act();
 
             // Let intelligence act.
-            intelligence.Act();
+            if (!durability.Fallen) {
+                intelligence.Act();
+            }
 
             // Let condition act.
             condition.Act();
@@ -140,21 +142,16 @@ namespace NewWorld.Battle.Cores.Unit {
             body.Rotate(rotation);
         }
 
-        public void CauseCondition(IConditionModule condition) {
+        public void ChangeCondition(IConditionModule condition, bool forceChange) {
+            if (!forceChange && !this.condition.Cancellable) {
+                return;
+            }
             if (condition is null) {
-                throw new ArgumentNullException(nameof(condition));
+                condition = durability.CreateUsualCondition();
             }
             this.condition.Disconnect();
             this.condition = condition.Clone();
             this.condition.Connect(Presentation);
-        }
-
-        public void CancelCondition() {
-            if (condition.Cancellable) {
-                condition.Disconnect();
-                condition = new IdleCondition();
-                condition.Connect(Presentation);
-            }
         }
 
         public void CauseDamage(Damage damage) {

@@ -56,6 +56,9 @@ namespace NewWorld.Battle.Cores {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
+            if (Context is null) {
+                return;
+            }
             Context.ExecuteAfterUpdate(() => responsive.ProcessAction(action));
         }
 

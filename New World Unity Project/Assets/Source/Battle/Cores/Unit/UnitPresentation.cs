@@ -12,7 +12,7 @@ using NewWorld.Battle.Cores.Unit.Intelligence;
 namespace NewWorld.Battle.Cores.Unit {
 
     public class UnitPresentation : UnitModulePresentationBase<UnitCore>,
-        IReceptive<DamageCausingAction>, IReceptive<ConditionCausingAction>,
+        IReceptive<DamageCausingAction>, IReceptive<ConditionChangingAction>,
         IReceptive<MovementAction>, IReceptive<RotationAction>,
         IReceptive<AttackUsageAction>, IReceptive<MotionUsageAction>,
         IReceptive<GoalSettingAction<RelocationGoal>>, IReceptive<GoalSettingAction<OffensiveGoal>> {
@@ -36,7 +36,7 @@ namespace NewWorld.Battle.Cores.Unit {
         // Action processing.
 
         public void PlanAction(DamageCausingAction action) => Presented.PlanAction(action);
-        public void PlanAction(ConditionCausingAction action) => Presented.PlanAction(action);
+        public void PlanAction(ConditionChangingAction action) => Presented.PlanAction(action);
         public void PlanAction(MovementAction action) => Presented.PlanAction(action);
         public void PlanAction(RotationAction action) => Presented.PlanAction(action);
         public void PlanAction(AttackUsageAction action) => Presented.PlanAction(action);

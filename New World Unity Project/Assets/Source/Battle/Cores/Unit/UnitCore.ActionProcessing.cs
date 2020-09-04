@@ -12,21 +12,21 @@ using System;
 namespace NewWorld.Battle.Cores.Unit {
     
     public partial class UnitCore :
-        IResponsive<ConditionCausingAction>, IResponsive<ConditionCancellingAction>, IResponsive<DamageCausingAction>,
+        IResponsive<ConditionChangingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction>,
         IResponsive<AttackUsageAction>, IResponsive<MotionUsageAction>,
         IResponsive<GoalSettingAction<RelocationGoal>>, IResponsive<GoalSettingAction<OffensiveGoal>> {
 
         // Action processing.
 
-        public void ProcessAction(ConditionCausingAction action) {
+        public void ProcessAction(ConditionChangingAction action) {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
             if (Context is null) {
                 return;
             }
-            CauseCondition(action.Condition);
+            ChangeCondition(action.Condition, action.ForceChange);
         }
 
         public void ProcessAction(DamageCausingAction action) {
@@ -57,16 +57,6 @@ namespace NewWorld.Battle.Cores.Unit {
                 return;
             }
             Rotate(action);
-        }
-
-        public void ProcessAction(ConditionCancellingAction action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
-            }
-            if (Context is null) {
-                return;
-            }
-            CancelCondition();
         }
 
         public void ProcessAction(AttackUsageAction action) {
@@ -112,11 +102,10 @@ namespace NewWorld.Battle.Cores.Unit {
 
         // Action planning.
 
-        public void PlanAction(ConditionCausingAction action) => PlanAction(this, action);
+        public void PlanAction(ConditionChangingAction action) => PlanAction(this, action);
         public void PlanAction(DamageCausingAction action) => PlanAction(this, action);
         public void PlanAction(MovementAction action) => PlanAction(this, action);
         public void PlanAction(RotationAction action) => PlanAction(this, action);
-        public void PlanAction(ConditionCancellingAction action) => PlanAction(this, action);
         public void PlanAction(AttackUsageAction action) => PlanAction(this, action);
         public void PlanAction(MotionUsageAction action) => PlanAction(this, action);
         public void PlanAction(GoalSettingAction<RelocationGoal> action) => PlanAction(this, action);

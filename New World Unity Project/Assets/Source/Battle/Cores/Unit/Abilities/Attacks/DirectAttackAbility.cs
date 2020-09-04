@@ -72,7 +72,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
         }
 
 
-        // Udage.
+        // Usage.
 
         public override bool CheckIfUsable(UnitPresentation target) {
             if (target is null) {
@@ -91,7 +91,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
             ValidateContext();
             if (CheckIfUsable(target)) {
                 var condition = new DirectAttackCondition(target, singleAttackDamage, attackDuration, attackMoment, attackRange);
-                Owner.PlanAction(new ConditionCausingAction(condition));
+                Owner.PlanAction(new ConditionChangingAction(condition, forceChange: false));
             }
         }
 

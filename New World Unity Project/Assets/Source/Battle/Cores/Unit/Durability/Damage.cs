@@ -21,7 +21,12 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         public float DamageValue {
             get => damageValue;
-            set => damageValue = Mathf.Max(value);
+            set {
+                if (float.IsNaN(value)) {
+                    value = 0;
+                }
+                damageValue = Mathf.Max(value, 0);
+            }
         }
 
 

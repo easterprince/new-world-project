@@ -54,7 +54,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
         public override void Use(Vector3 destination) {
             ValidateContext();
             var condition = new DirectMotionCondition(destination, speed);
-            Owner.PlanAction(new ConditionCausingAction(condition));
+            Owner.PlanAction(new ConditionChangingAction(condition, forceChange: false));
         }
 
 
