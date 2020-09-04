@@ -61,7 +61,6 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
 
         public override bool Cancellable => !attacked;
-        public override bool Finished => false;
 
         public override string Description => $"Attacking target {target.Name}.";
 
@@ -75,8 +74,14 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
         // Updating.
 
-        public override void Act() {
+
+        private protected override void OnAct(out bool finished) {
             ValidateContext();
+            if (target is null || target.Durability.Fallen) {
+                finished = true;
+                return;
+            }
+            finished = false;
             UpdateRotation();
             accumulatedTime += Context.GameTimeDelta;
             while (true) {

@@ -26,7 +26,6 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         public float TimeUntilExtinction => timeUntilExtinction;
 
         public override bool Cancellable => false;
-        public override bool Finished => false;
 
         public override string Description => $"Collapsing. Until extinction: {timeUntilExtinction}s.";
 
@@ -47,12 +46,18 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         // Updating.
 
-        public override void Act() {
+        private protected override void OnAct(out bool finished) {
             ValidateContext();
+            finished = false;
+
+            // Update time. 
             timeUntilExtinction = Mathf.Max(timeUntilExtinction - Context.GameTimeDelta, 0f);
+            
+            // Go extinct.
             if (timeUntilExtinction == 0f) {
                 Context.UnitSystem.PlanAction(new UnitRemovalAction(Owner));
             }
+
         }
 
 

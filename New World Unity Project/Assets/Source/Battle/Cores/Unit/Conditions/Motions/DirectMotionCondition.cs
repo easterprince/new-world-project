@@ -19,8 +19,6 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
         private readonly Vector3 destination;
         private readonly float speed;
 
-        private bool finished;
-
 
         // Constructor.
 
@@ -42,18 +40,15 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
         public override string Description => $"Moving to position {destination}.";
 
         public override bool Cancellable => true;
-        public override bool Finished => finished;
 
 
         // Updating.
 
-        public override void Act() {
+        private protected override void OnAct(out bool finished) {
             ValidateContext();
             Vector3 curPosition = Owner.Body.Position;
             Vector3 toMove = destination - curPosition;
-            if (toMove.magnitude <= ToleratedDestinationOffset) {
-                finished = true;
-            }
+            finished = (toMove.magnitude <= ToleratedDestinationOffset);
             float willMove = speed * Context.GameTimeDelta;
             if (toMove.magnitude > willMove) {
                 toMove = toMove.normalized * willMove;
