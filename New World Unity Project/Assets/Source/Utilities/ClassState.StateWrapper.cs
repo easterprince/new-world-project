@@ -11,6 +11,11 @@
             public StateWrapper(ClassState<TDelta> state) : base(state) {}
 
 
+            // Properties.
+
+            public bool IsLatest => Wrapped.IsLatest;
+
+
             // Methods.
 
             public StateWrapper Transit(out TDelta delta) => Wrapped.Transit(out delta)?.Wrapper; 

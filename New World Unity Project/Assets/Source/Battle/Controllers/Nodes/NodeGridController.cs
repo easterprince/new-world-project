@@ -3,7 +3,6 @@ using NewWorld.Battle.Controllers.UnitSystem;
 using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
-using NewWorld.Utilities.Events;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +12,9 @@ namespace NewWorld.Battle.Controllers.Nodes {
 
         // Fields.
 
-        private readonly ActionQueue actionQueue = new ActionQueue();
         private readonly Dictionary<UnitPresentation, NodeController> unitsToNodes = new Dictionary<UnitPresentation, NodeController>();
         private UnitSystemPresentation unitSystemPresentation = null;
+        private ClassState<UnitPresentation>.StateWrapper currentState = null;
 
         // Steady references.
         [SerializeField]
@@ -35,25 +34,18 @@ namespace NewWorld.Battle.Controllers.Nodes {
             // Setup unit system event handlers.
             unitSystem.ExecuteWhenBuilt(this, () => {
                 unitSystemPresentation = unitSystem.Presentation;
+                currentState = unitSystemPresentation.State;
                 foreach (var unit in unitSystemPresentation) {
                     UpdateNode(unit);
                 }
-                unitSystemPresentation.AdditionEvent.AddAction(actionQueue, UpdateNode);
-                unitSystemPresentation.MotionEvent.AddAction(actionQueue, UpdateNode);
-                unitSystemPresentation.RemovalEvent.AddAction(actionQueue, UpdateNode);
             });
 
         }
 
-        private void Update() {
-            actionQueue.RunAll();
-        }
-
-        private void OnDestroy() {
-            if (unitSystemPresentation != null) {
-                unitSystemPresentation.AdditionEvent.RemoveSubscriber(actionQueue);
-                unitSystemPresentation.MotionEvent.RemoveSubscriber(actionQueue);
-                unitSystemPresentation.RemovalEvent.RemoveSubscriber(actionQueue);
+        private void LateUpdate() {
+            while (currentState != null && !currentState.IsLatest) {
+                currentState = currentState.Transit(out var unitPresentation);
+                UpdateNode(unitPresentation);
             }
         }
 

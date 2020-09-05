@@ -3,7 +3,6 @@ using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
-using NewWorld.Utilities.Events;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,8 +15,8 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
 
         // Structure.
         private UnitSystemPresentation presentation = null;
+        private ClassState<UnitPresentation>.StateWrapper currentState = null;
         private readonly Dictionary<UnitPresentation, GameObject> presentationsToUnits = new Dictionary<UnitPresentation, GameObject>();
-        private readonly ActionQueue actionQueue = new ActionQueue();
 
         // Steady references.
         [SerializeField]
@@ -45,15 +44,14 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
         }
 
         private void LateUpdate() {
-            actionQueue.RunAll();
-        }
-
-        private protected override void OnDestroy() {
-            if (presentation != null) {
-                presentation.AdditionEvent.RemoveSubscriber(actionQueue);
-                presentation.RemovalEvent.RemoveSubscriber(actionQueue);
+            while (currentState != null && !currentState.IsLatest) {
+                currentState = currentState.Transit(out UnitPresentation unitPresentation);
+                if (presentation.HasUnit(unitPresentation)) {
+                    CreateUnit(unitPresentation);
+                } else {
+                    DestroyUnit(unitPresentation);
+                }
             }
-            base.OnDestroy();
         }
 
 
@@ -69,13 +67,12 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
             // Set fields.
             SetStartedBuilding();
             this.presentation = presentation;
+            currentState = presentation.State;
 
             // Create unit objects.
             foreach (var unitPresentation in presentation) {
                 CreateUnit(unitPresentation);
             }
-            presentation.AdditionEvent.AddAction(actionQueue, CreateUnit);
-            presentation.RemovalEvent.AddAction(actionQueue, DestroyUnit);
 
             SetFinishedBuilding();
 

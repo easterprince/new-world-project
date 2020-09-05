@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Cores.Unit;
+using NewWorld.Utilities;
 using NewWorld.Utilities.Events;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,9 +20,8 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         public Vector2Int this[UnitPresentation unitPresentation] => Presented[unitPresentation];
         public UnitPresentation this[Vector2Int position] => Presented[position];
 
-        public GameEvent<UnitPresentation>.EventWrapper AdditionEvent => Presented.AdditionEvent;
-        public GameEvent<UnitPresentation>.EventWrapper MotionEvent => Presented.MotionEvent;
-        public GameEvent<UnitPresentation>.EventWrapper RemovalEvent => Presented.RemovalEvent;
+        public ClassState<UnitPresentation>.StateWrapper State => Presented.State;
+
 
 
         // Enumeration.

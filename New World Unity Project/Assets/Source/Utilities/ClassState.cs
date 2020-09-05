@@ -19,6 +19,7 @@
         // Properties.
 
         public StateWrapper Wrapper => wrapper;
+        public bool IsLatest => (next is null);
 
 
         // Methods.

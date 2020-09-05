@@ -1,6 +1,4 @@
 ﻿using NewWorld.Battle.Cores.Unit;
-using NewWorld.Utilities;
-using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Controllers.Unit {

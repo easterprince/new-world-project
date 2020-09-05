@@ -1,6 +1,7 @@
 ﻿using NewWorld.Battle.Cores.Battlefield;
 using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.Unit;
+using NewWorld.Utilities;
 using NewWorld.Utilities.Events;
 using System;
 using System.Collections;
@@ -20,10 +21,8 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         private readonly Dictionary<Vector2Int, UnitCore> positionsToUnits = new Dictionary<Vector2Int, UnitCore>();
         private readonly Dictionary<UnitPresentation, UnitCore> presentationsToUnits = new Dictionary<UnitPresentation, UnitCore>();
 
-        // Events.
-        private readonly GameEvent<UnitPresentation> additionEvent = new GameEvent<UnitPresentation>();
-        private readonly GameEvent<UnitPresentation> motionEvent = new GameEvent<UnitPresentation>();
-        private readonly GameEvent<UnitPresentation> removalEvent = new GameEvent<UnitPresentation>();
+        // State.
+        private ClassState<UnitPresentation> state = new ClassState<UnitPresentation>();
 
 
         // Constructors.
@@ -57,9 +56,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             }
         }
 
-        public GameEvent<UnitPresentation>.EventWrapper AdditionEvent => additionEvent.Wrapper;
-        public GameEvent<UnitPresentation>.EventWrapper MotionEvent => motionEvent.Wrapper;
-        public GameEvent<UnitPresentation>.EventWrapper RemovalEvent => removalEvent.Wrapper;
+        public ClassState<UnitPresentation>.StateWrapper State => state.Wrapper;
 
 
         // Enumeration.
@@ -127,7 +124,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             presentationsToUnits[unit.Presentation] = unit;
             unitsToPositions[unit] = position;
             positionsToUnits[position] = unit;
-            additionEvent.Invoke(unit.Presentation);
+            state = state.BuildTransition(unit.Presentation);
         }
 
         public void MoveUnit(UnitPresentation unitPresentation, Vector2Int position) {
@@ -148,7 +145,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
                 positionsToUnits.Remove(oldPosition);
                 unitsToPositions[unit] = position;
                 positionsToUnits[position] = unit;
-                motionEvent.Invoke(unitPresentation);
+                state = state.BuildTransition(unitPresentation);
             }
         }
 
@@ -165,7 +162,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             var position = unitsToPositions[unit];
             positionsToUnits.Remove(position);
             unitsToPositions.Remove(unit);
-            removalEvent.Invoke(unitPresentation);
+            state = state.BuildTransition(unitPresentation);
             return unit;
         }
 
