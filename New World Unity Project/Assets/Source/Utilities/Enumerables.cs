@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,14 +7,20 @@ namespace NewWorld.Utilities {
 
     public static class Enumerables {
 
-        // Trivial.
+        // Trivial enumerables.
 
-        public static IEnumerable<T> GetNothing<T>() {
+        public static IEnumerable<T> TakeNothing<T>() {
             yield break;
         }
 
-        public static IEnumerable<T> GetSingle<T>(T element) {
+        public static IEnumerable<T> TakeSingle<T>(T element) {
             yield return element;
+        }
+
+        public static IEnumerable<T> TakeAll<T>(IEnumerable<T> elements) {
+            foreach (var element in elements) {
+                yield return element;
+            }
         }
 
 
@@ -61,6 +68,22 @@ namespace NewWorld.Utilities {
                     yield return element;
                 }
             }
+        }
+
+
+        // Index.
+
+        public static IEnumerable<Vector2Int> Index<T>(T[,] array) {
+            Vector2Int vector = Vector2Int.zero;
+            for (vector.x = 0; vector.x < array.GetLength(0); ++vector.x) {
+                for (vector.y = 0; vector.y < array.GetLength(1); ++vector.y) {
+                    yield return vector;
+                }
+            }
+        }
+
+        public static bool IsIndex<T>(Vector2Int index, T[,] array) {
+            return index.x >= 0 && index.y >= 0 && index.x < array.GetLength(0) && index.y < array.GetLength(1);
         }
 
 
@@ -136,6 +159,38 @@ namespace NewWorld.Utilities {
                     yield return vector;
                 }
             }
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x <= finish && vector.y <= finish;
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, int start, int finish) {
+            return vector.x >= start && vector.y >= start && vector.x <= finish && vector.y <= finish;
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, Vector2Int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x <= finish.x && vector.y <= finish.y;
+        }
+
+        public static bool IsInSegment2(Vector2Int vector, Vector2Int start, Vector2Int finish) {
+            return vector.x >= start.x && vector.y >= start.y && vector.x <= finish.x && vector.y <= finish.y;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x < finish && vector.y < finish;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, int start, int finish) {
+            return vector.x >= start && vector.y >= start && vector.x < finish && vector.y < finish;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, Vector2Int finish) {
+            return vector.x >= 0 && vector.y >= 0 && vector.x < finish.x && vector.y < finish.y;
+        }
+
+        public static bool IsInRange2(Vector2Int vector, Vector2Int start, Vector2Int finish) {
+            return vector.x >= start.x && vector.y >= start.y && vector.x < finish.x && vector.y < finish.y;
         }
 
 

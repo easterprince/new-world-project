@@ -18,7 +18,7 @@ namespace NewWorld.Utilities.Singletons {
             get => instance;
         }
 
-        public static void EnsureInstance(object userClass) {
+        public static void EnsureInstance(object userClass = null) {
             if (Instance == null) {
                 throw new MissingSingletonException<TSelf>(userClass);
             }
