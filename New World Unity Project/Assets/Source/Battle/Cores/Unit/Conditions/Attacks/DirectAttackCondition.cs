@@ -88,7 +88,9 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
                 if (!attacked) {
                     if (accumulatedTime >= attackMoment) {
                         attacked = true;
-                        TryAttack();
+                        if (!TryAttack()) {
+                            finished = true;
+                        }
                     } else {
                         break;
                     }
@@ -116,12 +118,14 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
             }
         }
 
-        private void TryAttack() {
+        private bool TryAttack() {
             Vector3 ownerPosition = Owner.Body.Position;
             Vector3 targetPosition = Target.Body.Position;
-            if ((ownerPosition - targetPosition).magnitude <= attackRange) {
-                target.PlanAction(new DamageCausingAction(singleAttackDamage));
+            if ((ownerPosition - targetPosition).magnitude > attackRange) {
+                return false;
             }
+            target.PlanAction(new DamageCausingAction(singleAttackDamage));
+            return true;
         }
 
 
