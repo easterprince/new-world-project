@@ -1,17 +1,17 @@
 ﻿namespace NewWorld.Utilities {
 
-    public partial class ClassState<TDelta> {
+    public partial class ObjectState<TDelta> {
 
         // Fields.
 
-        private ClassState<TDelta> next = null;
+        private ObjectState<TDelta> next = null;
         private TDelta delta = default;
         private readonly StateWrapper wrapper;
 
 
         // Constructor.
 
-        public ClassState() {
+        public ObjectState() {
             wrapper = new StateWrapper(this);
         }
 
@@ -24,14 +24,14 @@
 
         // Methods.
 
-        public ClassState<TDelta> Transit(out TDelta delta) {
+        public ObjectState<TDelta> Transit(out TDelta delta) {
             delta = this.delta;
             return next;
         }
 
-        public ClassState<TDelta> BuildTransition(TDelta delta) {
+        public ObjectState<TDelta> BuildTransition(TDelta delta) {
             this.delta = delta;
-            next = new ClassState<TDelta>();
+            next = new ObjectState<TDelta>();
             return next;
         }
 

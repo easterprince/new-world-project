@@ -9,7 +9,7 @@ namespace NewWorld.Battle.Cores.Layout {
 
         // Wrapper.
 
-        public class ReachWrapper : ClassWrapper<LayoutNode>, IWeightedGraphVertex<ReachWrapper, float> {
+        public class ReachWrapper : ObjectWrapper<LayoutNode>, IWeightedGraphVertex<ReachWrapper, float> {
 
             // Constructor.
 

@@ -1,14 +1,14 @@
 ﻿namespace NewWorld.Utilities {
 
-    public partial class ClassState<TDelta> {
+    public partial class ObjectState<TDelta> {
         
         // Wrapper.
 
-        public class StateWrapper : ClassWrapper<ClassState<TDelta>> {
+        public class StateWrapper : ObjectWrapper<ObjectState<TDelta>> {
 
             // Constructor.
 
-            public StateWrapper(ClassState<TDelta> state) : base(state) {}
+            public StateWrapper(ObjectState<TDelta> state) : base(state) {}
 
 
             // Properties.

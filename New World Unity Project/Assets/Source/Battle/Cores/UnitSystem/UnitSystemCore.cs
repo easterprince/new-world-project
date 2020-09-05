@@ -22,7 +22,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         private readonly Dictionary<UnitPresentation, UnitCore> presentationsToUnits = new Dictionary<UnitPresentation, UnitCore>();
 
         // State.
-        private ClassState<UnitPresentation> state = new ClassState<UnitPresentation>();
+        private ObjectState<UnitPresentation> state = new ObjectState<UnitPresentation>();
 
 
         // Constructors.
@@ -56,7 +56,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             }
         }
 
-        public ClassState<UnitPresentation>.StateWrapper State => state.Wrapper;
+        public ObjectState<UnitPresentation>.StateWrapper State => state.Wrapper;
 
 
         // Enumeration.
@@ -88,7 +88,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Informational methods.
 
-        public bool HasUnit(UnitPresentation unitPresentation) {
+        public bool Contains(UnitPresentation unitPresentation) {
             if (unitPresentation is null) {
                 throw new ArgumentNullException(nameof(unitPresentation));
             }
@@ -131,7 +131,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             if (unitPresentation is null) {
                 throw new ArgumentNullException(nameof(unitPresentation));
             }
-            if (!HasUnit(unitPresentation)) {
+            if (!Contains(unitPresentation)) {
                 throw new InvalidOperationException($"There is no unit {unitPresentation}!");
             }
             var onPosition = this[position];
@@ -153,7 +153,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
             if (unitPresentation is null) {
                 throw new ArgumentNullException(nameof(unitPresentation));
             }
-            if (!HasUnit(unitPresentation)) {
+            if (!Contains(unitPresentation)) {
                 throw new InvalidOperationException($"There is no unit {unitPresentation}!");
             }
             UnitCore unit = presentationsToUnits[unitPresentation];

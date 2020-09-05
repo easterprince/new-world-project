@@ -14,7 +14,7 @@ namespace NewWorld.Battle.Controllers.Nodes {
 
         private readonly Dictionary<UnitPresentation, NodeController> unitsToNodes = new Dictionary<UnitPresentation, NodeController>();
         private UnitSystemPresentation unitSystemPresentation = null;
-        private ClassState<UnitPresentation>.StateWrapper currentState = null;
+        private ObjectState<UnitPresentation>.StateWrapper currentState = null;
 
         // Steady references.
         [SerializeField]
@@ -53,7 +53,7 @@ namespace NewWorld.Battle.Controllers.Nodes {
         // Event handlers.
 
         private void UpdateNode(UnitPresentation unit) {
-            if (unitSystemPresentation.HasUnit(unit)) {
+            if (unitSystemPresentation.Contains(unit)) {
                 var position = unitSystemPresentation[unit];
                 if (unitsToNodes.TryGetValue(unit, out var node)) {
                     node.Position = position;

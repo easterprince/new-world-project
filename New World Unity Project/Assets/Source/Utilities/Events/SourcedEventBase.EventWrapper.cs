@@ -7,7 +7,7 @@ namespace NewWorld.Utilities.Events {
 
         // Wrapper class.
 
-        public class EventWrapper : ClassWrapper<SourcedEventBase<TSubscriber, TAction>> {
+        public class EventWrapper : ObjectWrapper<SourcedEventBase<TSubscriber, TAction>> {
 
             // Constructor.
 

@@ -8,7 +8,7 @@ namespace NewWorld.Battle.Cores.Layout {
 
         // Wrapper.
 
-        public class RegionWrapper : ClassWrapper<LayoutRegion>, IWeightedGraphVertex<RegionWrapper, float> {
+        public class RegionWrapper : ObjectWrapper<LayoutRegion>, IWeightedGraphVertex<RegionWrapper, float> {
 
             // Constructor.
 

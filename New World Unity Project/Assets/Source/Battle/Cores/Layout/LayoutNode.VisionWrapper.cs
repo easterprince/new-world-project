@@ -9,7 +9,7 @@ namespace NewWorld.Battle.Cores.Layout {
 
         // Wrapper.
 
-        public class VisionWrapper : ClassWrapper<LayoutNode>, IWeightedGraphVertex<VisionWrapper, float> {
+        public class VisionWrapper : ObjectWrapper<LayoutNode>, IWeightedGraphVertex<VisionWrapper, float> {
             
             // Constructor.
 

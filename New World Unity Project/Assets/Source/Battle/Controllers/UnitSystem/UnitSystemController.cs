@@ -15,7 +15,7 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
 
         // Structure.
         private UnitSystemPresentation presentation = null;
-        private ClassState<UnitPresentation>.StateWrapper currentState = null;
+        private ObjectState<UnitPresentation>.StateWrapper currentState = null;
         private readonly Dictionary<UnitPresentation, GameObject> presentationsToUnits = new Dictionary<UnitPresentation, GameObject>();
 
         // Steady references.
@@ -46,7 +46,7 @@ namespace NewWorld.Battle.Controllers.UnitSystem {
         private void LateUpdate() {
             while (currentState != null && !currentState.IsLatest) {
                 currentState = currentState.Transit(out UnitPresentation unitPresentation);
-                if (presentation.HasUnit(unitPresentation)) {
+                if (presentation.Contains(unitPresentation)) {
                     CreateUnit(unitPresentation);
                 } else {
                     DestroyUnit(unitPresentation);

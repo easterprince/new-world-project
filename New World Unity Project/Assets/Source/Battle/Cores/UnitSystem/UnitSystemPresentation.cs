@@ -20,7 +20,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
         public Vector2Int this[UnitPresentation unitPresentation] => Presented[unitPresentation];
         public UnitPresentation this[Vector2Int position] => Presented[position];
 
-        public ClassState<UnitPresentation>.StateWrapper State => Presented.State;
+        public ObjectState<UnitPresentation>.StateWrapper State => Presented.State;
 
 
 
@@ -37,7 +37,7 @@ namespace NewWorld.Battle.Cores.UnitSystem {
 
         // Methods.
 
-        public bool HasUnit(UnitPresentation unitPresentation) => Presented.HasUnit(unitPresentation);
+        public bool Contains(UnitPresentation unitPresentation) => Presented.Contains(unitPresentation);
 
 
         // Action planning.

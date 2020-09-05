@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace NewWorld.Utilities {
     
-    public class ClassWrapper<TWrapped>
+    public class ObjectWrapper<TWrapped>
         where TWrapped : class {
 
         // Fields.
@@ -13,7 +13,7 @@ namespace NewWorld.Utilities {
 
         // Constructor.
 
-        public ClassWrapper(TWrapped wrapped) {
+        public ObjectWrapper(TWrapped wrapped) {
             this.wrapped = wrapped ?? throw new ArgumentNullException(nameof(wrapped));
         }
 
