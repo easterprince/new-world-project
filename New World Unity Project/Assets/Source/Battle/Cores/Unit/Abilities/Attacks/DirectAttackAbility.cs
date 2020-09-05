@@ -21,7 +21,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
         public DirectAttackAbility() {
             singleAttackDamage = new Damage();
             attackDuration = 1f;
-            attackMoment = 1f;
+            attackMoment = 0.5f;
             attackRange = 1f;
         }
 
