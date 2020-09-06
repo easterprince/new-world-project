@@ -1,22 +1,30 @@
 ﻿using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
-    public class CollapseCondition : ConditionModuleBase<CollapseCondition, CollapseConditionPresentation> {
+    public class CollapseCondition :
+        ConditionModuleBase<CollapseCondition, CollapseConditionPresentation>, ICollapseConditionPresentation {
 
         // Fields.
 
+        // Meta.
+        private ConditionId id;
+
+        // Progress.
         private float timeUntilExtinction;
 
 
         // Constructor.
 
-        public CollapseCondition(float timeUntilExtinction = 1f) {
-            this.timeUntilExtinction = Mathf.Max(timeUntilExtinction, 0f);
+        public CollapseCondition(ConditionId id, float timeUntilExtinction = 1f) {
+            this.id = id;
+            this.timeUntilExtinction = Floats.SetPositive(timeUntilExtinction);
         }
 
         public CollapseCondition(CollapseCondition other) {
+            id = other.id;
             timeUntilExtinction = other.timeUntilExtinction;
         }
 
@@ -24,9 +32,9 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         // Properties.
 
         public float TimeUntilExtinction => timeUntilExtinction;
-
         public override bool Cancellable => false;
-
+        public override float ConditionSpeed => 1;
+        public override ConditionId Id => id;
         public override string Description => $"Collapsing. Until extinction: {timeUntilExtinction}s.";
 
 
@@ -51,7 +59,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
             finished = false;
 
             // Update time. 
-            timeUntilExtinction = Mathf.Max(timeUntilExtinction - Context.GameTimeDelta, 0f);
+            timeUntilExtinction = Floats.SetPositive(timeUntilExtinction - Context.GameTimeDelta);
             
             // Go extinct.
             if (timeUntilExtinction == 0f) {

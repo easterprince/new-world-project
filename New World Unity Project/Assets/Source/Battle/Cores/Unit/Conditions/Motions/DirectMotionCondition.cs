@@ -6,39 +6,44 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
     
-    public class DirectMotionCondition : MotionCondition {
+    public class DirectMotionCondition :
+        ConditionModuleBase<DirectMotionCondition, MotionConditionPresentation>, IMotionConditionPresentation {
 
         // Static.
 
-        public float ToleratedDestinationOffset => 0.001f;
-        public float ToleratedNodeOffset => 0.6f;
+        public static float ToleratedDestinationOffset => 0.001f;
+        public static float ToleratedNodeOffset => 0.6f;
 
 
         // Fields.
 
         private readonly Vector3 destination;
         private readonly float speed;
+        private readonly ConditionId id;
 
 
         // Constructor.
 
-        public DirectMotionCondition(Vector3 destination, float speed) {
+        public DirectMotionCondition(Vector3 destination, float speed, ConditionId id) {
             this.destination = destination;
             this.speed = Mathf.Max(speed, 0);
+            this.id = id;
         }
 
         public DirectMotionCondition(DirectMotionCondition other) {
             destination = other.destination;
             speed = other.speed;
+            id = other.id;
         }
 
 
         // Properties.
 
-        public override Vector3 Destination => destination;
-        public override float MovementPerSecond => speed;
+        public Vector3 Destination => destination;
+        public float MovementPerSecond => speed;
         public override string Description => $"Moving to position {destination}.";
-
+        public override float ConditionSpeed => speed;
+        public override ConditionId Id => id;
         public override bool Cancellable => true;
 
 
@@ -71,8 +76,15 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
         // Cloning.
 
-        public override MotionCondition Clone() {
+        public override DirectMotionCondition Clone() {
             return new DirectMotionCondition(this);
+        }
+
+
+        // Presentation generation.
+
+        private protected override MotionConditionPresentation BuildPresentation() {
+            return new MotionConditionPresentation(this);
         }
 
 

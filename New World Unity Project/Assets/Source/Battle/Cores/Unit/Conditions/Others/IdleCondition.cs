@@ -9,7 +9,8 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         // Properties.
 
         public override bool Cancellable => true;
-
+        public override ConditionId Id => ConditionId.Default;
+        public override float ConditionSpeed => 1;
         public override string Description => "Idle.";
 
 

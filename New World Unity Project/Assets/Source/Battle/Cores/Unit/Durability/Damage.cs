@@ -1,4 +1,4 @@
-﻿using System;
+﻿using NewWorld.Utilities;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Durability {
@@ -21,13 +21,15 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         public float DamageValue {
             get => damageValue;
-            set {
-                if (float.IsNaN(value)) {
-                    value = 0;
-                }
-                damageValue = Mathf.Max(value, 0);
-            }
+            set => damageValue = Floats.SetPositive(value);
         }
+
+        public bool IsZero => damageValue == 0;
+
+
+        // Static properties.
+
+        public static Damage Zero => new Damage();
 
 
         // Operators.

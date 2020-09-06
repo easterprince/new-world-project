@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
-    public class MotionConditionPresentation : ConditionPresentationBase<MotionCondition> {
+    public class MotionConditionPresentation : ConditionPresentationBase<IMotionConditionPresentation> {
 
         // Properties.
 
@@ -13,7 +13,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
         // Constructor.
 
-        public MotionConditionPresentation(MotionCondition presented) : base(presented) {}
+        public MotionConditionPresentation(IMotionConditionPresentation presented) : base(presented) {}
 
 
     }

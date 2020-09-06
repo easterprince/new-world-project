@@ -3,7 +3,7 @@ using System;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
-    public class AttackConditionPresentation : ConditionPresentationBase<AttackCondition> {
+    public class AttackConditionPresentation : ConditionPresentationBase<IAttackConditionPresentation> {
 
         // Properties.
 
@@ -13,7 +13,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
         // Constructor.
 
-        public AttackConditionPresentation(AttackCondition presented) : base(presented) {}
+        public AttackConditionPresentation(IAttackConditionPresentation presented) : base(presented) {}
 
 
     }
