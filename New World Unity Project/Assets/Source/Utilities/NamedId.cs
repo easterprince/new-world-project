@@ -7,7 +7,7 @@ namespace NewWorld.Utilities {
 
         // Static fields.
 
-        private const string defaultName = "Unknown";
+        private const string defaultName = "None";
         private readonly static object writeLock = new object();
         private readonly static ConcurrentDictionary<string, int> nameToId;
 
