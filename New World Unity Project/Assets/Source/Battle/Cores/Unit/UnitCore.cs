@@ -44,7 +44,7 @@ namespace NewWorld.Battle.Cores.Unit {
             this.body.Connect(Presentation);
             this.durability = durability?.Clone() ?? new DurabilityModule();
             this.durability.Connect(Presentation);
-            this.condition = condition?.Clone() ?? new IdleCondition();
+            this.condition = condition?.Clone() ?? this.durability.CreateUsualCondition();
             this.condition.Connect(Presentation);
             this.abilityCollection = abilityCollection?.Clone() ?? new AbilityCollectionModule();
             this.abilityCollection.Connect(Presentation);
@@ -116,9 +116,7 @@ namespace NewWorld.Battle.Cores.Unit {
             // Let condition act.
             condition.Act();
             if (condition.Finished) {
-                condition.Disconnect();
-                condition = new IdleCondition();
-                condition.Connect(Presentation);
+                ChangeCondition(null, forceChange: false);
             }
 
         }
@@ -141,7 +139,7 @@ namespace NewWorld.Battle.Cores.Unit {
         }
 
         public void ChangeCondition(IConditionModule condition, bool forceChange) {
-            if (!forceChange && !this.condition.Cancellable) {
+            if (!this.condition.Finished && !forceChange && !this.condition.Cancellable) {
                 return;
             }
             if (condition is null) {
@@ -156,11 +154,7 @@ namespace NewWorld.Battle.Cores.Unit {
             durability.CauseDamage(damage);
         }
 
-        public void AddAbility(AttackAbility ability) {
-            abilityCollection.AddAbility(ability);
-        }
-
-        public void AddAbility(IMotionAbility ability) {
+        public void AddAbility(IAbilityModule ability) {
             abilityCollection.AddAbility(ability);
         }
 
@@ -168,14 +162,14 @@ namespace NewWorld.Battle.Cores.Unit {
             if (attackUsage is null) {
                 throw new ArgumentNullException();
             }
-            abilityCollection.UseAbility(attackUsage);
+            abilityCollection.UseAbility(attackUsage.Ability, attackUsage.Target);
         }
 
         public void UseAbility(MotionUsageAction motionUsage) {
             if (motionUsage is null) {
                 throw new ArgumentNullException();
             }
-            abilityCollection.UseAbility(motionUsage);
+            abilityCollection.UseAbility(motionUsage.Ability, motionUsage.Destination);
         }
 
         public void SetGoal(RelocationGoal goal) {

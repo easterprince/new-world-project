@@ -1,7 +1,7 @@
 ﻿namespace NewWorld.Battle.Cores.Unit.Conditions {
 
     public class ConditionPresentationBase<TPresented> : UnitModulePresentationBase<TPresented>, IConditionPresentation
-        where TPresented : IConditionPresentation {
+        where TPresented : class, IConditionPresentation {
         
         // Constructor.
         

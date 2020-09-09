@@ -44,13 +44,13 @@ namespace NewWorld.Battle.Cores.Unit.Behaviours.Offensives {
             }
 
             // Check if already attacking.
-            if (owner.Condition is AttackConditionPresentation currentAttack && currentAttack.Target == Goal.Target) {
+            if (owner.Condition is IAttackConditionPresentation currentAttack && currentAttack.Target == Goal.Target) {
                 goalStatus = GoalStatus.Active;
                 return;
             }
 
             // Choose attack ability.
-            AttackAbilityPresentation chosenAttack = null;
+            IAttackAbilityPresentation chosenAttack = null;
             foreach (var attackAbility in owner.AbilityCollection.Attacks) {
                 if (chosenAttack == null || attackAbility.DamagePerSecond.DamageValue > chosenAttack.DamagePerSecond.DamageValue) {
                     chosenAttack = attackAbility;
@@ -64,7 +64,7 @@ namespace NewWorld.Battle.Cores.Unit.Behaviours.Offensives {
             // Check if target is reached.
             var currentPosition = owner.Body.Position;
             var targetPosition = Goal.Target.Body.Position;
-            if ((currentPosition - targetPosition).magnitude <= chosenAttack.EffectiveRange) {
+            if ((currentPosition - targetPosition).magnitude <= chosenAttack.AttackRange) {
                 var abilityUsage = new AttackUsageAction(chosenAttack, Goal.Target);
                 owner.PlanAction(abilityUsage);
                 goalStatus = GoalStatus.Active;

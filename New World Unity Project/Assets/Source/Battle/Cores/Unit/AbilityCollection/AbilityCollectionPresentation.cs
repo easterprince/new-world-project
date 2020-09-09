@@ -15,8 +15,8 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         // Properties.
 
         public List<IAbilityPresentation> Abilities => Presented.Abilities;
-        public List<MotionAbilityPresentation> Motions => Presented.Motions;
-        public List<AttackAbilityPresentation> Attacks => Presented.Attacks;
+        public List<IMotionAbilityPresentation> Motions => Presented.Motions;
+        public List<IAttackAbilityPresentation> Attacks => Presented.Attacks;
 
 
     }

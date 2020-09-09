@@ -1,10 +1,8 @@
 ﻿using NewWorld.Battle.Cores.Unit.Abilities;
 using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
-using NewWorld.Utilities;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
 
@@ -14,23 +12,20 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         // Fields.
 
         private readonly Dictionary<IAbilityPresentation, IAbilityModule> abilities;
-        private readonly Dictionary<MotionAbilityPresentation, IMotionAbility> motions;
-        private readonly Dictionary<AttackAbilityPresentation, AttackAbility> attacks;
+        private readonly Dictionary<IMotionAbilityPresentation, IMotionAbility> motions;
+        private readonly Dictionary<IAttackAbilityPresentation, IAttackAbility> attacks;
 
 
         // Constructors.
 
         public AbilityCollectionModule() {
             abilities = new Dictionary<IAbilityPresentation, IAbilityModule>();
-            motions = new Dictionary<MotionAbilityPresentation, IMotionAbility>();
-            attacks = new Dictionary<AttackAbilityPresentation, AttackAbility>();
+            motions = new Dictionary<IMotionAbilityPresentation, IMotionAbility>();
+            attacks = new Dictionary<IAttackAbilityPresentation, IAttackAbility>();
         }
 
         public AbilityCollectionModule(AbilityCollectionModule other) : this() {
-            foreach (var ability in other.attacks.Values) {
-                AddAbility(ability);
-            }
-            foreach (var ability in other.motions.Values) {
+            foreach (var ability in other.abilities.Values) {
                 AddAbility(ability);
             }
         }
@@ -39,8 +34,8 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         // Properties.
 
         public List<IAbilityPresentation> Abilities => new List<IAbilityPresentation>(abilities.Keys);
-        public List<MotionAbilityPresentation> Motions => new List<MotionAbilityPresentation>(motions.Keys);
-        public List<AttackAbilityPresentation> Attacks => new List<AttackAbilityPresentation>(attacks.Keys);
+        public List<IMotionAbilityPresentation> Motions => new List<IMotionAbilityPresentation>(motions.Keys);
+        public List<IAttackAbilityPresentation> Attacks => new List<IAttackAbilityPresentation>(attacks.Keys);
 
 
         // Cloning.
@@ -59,34 +54,30 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
 
         // Modifying.
 
-        public void AddAbility(AttackAbility ability) {
+        public void AddAbility(IAbilityModule ability) {
             var cloned = ability.Clone();
             abilities[cloned.Presentation] = cloned;
-            attacks[cloned.Presentation] = cloned;
             cloned.Connect(Presentation);
-        }
-
-        public void AddAbility(IMotionAbility ability) {
-            var cloned = ability.Clone();
-            abilities[cloned.Presentation] = cloned;
-            motions[cloned.Presentation] = cloned;
-            cloned.Connect(Presentation);
+            if (cloned is IMotionAbility motion) {
+                motions[motion.Presentation] = motion;
+            }
+            if (cloned is IAttackAbility attack) {
+                attacks[attack.Presentation] = attack;
+            }
         }
 
 
         // Usage.
 
-        public void UseAbility(AttackUsageAction usage) {
-            ValidateContext();
-            if (attacks.TryGetValue(usage.Ability, out AttackAbility ability)) {
-                ability.Use(usage.Target);
+        public void UseAbility(IAttackAbilityPresentation abilityPresentation, UnitPresentation target) {
+            if (attacks.TryGetValue(abilityPresentation, out IAttackAbility ability)) {
+                ability.Use(target);
             }
         }
 
-        public void UseAbility(MotionUsageAction usage) {
-            ValidateContext();
-            if (motions.TryGetValue(usage.Ability, out IMotionAbility ability)) {
-                ability.Use(usage.Destination);
+        public void UseAbility(IMotionAbilityPresentation abilityPresentation, Vector3 destination) {
+            if (motions.TryGetValue(abilityPresentation, out IMotionAbility ability)) {
+                ability.Use(destination);
             }
         }
 
