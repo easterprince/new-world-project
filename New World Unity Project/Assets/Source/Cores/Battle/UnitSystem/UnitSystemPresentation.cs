@@ -1,6 +1,5 @@
 ﻿using NewWorld.Cores.Battle.Unit;
 using NewWorld.Utilities;
-using NewWorld.Utilities.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace NewWorld.Cores.Battle.UnitSystem {
 
     public class UnitSystemPresentation : PresentationBase<UnitSystemCore>, IEnumerable<UnitPresentation>,
         IReceptive<UnitAdditionAction>, IReceptive<UnitMotionAction>, IReceptive<UnitRemovalAction> {
-        
+
         // Constructor.
 
         public UnitSystemPresentation(UnitSystemCore presented) : base(presented) {}

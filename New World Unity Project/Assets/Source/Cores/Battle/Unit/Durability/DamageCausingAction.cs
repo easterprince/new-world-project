@@ -1,7 +1,5 @@
-﻿using UnityEngine;
+﻿namespace NewWorld.Cores.Battle.Unit.Durability {
 
-namespace NewWorld.Cores.Battle.Unit.Durability {
-    
     public class DamageCausingAction : UnitAction {
 
         // Fields.

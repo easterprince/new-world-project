@@ -8,7 +8,7 @@ namespace NewWorld.Cores.Battle.Map {
     public class MapCore : ConnectableCoreBase<MapCore, MapPresentation, BattlefieldPresentation> {
 
         // Enumerator.
-        
+
         public enum InterpolationMode {
             None = 0,
             Bilinear
@@ -19,7 +19,7 @@ namespace NewWorld.Cores.Battle.Map {
 
         public static float SurfaceRange => 0.76f;
 
-        
+
         // Fields.
 
         private float heightLimit = 0;
@@ -49,7 +49,7 @@ namespace NewWorld.Cores.Battle.Map {
         // Properties.
 
         public Vector2Int Size => new Vector2Int(realNodes.GetLength(0), realNodes.GetLength(1));
-        
+
         public float HeightLimit {
             get => heightLimit;
             set {
@@ -90,7 +90,7 @@ namespace NewWorld.Cores.Battle.Map {
             return new MapPresentation(this);
         }
 
-        
+
         // Cloning.
 
         public override MapCore Clone() {

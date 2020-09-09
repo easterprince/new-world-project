@@ -3,7 +3,7 @@ using NewWorld.Utilities.Graphs;
 using System.Collections.Generic;
 
 namespace NewWorld.Cores.Battle.Layout {
-    
+
     public partial class LayoutRegion {
 
         // Wrapper.

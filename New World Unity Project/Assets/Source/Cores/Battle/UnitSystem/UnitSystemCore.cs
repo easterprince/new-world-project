@@ -1,8 +1,6 @@
 ﻿using NewWorld.Cores.Battle.Battlefield;
-using NewWorld.Cores.Battle.Map;
 using NewWorld.Cores.Battle.Unit;
 using NewWorld.Utilities;
-using NewWorld.Utilities.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -3,9 +3,9 @@
 namespace NewWorld.Cores.Battle.Unit.Intelligence {
 
     public class IntelligencePresentation : UnitModulePresentationBase<IntelligenceModule> {
-        
+
         // Constructor.
-        
+
         public IntelligencePresentation(IntelligenceModule presented) : base(presented) {}
 
 

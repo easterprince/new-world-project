@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Nodes {
-    
+
     public class NodeGridController : MonoBehaviour {
 
         // Fields.
@@ -26,7 +26,7 @@ namespace NewWorld.Controllers.Battle.Nodes {
         // Life cycle.
 
         private void Start() {
-            
+
             // Validate steady references.
             GameObjects.ValidateReference(map, nameof(map));
             GameObjects.ValidateReference(unitSystem, nameof(unitSystem));

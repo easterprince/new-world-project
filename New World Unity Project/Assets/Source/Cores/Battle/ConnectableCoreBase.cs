@@ -2,7 +2,7 @@
 using System;
 
 namespace NewWorld.Cores.Battle {
-    
+
     public abstract class ConnectableCoreBase<TSelf, TPresentation, TParentPresentation> :
         CoreBase<TSelf, TPresentation>, IConnectableCore<TSelf, TPresentation, TParentPresentation>
         where TPresentation : class, IContextPointer

@@ -1,5 +1,4 @@
-﻿using NewWorld.Cores.Battle.Battlefield;
-using NewWorld.Cores.Battle.Unit.Abilities;
+﻿using NewWorld.Cores.Battle.Unit.Abilities;
 using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
 using NewWorld.Cores.Battle.Unit.Abilities.Motions;
 using NewWorld.Cores.Battle.Unit.AbilityCollection;
@@ -7,7 +6,6 @@ using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
 using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
 using NewWorld.Cores.Battle.Unit.Body;
 using NewWorld.Cores.Battle.Unit.Conditions;
-using NewWorld.Cores.Battle.Unit.Conditions.Others;
 using NewWorld.Cores.Battle.Unit.Durability;
 using NewWorld.Cores.Battle.Unit.Intelligence;
 using NewWorld.Cores.Battle.UnitSystem;

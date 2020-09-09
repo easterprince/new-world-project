@@ -1,7 +1,5 @@
-﻿using NewWorld.Cores.Battle.Unit.Durability;
+﻿namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
 
-namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
-    
     public interface IAttackAbility : IAbilityModule, IAttackAbilityPresentation {
 
         // Presentation.

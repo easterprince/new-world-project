@@ -1,7 +1,5 @@
-﻿using NewWorld.Cores.Battle.Unit.Intelligence;
+﻿namespace NewWorld.Cores.Battle.Unit.Behaviours {
 
-namespace NewWorld.Cores.Battle.Unit.Behaviours {
-    
     public abstract class BehaviourModuleBase<TSelf, TPresentation, TGoal> :
         UnitModuleBase<TSelf, TPresentation, IOwnerPointer>, IBehaviourModule
         where TSelf : BehaviourModuleBase<TSelf, TPresentation, TGoal>
@@ -52,7 +50,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours {
             }
         }
 
-        private protected abstract void OnAct(out GoalStatus goalStatus); 
+        private protected abstract void OnAct(out GoalStatus goalStatus);
 
 
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Layout {
-    
+
     public struct VisionStencil {
 
         // Fabric.

@@ -1,7 +1,7 @@
 ﻿using NewWorld.Cores.Battle.Battlefield;
 
 namespace NewWorld.Cores.Battle {
-    
+
     public abstract class PresentationBase<TPresented> : IContextPointer
         where TPresented : class, IContextPointer {
 

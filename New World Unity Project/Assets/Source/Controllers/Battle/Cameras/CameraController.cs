@@ -1,8 +1,6 @@
 ﻿using NewWorld.Controllers.Battle.Battlefield;
 using NewWorld.Controllers.Battle.Map;
-using NewWorld.Cores.Battle.Unit;
 using NewWorld.Utilities;
-using System;
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Cameras {

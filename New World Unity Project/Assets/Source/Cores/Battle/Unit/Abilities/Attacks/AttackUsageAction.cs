@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
-    
+
     public class AttackUsageAction : AbilityUsageActionBase<IAttackAbilityPresentation> {
 
         // Fields.
@@ -20,7 +20,7 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
 
         public UnitPresentation Target => target;
 
-    
+
     }
 
 }

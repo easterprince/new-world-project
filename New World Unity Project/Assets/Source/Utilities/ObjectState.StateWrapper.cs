@@ -1,7 +1,7 @@
 ﻿namespace NewWorld.Utilities {
 
     public partial class ObjectState<TDelta> {
-        
+
         // Wrapper.
 
         public class StateWrapper : ObjectWrapper<ObjectState<TDelta>> {
@@ -18,7 +18,7 @@
 
             // Methods.
 
-            public StateWrapper Transit(out TDelta delta) => Wrapped.Transit(out delta)?.Wrapper; 
+            public StateWrapper Transit(out TDelta delta) => Wrapped.Transit(out delta)?.Wrapper;
 
 
         }

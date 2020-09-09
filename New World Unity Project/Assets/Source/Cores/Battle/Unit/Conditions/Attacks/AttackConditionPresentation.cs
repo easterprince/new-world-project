@@ -1,5 +1,4 @@
 ﻿using NewWorld.Cores.Battle.Unit.Durability;
-using System;
 
 namespace NewWorld.Cores.Battle.Unit.Conditions.Attacks {
 

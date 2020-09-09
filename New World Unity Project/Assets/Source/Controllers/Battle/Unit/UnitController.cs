@@ -9,7 +9,7 @@ using System;
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Unit {
-    
+
     public class UnitController : BuildableController {
 
         // Fabric.
@@ -43,7 +43,7 @@ namespace NewWorld.Controllers.Battle.Unit {
         private new Collider collider;
 
         // Animation.
-        
+
 
 
         // Properties.
@@ -101,7 +101,7 @@ namespace NewWorld.Controllers.Battle.Unit {
 
                 // Update animation.
                 if (currentCondition != presentation.Condition) {
-                    
+
                     // Clear previous animation.
                     if (currentCondition is MotionConditionPresentation) {
                         animator.SetFloat(motionSpeedHash, 0);

@@ -1,10 +1,8 @@
-﻿using System;
-using UnityEngine;
-using Unity.Mathematics;
-using NewWorld.Cores.Battle.Map;
-using System.Linq;
+﻿using NewWorld.Cores.Battle.Map;
 using NewWorld.Utilities;
+using System;
 using System.Threading;
+using Unity.Mathematics;
 
 namespace NewWorld.Cores.Battle.Generation.Map {
 
@@ -40,7 +38,7 @@ namespace NewWorld.Cores.Battle.Generation.Map {
 
             cancellationToken?.ThrowIfCancellationRequested();
 
-            var map = new MapCore(Size, HeightLimit); 
+            var map = new MapCore(Size, HeightLimit);
             foreach (var position in Enumerables.InRange2(Size)) {
                 float noiseValue = noise.cellular2x2(0.05f * new float2(position.x, position.y)).x;
                 float normalizedHeight = (noiseValue - 0.4f) / (1 - 0.4f);

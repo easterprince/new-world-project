@@ -110,7 +110,7 @@ namespace NewWorld.Cores.Battle.Unit.Durability {
         // Modifying methods.
 
         public void CauseDamage(Damage damage) {
-            
+
             // Modify durability.
             bool fallenBefore = Fallen;
             Durability -= damage.DamageValue;

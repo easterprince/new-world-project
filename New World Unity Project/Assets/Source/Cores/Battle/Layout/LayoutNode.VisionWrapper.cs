@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Layout {
-    
+
     public partial class LayoutNode {
 
         // Wrapper.
 
         public class VisionWrapper : ObjectWrapper<LayoutNode>, IWeightedGraphVertex<VisionWrapper, float> {
-            
+
             // Constructor.
 
             public VisionWrapper(LayoutNode wrapped) : base(wrapped) {}
@@ -34,8 +34,8 @@ namespace NewWorld.Cores.Battle.Layout {
             public float CalculateDistance(VisionWrapper destination) {
                 return Wrapped.CalculateDistance(destination.Wrapped);
             }
-        
-        
+
+
         }
 
 

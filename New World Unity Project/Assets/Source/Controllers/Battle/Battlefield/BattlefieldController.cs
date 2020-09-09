@@ -4,14 +4,11 @@ using NewWorld.Cores.Battle.Battlefield;
 using NewWorld.Cores.Battle.Generation.Map;
 using NewWorld.Cores.Battle.Generation.Units;
 using NewWorld.Cores.Battle.Layout;
-using NewWorld.Cores.Battle.Map;
-using NewWorld.Cores.Battle.UnitSystem;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Battlefield {
@@ -123,7 +120,7 @@ namespace NewWorld.Controllers.Battle.Battlefield {
         }
 
         private protected override void OnDestroy() {
-            
+
             // Remove event handlers.
             if (map != null) {
                 map.RemoveSubscriber(this);

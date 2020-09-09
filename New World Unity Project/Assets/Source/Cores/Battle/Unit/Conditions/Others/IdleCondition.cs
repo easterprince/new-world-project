@@ -59,8 +59,8 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Others {
             }
 
         }
-    
-    
+
+
     }
 
 }

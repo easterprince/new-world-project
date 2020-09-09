@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace NewWorld.Controllers.Battle.UI.UnitPanel {
-    
+
     public class DurabilitySectionController : MonoBehaviour {
 
         // Fields.
@@ -43,7 +43,7 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
             }
         }
 
-    
+
     }
 
 }

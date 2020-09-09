@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace NewWorld.Utilities.Controllers {
-    
+
     public class SteadyController : MonoBehaviour {
 
         // Fields.

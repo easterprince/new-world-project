@@ -1,7 +1,5 @@
-﻿using System;
+﻿namespace NewWorld.Cores.Battle.Unit.Abilities {
 
-namespace NewWorld.Cores.Battle.Unit.Abilities {
-    
     public interface IAbilityPresentation : IOwnerPointer {
 
         // Properties.

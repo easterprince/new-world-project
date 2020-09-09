@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours {
-    
+
     public class GoalSettingAction<TGoal> : UnitAction
         where TGoal : UnitGoal {
 

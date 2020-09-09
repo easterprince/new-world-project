@@ -3,7 +3,6 @@ using NewWorld.Cores.Battle.Map;
 using NewWorld.Cores.Battle.UnitSystem;
 using NewWorld.Utilities.Events;
 using System;
-using System.Collections.Generic;
 
 namespace NewWorld.Cores.Battle.Battlefield {
 

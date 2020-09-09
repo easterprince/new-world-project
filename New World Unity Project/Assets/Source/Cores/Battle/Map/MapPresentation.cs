@@ -3,10 +3,10 @@
 namespace NewWorld.Cores.Battle.Map {
 
     public class MapPresentation : PresentationBase<MapCore> {
-        
+
         // Constructor.
-        
-        public MapPresentation(MapCore presented) : base(presented) { }
+
+        public MapPresentation(MapCore presented) : base(presented) {}
 
 
         // Properties.

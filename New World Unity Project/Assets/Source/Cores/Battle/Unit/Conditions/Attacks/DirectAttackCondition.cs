@@ -43,7 +43,7 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Attacks {
             this.attackDuration = Floats.SetPositive(attackDuration);
             this.attackMoment = Floats.LimitPositive(attackMoment, this.attackDuration);
             this.attackRange = Floats.SetPositive(attackRange);
-            
+
             // Progress.
             accumulatedTime = 0f;
             attacked = false;

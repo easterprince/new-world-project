@@ -1,5 +1,4 @@
-﻿using NewWorld.Cores.Battle.Unit.Abilities;
-using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
+﻿using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
 using NewWorld.Cores.Battle.Unit.Abilities.Motions;
 using NewWorld.Cores.Battle.Unit.Behaviours;
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
@@ -10,7 +9,7 @@ using NewWorld.Cores.Battle.Unit.Durability;
 using System;
 
 namespace NewWorld.Cores.Battle.Unit {
-    
+
     public partial class UnitCore :
         IResponsive<ConditionChangingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction>,

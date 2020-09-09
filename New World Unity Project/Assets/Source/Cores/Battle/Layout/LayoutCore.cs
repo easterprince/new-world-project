@@ -16,7 +16,7 @@ namespace NewWorld.Cores.Battle.Layout {
 
         public static async Task<LayoutCore> CreateLayoutAsync(
             MapPresentation map, float regionRadius, float bodyRadius, float toleranceRadius, CancellationToken cancellation) {
-            
+
             if (map == null) {
                 throw new ArgumentNullException(nameof(map));
             }

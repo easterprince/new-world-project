@@ -1,7 +1,5 @@
-﻿using NewWorld.Cores.Battle.Unit.Intelligence;
+﻿namespace NewWorld.Cores.Battle.Unit.Behaviours {
 
-namespace NewWorld.Cores.Battle.Unit.Behaviours {
-    
     public interface IBehaviourModule :
         IUnitModule<IBehaviourModule, IBehaviourPresentation, IOwnerPointer>, IBehaviourPresentation {
 

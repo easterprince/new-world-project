@@ -1,5 +1,5 @@
 ﻿namespace NewWorld.Cores.Battle {
-    
+
     public interface ICore<TSelf, TPresentation> : IContextPointer {
 
         // Properties.

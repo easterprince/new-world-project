@@ -1,5 +1,4 @@
 ﻿using NewWorld.Cores.Battle.Unit;
-using UnityEngine;
 
 namespace NewWorld.Cores.Battle.UnitSystem {
 

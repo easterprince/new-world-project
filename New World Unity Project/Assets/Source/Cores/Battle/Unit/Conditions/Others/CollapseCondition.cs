@@ -1,6 +1,5 @@
 ﻿using NewWorld.Cores.Battle.UnitSystem;
 using NewWorld.Utilities;
-using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Conditions.Others {
 
@@ -60,7 +59,7 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Others {
 
             // Update time. 
             timeUntilExtinction = Floats.SetPositive(timeUntilExtinction - Context.GameTimeDelta);
-            
+
             // Go extinct.
             if (timeUntilExtinction == 0f) {
                 Context.UnitSystem.PlanAction(new UnitRemovalAction(Owner));

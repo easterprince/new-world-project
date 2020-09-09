@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Cameras {
-    
+
     public struct CameraLocation {
 
         // Fields.

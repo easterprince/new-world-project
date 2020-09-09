@@ -17,8 +17,8 @@
         // Properties.
 
         public override string Name => "Idle";
-    
-    
+
+
     }
 
 }

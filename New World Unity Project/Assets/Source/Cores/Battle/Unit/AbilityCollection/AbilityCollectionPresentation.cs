@@ -6,9 +6,9 @@ using System.Collections.Generic;
 namespace NewWorld.Cores.Battle.Unit.AbilityCollection {
 
     public class AbilityCollectionPresentation : UnitModulePresentationBase<AbilityCollectionModule> {
-        
+
         // Constructor.
-        
+
         public AbilityCollectionPresentation(AbilityCollectionModule presented) : base(presented) {}
 
 

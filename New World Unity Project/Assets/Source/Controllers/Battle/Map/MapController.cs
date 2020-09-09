@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Map {
-    
+
     public class MapController : BuildableController {
 
         // Fields.

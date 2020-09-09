@@ -1,8 +1,6 @@
-﻿using NewWorld.Cores.Battle.Unit.Body;
-using NewWorld.Cores.Battle.Unit.Conditions;
+﻿using NewWorld.Cores.Battle.Unit.Conditions;
 using NewWorld.Cores.Battle.Unit.Conditions.Motions;
 using NewWorld.Utilities;
-using System;
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Abilities.Motions {

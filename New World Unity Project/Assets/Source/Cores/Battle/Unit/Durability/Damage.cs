@@ -1,8 +1,7 @@
 ﻿using NewWorld.Utilities;
-using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Durability {
-    
+
     public struct Damage {
 
         // Fields.
@@ -34,15 +33,15 @@ namespace NewWorld.Cores.Battle.Unit.Durability {
 
         // Operators.
 
-        public static Damage operator * (float factor, Damage damage) {
+        public static Damage operator *(float factor, Damage damage) {
             return new Damage(factor * damage.damageValue);
         }
 
-        public static Damage operator * (Damage damage, float factor) {
+        public static Damage operator *(Damage damage, float factor) {
             return new Damage(damage.damageValue * factor);
         }
 
-        public static Damage operator / (Damage damage, float divisor) {
+        public static Damage operator /(Damage damage, float divisor) {
             return new Damage(damage.damageValue / divisor);
         }
 

@@ -1,8 +1,7 @@
 ﻿using System;
-using UnityEngine.UIElements;
 
 namespace NewWorld.Utilities {
-    
+
     public class ObjectWrapper<TWrapped>
         where TWrapped : class {
 

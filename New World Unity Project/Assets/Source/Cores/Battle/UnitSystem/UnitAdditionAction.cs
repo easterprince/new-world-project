@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.UnitSystem {
-    
+
     public class UnitAdditionAction : UnitSystemAction {
 
         // Fields.

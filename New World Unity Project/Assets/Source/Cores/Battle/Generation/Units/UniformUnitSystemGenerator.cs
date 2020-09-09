@@ -6,16 +6,15 @@ using NewWorld.Cores.Battle.Unit.Body;
 using NewWorld.Cores.Battle.Unit.Durability;
 using NewWorld.Cores.Battle.UnitSystem;
 using NewWorld.Utilities;
-using System;
 using System.Threading;
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Generation.Units {
 
     public class UniformUnitSystemGenerator : UnitSystemGenerator {
-        
+
         // Generation.
-        
+
         public override UnitSystemCore Generate(int seed, CancellationToken? cancellationToken = null) {
             var unitSystem = new UnitSystemCore();
             int added = 0;

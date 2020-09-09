@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace NewWorld.Controllers.Battle.UI.Bars {
-    
+
     public class VerticalBarController : BarController {
 
         // Fields.

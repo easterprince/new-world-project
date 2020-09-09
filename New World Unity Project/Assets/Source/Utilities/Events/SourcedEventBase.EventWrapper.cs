@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine.UIElements;
-
-namespace NewWorld.Utilities.Events {
+﻿namespace NewWorld.Utilities.Events {
 
     public abstract partial class SourcedEventBase<TSubscriber, TAction> {
 

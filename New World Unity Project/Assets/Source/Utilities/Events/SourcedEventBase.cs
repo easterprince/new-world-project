@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine.UIElements;
 
 namespace NewWorld.Utilities.Events {
-    
+
     public abstract partial class SourcedEventBase<TSubscriber, TAction>
         where TSubscriber : class
         where TAction : Delegate {

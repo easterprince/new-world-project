@@ -1,11 +1,6 @@
 ﻿using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
-using NewWorld.Cores.Battle.Unit.Abilities.Motions;
 using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
 using NewWorld.Cores.Battle.Unit.Conditions.Attacks;
-using NewWorld.Cores.Battle.Unit.Conditions.Motions;
-using NewWorld.Utilities;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
 
@@ -40,7 +35,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
             // Check if target is down.
             if (Goal.Target.Durability.Fallen) {
                 goalStatus = GoalStatus.Achieved;
-                return; 
+                return;
             }
 
             // Check if already attacking.

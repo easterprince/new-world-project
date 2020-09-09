@@ -57,7 +57,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
             var currentNode = context.UnitSystem[owner];
             var destinationNode = Positions.WorldToNode(Goal.Destination);
             if (currentNode == destinationNode) {
-                
+
                 // Use motion ability if condition doesn't agree with plan.
                 if (currentCondition != null && (currentCondition.Destination - Goal.Destination).magnitude <= Goal.AdmissibleDistance) {
                     goalStatus = GoalStatus.Active;

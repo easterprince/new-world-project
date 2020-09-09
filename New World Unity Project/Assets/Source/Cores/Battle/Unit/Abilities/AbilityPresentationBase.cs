@@ -3,9 +3,9 @@
     public abstract class AbilityPresentationBase<TPresented> :
         UnitModulePresentationBase<TPresented>, IAbilityPresentation
         where TPresented : class, IAbilityPresentation {
-        
+
         // Constructor.
-        
+
         public AbilityPresentationBase(TPresented presented) : base(presented) {}
 
 

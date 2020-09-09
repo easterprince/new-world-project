@@ -1,5 +1,4 @@
 ﻿using NewWorld.Utilities;
-using System;
 
 namespace NewWorld.Cores.Battle.Unit.Conditions {
 

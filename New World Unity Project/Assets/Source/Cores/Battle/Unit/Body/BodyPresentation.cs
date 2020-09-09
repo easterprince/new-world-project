@@ -6,7 +6,7 @@ namespace NewWorld.Cores.Battle.Unit.Body {
 
         // Constructor.
 
-        public BodyPresentation(BodyModule presented) : base(presented) { }
+        public BodyPresentation(BodyModule presented) : base(presented) {}
 
 
         // Properties.

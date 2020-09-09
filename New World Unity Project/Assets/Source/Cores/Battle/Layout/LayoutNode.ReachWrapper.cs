@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Layout {
-    
+
     public partial class LayoutNode {
 
         // Wrapper.
@@ -28,7 +28,7 @@ namespace NewWorld.Cores.Battle.Layout {
                 }
             }
 
-            
+
             // Method.
 
             public float CalculateDistance(ReachWrapper destination) {

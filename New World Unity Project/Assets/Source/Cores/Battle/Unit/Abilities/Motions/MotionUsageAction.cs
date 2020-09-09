@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Abilities.Motions {
-    
+
     public class MotionUsageAction : AbilityUsageActionBase<IMotionAbilityPresentation> {
 
         // Fields.

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
-    
+
     public class RelocationGoal : UnitGoal {
 
         // Fields.

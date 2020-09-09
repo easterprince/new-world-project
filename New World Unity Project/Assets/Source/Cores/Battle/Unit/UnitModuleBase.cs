@@ -7,7 +7,7 @@ namespace NewWorld.Cores.Battle.Unit {
         IUnitModule<TSelf, TPresentation, TParentPresentation>
         where TPresentation : class, IOwnerPointer
         where TParentPresentation : class, IOwnerPointer {
-    
+
         // Properties.
 
         public UnitPresentation Owner => Parent?.Owner;

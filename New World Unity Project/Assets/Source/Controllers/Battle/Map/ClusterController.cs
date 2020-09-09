@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle.Map {
-    
+
     public class ClusterController : BuildableController {
 
         // Fabric.

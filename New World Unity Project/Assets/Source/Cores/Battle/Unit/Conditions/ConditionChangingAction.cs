@@ -1,7 +1,5 @@
-﻿using System;
+﻿namespace NewWorld.Cores.Battle.Unit.Conditions {
 
-namespace NewWorld.Cores.Battle.Unit.Conditions {
-    
     public class ConditionChangingAction : UnitAction {
 
         // Fields.
@@ -23,7 +21,7 @@ namespace NewWorld.Cores.Battle.Unit.Conditions {
         public IConditionModule Condition => condition;
         public bool ForceChange => forceChange;
 
-    
+
     }
 
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Conditions.Motions {
 

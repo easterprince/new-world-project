@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Body {
-    
+
     public class RotationAction : UnitAction {
 
         // Fields.

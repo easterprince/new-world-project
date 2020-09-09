@@ -2,11 +2,11 @@
 using UnityEngine;
 
 namespace NewWorld.Controllers.Battle {
-    
+
     public class PrefabSourceController : SceneSingleton<PrefabSourceController> {
 
         // Fields.
-        
+
         [SerializeField]
         private GameObject unitPrefab;
         [SerializeField]

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Map {
-    
+
     public struct MapNode {
 
         // Enumerator.

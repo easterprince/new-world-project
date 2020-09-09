@@ -1,9 +1,6 @@
-﻿using NewWorld.Cores.Battle.Unit.Abilities;
-using NewWorld.Cores.Battle.Unit.Behaviours;
+﻿using NewWorld.Cores.Battle.Unit.Behaviours;
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
 using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
-using NewWorld.Cores.Battle.Unit.Conditions;
-using System.Collections.Generic;
 
 namespace NewWorld.Cores.Battle.Unit.Intelligence {
 
@@ -32,7 +29,7 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
 
 
         // Cloning.
-        
+
         public override IntelligenceModule Clone() {
             return new IntelligenceModule(this);
         }

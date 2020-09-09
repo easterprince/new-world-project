@@ -1,10 +1,9 @@
-﻿using NewWorld.Utilities.Graphs;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Layout {
-    
+
     public partial class LayoutNode {
 
         // Fields.

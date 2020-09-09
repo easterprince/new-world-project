@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NewWorld.Cores.Battle {
+﻿namespace NewWorld.Cores.Battle {
 
     public abstract class GameAction {}
 
