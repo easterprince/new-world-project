@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NewWorld.Utilities;
+using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions {
 
@@ -16,7 +17,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
         public abstract bool Cancellable { get; }
         public abstract string Description { get; }
-        public abstract ConditionId Id { get; }
+        public abstract NamedId Id { get; }
         public abstract float ConditionSpeed { get; }
         public bool Finished => finished;
 

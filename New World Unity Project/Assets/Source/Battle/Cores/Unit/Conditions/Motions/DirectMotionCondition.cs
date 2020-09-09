@@ -1,11 +1,12 @@
 ﻿using NewWorld.Battle.Cores.Map;
 using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities;
 using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
-    
+
     public class DirectMotionCondition :
         ConditionModuleBase<DirectMotionCondition, MotionConditionPresentation>, IMotionConditionPresentation {
 
@@ -19,12 +20,12 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
         private readonly Vector3 destination;
         private readonly float speed;
-        private readonly ConditionId id;
+        private readonly NamedId id;
 
 
         // Constructor.
 
-        public DirectMotionCondition(Vector3 destination, float speed, ConditionId id) {
+        public DirectMotionCondition(Vector3 destination, float speed, NamedId id) {
             this.destination = destination;
             this.speed = Mathf.Max(speed, 0);
             this.id = id;
@@ -43,7 +44,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
         public float MovementPerSecond => speed;
         public override string Description => $"Moving to position {destination}.";
         public override float ConditionSpeed => speed;
-        public override ConditionId Id => id;
+        public override NamedId Id => id;
         public override bool Cancellable => true;
 
 

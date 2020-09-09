@@ -1,4 +1,6 @@
-﻿namespace NewWorld.Battle.Cores.Unit.Conditions {
+﻿using NewWorld.Utilities;
+
+namespace NewWorld.Battle.Cores.Unit.Conditions {
 
     public class ConditionPresentationBase<TPresented> : UnitModulePresentationBase<TPresented>, IConditionPresentation
         where TPresented : class, IConditionPresentation {
@@ -14,7 +16,7 @@
         public bool Finished => Presented.Finished;
         public string Description => Presented.Description;
         public float ConditionSpeed => Presented.ConditionSpeed;
-        public ConditionId Id => Presented.Id;
+        public NamedId Id => Presented.Id;
 
 
     }

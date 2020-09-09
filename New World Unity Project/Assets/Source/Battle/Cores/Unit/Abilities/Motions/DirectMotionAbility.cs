@@ -12,7 +12,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
         // Fields.
 
         // Meta.
-        private readonly ConditionId id;
+        private readonly NamedId id;
 
         // Motion properties.
         private readonly float speed;
@@ -20,7 +20,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         // Constructor.
 
-        public DirectMotionAbility(ConditionId id, float speed) {
+        public DirectMotionAbility(NamedId id, float speed) {
             this.id = id;
             this.speed = Floats.SetPositive(speed);
         }

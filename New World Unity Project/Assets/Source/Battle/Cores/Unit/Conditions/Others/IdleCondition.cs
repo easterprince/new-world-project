@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
@@ -8,12 +9,12 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         // Fields.
 
-        private ConditionId id;
+        private NamedId id;
 
 
         // Constructors.
 
-        public IdleCondition(ConditionId id) {
+        public IdleCondition(NamedId id) {
             this.id = id;
         }
 
@@ -27,7 +28,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         public override bool Cancellable => true;
         public override float ConditionSpeed => 1;
         public override string Description => "Idle.";
-        public override ConditionId Id => id;
+        public override NamedId Id => id;
 
 
         // Cloning.

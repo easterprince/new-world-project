@@ -1,7 +1,8 @@
-﻿using System;
+﻿using NewWorld.Utilities;
+using System;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions {
-   
+
     public interface IConditionPresentation : IOwnerPointer {
 
         // Properties.
@@ -9,7 +10,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
         bool Cancellable { get; }
         bool Finished { get; }
         float ConditionSpeed { get; }
-        ConditionId Id { get; }
+        NamedId Id { get; }
         string Description { get; }
 
 

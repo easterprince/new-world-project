@@ -3,7 +3,6 @@ using NewWorld.Battle.Cores.Unit;
 using NewWorld.Battle.Cores.Unit.Abilities.Attacks;
 using NewWorld.Battle.Cores.Unit.Abilities.Motions;
 using NewWorld.Battle.Cores.Unit.Body;
-using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Durability;
 using NewWorld.Battle.Cores.UnitSystem;
 using NewWorld.Utilities;
@@ -38,11 +37,11 @@ namespace NewWorld.Battle.Cores.Generation.Units {
                 attackDuration: 1f,
                 attackMoment: 0.5f,
                 attackRange: 1f,
-                conditionId: ConditionId.Get("DefaultAttack")
+                conditionId: NamedId.Get("DefaultAttack")
             );
             template.AddAbility(attack);
             var motion = new DirectMotionAbility(
-                id: ConditionId.Get("DefaultMotion"),
+                id: NamedId.Get("DefaultMotion"),
                 speed: 1f
             );
             template.AddAbility(motion);

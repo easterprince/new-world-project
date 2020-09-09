@@ -12,7 +12,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
         // Fields.
 
         // Meta.
-        private ConditionId conditionId;
+        private NamedId conditionId;
 
         // Attack properties.
         private readonly Damage singleAttackDamage;
@@ -26,7 +26,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
         public DirectAttackAbility(
             Damage singleAttackDamage,
             float attackDuration, float attackMoment, float attackRange,
-            ConditionId conditionId) {
+            NamedId conditionId) {
 
             // Meta.
             this.conditionId = conditionId;

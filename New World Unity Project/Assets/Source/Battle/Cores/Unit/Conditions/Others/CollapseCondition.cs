@@ -10,7 +10,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         // Fields.
 
         // Meta.
-        private ConditionId id;
+        private NamedId id;
 
         // Progress.
         private float timeUntilExtinction;
@@ -18,7 +18,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
         // Constructor.
 
-        public CollapseCondition(ConditionId id, float timeUntilExtinction = 1f) {
+        public CollapseCondition(NamedId id, float timeUntilExtinction = 1f) {
             this.id = id;
             this.timeUntilExtinction = Floats.SetPositive(timeUntilExtinction);
         }
@@ -34,7 +34,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
         public float TimeUntilExtinction => timeUntilExtinction;
         public override bool Cancellable => false;
         public override float ConditionSpeed => 1;
-        public override ConditionId Id => id;
+        public override NamedId Id => id;
         public override string Description => $"Collapsing. Until extinction: {timeUntilExtinction}s.";
 
 

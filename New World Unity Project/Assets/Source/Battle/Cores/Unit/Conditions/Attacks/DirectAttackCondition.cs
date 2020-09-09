@@ -5,14 +5,14 @@ using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
-    
+
     public class DirectAttackCondition :
         ConditionModuleBase<DirectAttackCondition, AttackConditionPresentation>, IAttackConditionPresentation {
 
         // Fields.
 
         // Meta.
-        private readonly ConditionId id;
+        private readonly NamedId id;
 
         // Attack properties.
         private readonly UnitPresentation target;
@@ -32,7 +32,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
         public DirectAttackCondition(
             UnitPresentation target, Damage singleAttackDamage,
             float attackDuration, float attackMoment, float attackRange,
-            ConditionId id) {
+            NamedId id) {
 
             // Meta.
             this.id = id;
@@ -74,7 +74,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
         // Properties.
 
         // Meta.
-        public override ConditionId Id => id;
+        public override NamedId Id => id;
         public override string Description => $"Attacking target {target.Name}.";
 
         // Attack properties.

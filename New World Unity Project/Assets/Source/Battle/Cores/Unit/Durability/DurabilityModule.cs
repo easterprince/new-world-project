@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Others;
+using NewWorld.Utilities;
 using System;
 using UnityEngine;
 
@@ -15,8 +16,8 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         // Fields.
 
         // Meta.
-        private ConditionId idleConditionId;
-        private ConditionId collapseCondtionId;
+        private NamedId idleConditionId;
+        private NamedId collapseCondtionId;
 
         // Durability properties.
         private float durabilityLimit = durabilityThreshold;
