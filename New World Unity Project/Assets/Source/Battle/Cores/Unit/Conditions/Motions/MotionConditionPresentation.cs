@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Motions {
 
-    public class MotionConditionPresentation : ConditionPresentationBase<IMotionConditionPresentation> {
+    public class MotionConditionPresentation :
+        ConditionPresentationBase<IMotionConditionPresentation>, IMotionConditionPresentation {
 
         // Properties.
 

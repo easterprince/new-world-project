@@ -3,9 +3,9 @@
 namespace NewWorld.Battle.Cores.Unit.Conditions {
     
     public interface IConditionModule :
-        IConnectableCore<IConditionModule, IConditionPresentation, UnitPresentation>, IConditionPresentation {
+        IUnitModule<IConditionModule, IConditionPresentation, UnitPresentation>, IConditionPresentation {
 
-        // Properties.
+        // Methods.
 
         void Act();
 

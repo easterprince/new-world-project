@@ -37,8 +37,8 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
             // Meta.
             this.id = id;
 
-            // Properties.
-            this.target = target ?? throw new ArgumentNullException(nameof(target)); 
+            // Attack properties.
+            this.target = target ?? throw new ArgumentNullException(nameof(target));
             this.singleAttackDamage = singleAttackDamage;
             this.attackDuration = Floats.SetPositive(attackDuration);
             this.attackMoment = Floats.LimitPositive(attackMoment, this.attackDuration);
@@ -83,7 +83,17 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
         public float AttackDuration => attackDuration;
         public float AttackMoment => attackMoment;
         public float AttackRange => attackRange;
-        public Damage DamagePerSecond => (SingleAttackDamage.IsZero ? Damage.Zero : SingleAttackDamage / attackDuration);
+        public Damage DamagePerSecond {
+            get {
+                if (singleAttackDamage.IsZero || float.IsPositiveInfinity(attackMoment)) {
+                    return Damage.Zero;
+                }
+                if (float.IsPositiveInfinity(attackDuration)) {
+                    return attacked ? Damage.Zero : (singleAttackDamage / attackMoment);
+                }
+                return singleAttackDamage / attackDuration;
+            }
+        }
 
         // General condition properties.
         public override bool Cancellable => !attacked;
@@ -130,7 +140,9 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
                 accumulatedTime = 0;
                 attacked = false;
                 atStart = true;
-                TryAttack(float.PositiveInfinity);
+                if (!TryAttack(float.PositiveInfinity)) {
+                    finished = true;
+                }
                 return;
             }
 
@@ -157,7 +169,9 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
             // Attack.
             if (attackCount > 0) {
-                TryAttack(attackCount);
+                if (!TryAttack(attackCount)) {
+                    finished = true;
+                }
             }
 
         }

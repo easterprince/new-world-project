@@ -8,6 +8,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
         UnitPresentation Target { get; }
         Damage DamagePerSecond { get; }
+        float AttackRange { get; }
 
 
     }

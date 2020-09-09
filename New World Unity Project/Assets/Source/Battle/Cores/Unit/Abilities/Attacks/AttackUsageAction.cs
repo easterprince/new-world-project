@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
     
-    public class AttackUsageAction : AbilityUsageActionBase<AttackAbilityPresentation> {
+    public class AttackUsageAction : AbilityUsageActionBase<IAttackAbilityPresentation> {
 
         // Fields.
 
@@ -11,7 +11,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
 
         // Constructor.
 
-        public AttackUsageAction(AttackAbilityPresentation ability, UnitPresentation target) : base(ability) {
+        public AttackUsageAction(IAttackAbilityPresentation ability, UnitPresentation target) : base(ability) {
             this.target = target ?? throw new ArgumentNullException(nameof(target));
         }
 

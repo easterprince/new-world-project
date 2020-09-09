@@ -14,7 +14,7 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
         // Fields.
 
         private readonly Dictionary<IAbilityPresentation, IAbilityModule> abilities;
-        private readonly Dictionary<MotionAbilityPresentation, MotionAbility> motions;
+        private readonly Dictionary<MotionAbilityPresentation, IMotionAbility> motions;
         private readonly Dictionary<AttackAbilityPresentation, AttackAbility> attacks;
 
 
@@ -22,7 +22,7 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
 
         public AbilityCollectionModule() {
             abilities = new Dictionary<IAbilityPresentation, IAbilityModule>();
-            motions = new Dictionary<MotionAbilityPresentation, MotionAbility>();
+            motions = new Dictionary<MotionAbilityPresentation, IMotionAbility>();
             attacks = new Dictionary<AttackAbilityPresentation, AttackAbility>();
         }
 
@@ -66,7 +66,7 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
             cloned.Connect(Presentation);
         }
 
-        public void AddAbility(MotionAbility ability) {
+        public void AddAbility(IMotionAbility ability) {
             var cloned = ability.Clone();
             abilities[cloned.Presentation] = cloned;
             motions[cloned.Presentation] = cloned;
@@ -85,7 +85,7 @@ namespace NewWorld.Battle.Cores.Unit.AbilityCollection {
 
         public void UseAbility(MotionUsageAction usage) {
             ValidateContext();
-            if (motions.TryGetValue(usage.Ability, out MotionAbility ability)) {
+            if (motions.TryGetValue(usage.Ability, out IMotionAbility ability)) {
                 ability.Use(usage.Destination);
             }
         }

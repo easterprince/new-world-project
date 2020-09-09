@@ -1,15 +1,10 @@
-﻿namespace NewWorld.Utilities {
+﻿using UnityEngine;
+
+namespace NewWorld.Utilities {
     
     public static class Floats {
 
         // Methods.
-
-        public static float FixNaN(float value, float placeholder = 0) {
-            if (float.IsNaN(value)) {
-                return placeholder;
-            }
-            return value;
-        }
 
         public static float SetPositive(float value) {
             if (float.IsNaN(value) || value <= 0) {

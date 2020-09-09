@@ -1,65 +1,76 @@
 ﻿using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Attacks;
 using NewWorld.Battle.Cores.Unit.Durability;
-using System;
+using NewWorld.Utilities;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
 
-    public class DirectAttackAbility : AttackAbility {
+    public class DirectAttackAbility :
+        AbilityModuleBase<IAttackAbility, IAttackAbilityPresentation>, IAttackAbility {
 
         // Fields.
 
-        private Damage singleAttackDamage;
-        private float attackDuration;
-        private float attackMoment;
-        private float attackRange;
+        // Meta.
+        private ConditionId conditionId;
+
+        // Attack properties.
+        private readonly Damage singleAttackDamage;
+        private readonly float attackDuration;
+        private readonly float attackMoment;
+        private readonly float attackRange;
 
 
         // Constructors.
 
-        public DirectAttackAbility() {
-            singleAttackDamage = new Damage();
-            attackDuration = 1f;
-            attackMoment = 0.5f;
-            attackRange = 1f;
+        public DirectAttackAbility(
+            Damage singleAttackDamage,
+            float attackDuration, float attackMoment, float attackRange,
+            ConditionId conditionId) {
+
+            // Meta.
+            this.conditionId = conditionId;
+
+            //Attack properties.
+            this.singleAttackDamage = singleAttackDamage;
+            this.attackDuration = Floats.SetPositive(attackDuration);
+            this.attackMoment = Floats.LimitPositive(attackMoment, this.attackDuration);
+            this.attackRange = Floats.SetPositive(attackRange);
+
         }
 
         public DirectAttackAbility(DirectAttackAbility other) {
+
+            // Meta.
+            conditionId = other.conditionId;
+
+            // Attack properties.
             singleAttackDamage = other.singleAttackDamage;
             attackDuration = other.attackDuration;
             attackMoment = other.attackMoment;
             attackRange = other.attackRange;
+
         }
 
 
         // Properties.
 
-        public Damage SingleAttackDamage {
-            get => singleAttackDamage;
-            set => singleAttackDamage = value;
-        }
+        public Damage SingleAttackDamage => singleAttackDamage;
+        public float AttackDuration => attackDuration;
+        public float AttackMoment => attackMoment;
+        public float AttackRange => attackRange;
 
-        public float AttackDuration {
-            get => attackDuration;
-            set {
-                attackDuration = Mathf.Max(value, 0);
-                AttackMoment = attackMoment;
+        public Damage DamagePerSecond {
+            get {
+                if (singleAttackDamage.IsZero || float.IsPositiveInfinity(attackMoment)) {
+                    return Damage.Zero;
+                }
+                if (float.IsPositiveInfinity(attackDuration)) {
+                    return (singleAttackDamage / attackMoment);
+                }
+                return singleAttackDamage / attackDuration;
             }
         }
-
-        public float AttackMoment {
-            get => attackMoment;
-            set => attackMoment = Mathf.Clamp(value, 0, attackDuration);
-        }
-
-        public float AttackRange {
-            get => attackRange;
-            set => attackRange = Mathf.Max(value, 0);
-        }
-
-        public override Damage DamagePerSecond => singleAttackDamage / attackDuration;
-        public override float EffectiveRange => AttackRange;
 
         public override string Name => "Direct attack";
         public override string Description => "Directly attack target.";
@@ -67,32 +78,42 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
 
         // Cloning.
 
-        public override AttackAbility Clone() {
+        public override IAttackAbility Clone() {
             return new DirectAttackAbility(this);
+        }
+
+
+        // Presentation.
+
+        private protected override IAttackAbilityPresentation BuildPresentation() {
+            return new AttackAbilityPresentation(this);
         }
 
 
         // Usage.
 
-        public override bool CheckIfUsable(UnitPresentation target) {
-            if (target is null) {
-                throw new ArgumentNullException(nameof(target));
+        public bool CheckIfUsable(UnitPresentation target) {
+            if (target is null || Context is null || target.Context != Context) {
+                return false;
             }
-            ValidateContext();
             Vector3 ownerPosition = Owner.Body.Position;
             Vector3 targetPosition = Owner.Body.Position;
             return (ownerPosition - targetPosition).magnitude <= attackRange;
         }
 
-        public override void Use(UnitPresentation target) {
-            if (target is null) {
-                throw new ArgumentNullException(nameof(target));
+        public void Use(UnitPresentation target) {
+            if (!CheckIfUsable(target)) {
+                return;
             }
-            ValidateContext();
-            if (CheckIfUsable(target)) {
-                var condition = new DirectAttackCondition(target, singleAttackDamage, attackDuration, attackMoment, attackRange);
-                Owner.PlanAction(new ConditionChangingAction(condition, forceChange: false));
-            }
+            var condition = new DirectAttackCondition(
+                target: target,
+                singleAttackDamage: singleAttackDamage,
+                attackDuration: attackDuration,
+                attackMoment: attackMoment,
+                attackRange: attackRange,
+                id: conditionId
+            );
+            Owner.PlanAction(new ConditionChangingAction(condition, forceChange: false));
         }
 
 

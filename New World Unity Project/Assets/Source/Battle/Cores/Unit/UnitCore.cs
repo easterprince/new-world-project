@@ -12,8 +12,6 @@ using NewWorld.Battle.Cores.Unit.Durability;
 using NewWorld.Battle.Cores.Unit.Intelligence;
 using NewWorld.Battle.Cores.UnitSystem;
 using System;
-using System.Collections.Generic;
-using System.Data;
 
 namespace NewWorld.Battle.Cores.Unit {
 
@@ -162,7 +160,7 @@ namespace NewWorld.Battle.Cores.Unit {
             abilityCollection.AddAbility(ability);
         }
 
-        public void AddAbility(MotionAbility ability) {
+        public void AddAbility(IMotionAbility ability) {
             abilityCollection.AddAbility(ability);
         }
 

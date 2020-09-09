@@ -4,7 +4,7 @@ namespace NewWorld.Battle.Cores.Unit.Conditions {
 
     public abstract class ConditionModuleBase<TSelf, TPresentation> :
         UnitModuleBase<TSelf, TPresentation, UnitPresentation>, IConditionModule
-        where TSelf : ConditionModuleBase<TSelf, TPresentation>
+        where TSelf : IConditionModule
         where TPresentation : class, IConditionPresentation {
 
         // Fields.
