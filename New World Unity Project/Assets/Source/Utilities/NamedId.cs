@@ -70,11 +70,11 @@ namespace NewWorld.Utilities {
             return id == other.id;
         }
 
-        public static bool operator ==(NamedId first, NamedId second) {
+        public static bool operator == (NamedId first, NamedId second) {
             return first.id == second.id;
         }
 
-        public static bool operator !=(NamedId first, NamedId second) {
+        public static bool operator != (NamedId first, NamedId second) {
             return first.id != second.id;
         }
 
