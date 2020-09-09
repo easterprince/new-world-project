@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace NewWorld.Utilities {
 
@@ -8,10 +8,11 @@ namespace NewWorld.Utilities {
         // Static fields.
 
         private const string defaultName = "Unknown";
-        private readonly static Dictionary<string, int> nameToId;
+        private readonly static object writeLock = new object();
+        private readonly static ConcurrentDictionary<string, int> nameToId;
 
         static NamedId() {
-            nameToId = new Dictionary<string, int>();
+            nameToId = new ConcurrentDictionary<string, int>();
             Get(defaultName);
         }
 
@@ -39,8 +40,10 @@ namespace NewWorld.Utilities {
                 name = defaultName;
             }
             if (!nameToId.TryGetValue(name, out int id)) {
-                id = nameToId.Count;
-                nameToId[name] = id;
+                lock (writeLock) {
+                    id = nameToId.Count;
+                    id = nameToId.GetOrAdd(name, id);
+                }
             }
             var namedId = new NamedId {
                 id = id,
