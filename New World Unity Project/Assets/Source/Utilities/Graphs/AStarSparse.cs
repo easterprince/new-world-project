@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace NewWorld.Utilities.Graphs {
-    
+
     public static class AStarSparse {
 
         private class Report<TVertex> : IComparable<Report<TVertex>> {

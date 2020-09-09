@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 namespace NewWorld.Utilities.Events {
-    
+
     public class ActionQueue : Queue<Action> {
-    
+
         // Methods.
 
         public void RunAll() {
@@ -14,7 +14,7 @@ namespace NewWorld.Utilities.Events {
             }
         }
 
-    
+
     }
 
 }

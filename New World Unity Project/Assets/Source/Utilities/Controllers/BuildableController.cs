@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 namespace NewWorld.Utilities.Controllers {
-    
+
     public class BuildableController : SteadyController {
 
         // Fields.

@@ -1,7 +1,5 @@
-﻿using UnityEngine;
+﻿namespace NewWorld.Utilities {
 
-namespace NewWorld.Utilities {
-    
     public static class Floats {
 
         // Methods.

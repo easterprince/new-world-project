@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace NewWorld.Utilities {
-    
+
     public static class Positions {
 
         public static Vector2Int WorldToNode(Vector2 worldPosition) {

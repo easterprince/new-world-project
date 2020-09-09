@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace NewWorld.Utilities.Graphs {
-    
+
     public class DijkstraDense {
 
         private class Report<TVertex> {

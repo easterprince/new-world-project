@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 
 namespace NewWorld.Utilities.Singletons {
-    
+
     public abstract class ReloadableSingleton<TSelf, TDescription> : SceneSingleton<TSelf>, ILoadable
         where TSelf : ReloadableSingleton<TSelf, TDescription> {
 

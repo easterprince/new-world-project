@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace NewWorld.Utilities.Graphs {
-    
+
     public static class AStarDense {
 
         private class Report<TVertex> {
@@ -96,7 +96,7 @@ namespace NewWorld.Utilities.Graphs {
             return path;
         }
 
-    
+
     }
 
 }
