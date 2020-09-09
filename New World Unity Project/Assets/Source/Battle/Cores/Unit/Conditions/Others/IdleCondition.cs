@@ -1,4 +1,5 @@
 ﻿using NewWorld.Battle.Cores.UnitSystem;
+using NewWorld.Utilities;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
@@ -6,17 +7,34 @@ namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
     public class IdleCondition :
         ConditionModuleBase<IdleCondition, ConditionPresentationBase<IdleCondition>> {
 
+        // Fields.
+
+        private NamedId id;
+
+
+        // Constructors.
+
+        public IdleCondition(NamedId id) {
+            this.id = id;
+        }
+
+        public IdleCondition(IdleCondition other) {
+            id = other.id;
+        }
+
+
         // Properties.
 
         public override bool Cancellable => true;
-
+        public override float ConditionSpeed => 1;
         public override string Description => "Idle.";
+        public override NamedId Id => id;
 
 
         // Cloning.
 
         public override IdleCondition Clone() {
-            return new IdleCondition();
+            return new IdleCondition(this);
         }
 
 

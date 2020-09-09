@@ -3,17 +3,19 @@ using System;
 
 namespace NewWorld.Battle.Cores.Unit.Conditions.Attacks {
 
-    public class AttackConditionPresentation : ConditionPresentationBase<AttackCondition> {
+    public class AttackConditionPresentation :
+        ConditionPresentationBase<IAttackConditionPresentation>, IAttackConditionPresentation {
 
         // Properties.
 
         public UnitPresentation Target => Presented.Target;
         public Damage DamagePerSecond => Presented.DamagePerSecond;
+        public float AttackRange => Presented.AttackRange;
 
 
         // Constructor.
 
-        public AttackConditionPresentation(AttackCondition presented) : base(presented) {}
+        public AttackConditionPresentation(IAttackConditionPresentation presented) : base(presented) {}
 
 
     }

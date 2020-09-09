@@ -1,37 +1,39 @@
 ﻿using NewWorld.Battle.Cores.Unit.Body;
 using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Motions;
+using NewWorld.Utilities;
 using System;
 using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
-    public class DirectMotionAbility : MotionAbility {
+    public class DirectMotionAbility : AbilityModuleBase<IMotionAbility, IMotionAbilityPresentation>, IMotionAbility {
 
         // Fields.
 
-        private float speed;
+        // Meta.
+        private readonly NamedId id;
+
+        // Motion properties.
+        private readonly float speed;
 
 
         // Constructor.
 
-        public DirectMotionAbility(float speed = 1f) {
-            Speed = speed;
+        public DirectMotionAbility(NamedId id, float speed) {
+            this.id = id;
+            this.speed = Floats.SetPositive(speed);
         }
 
         public DirectMotionAbility(DirectMotionAbility other) {
+            id = other.id;
             speed = other.speed;
         }
 
 
         // Properties.
 
-        public float Speed {
-            get => speed;
-            set => speed = Mathf.Max(value, 0);
-        }
-
-        public override float MovementPerSecond => speed;
+        public float MovementPerSecond => speed;
 
         public override string Name => "Direct motion";
         public override string Description => "Move to target position.";
@@ -39,21 +41,28 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         // Cloning.
 
-        public override MotionAbility Clone() {
+        public override IMotionAbility Clone() {
             return new DirectMotionAbility(this);
+        }
+
+
+        // Presentation generation.
+
+        private protected override IMotionAbilityPresentation BuildPresentation() {
+            return new MotionAbilityPresentation(this);
         }
 
 
         // Usage.
 
-        public override bool CheckIfUsable(Vector3 destination) {
+        public bool CheckIfUsable(Vector3 destination) {
             ValidateContext();
             return true;
         }
 
-        public override void Use(Vector3 destination) {
+        public void Use(Vector3 destination) {
             ValidateContext();
-            var condition = new DirectMotionCondition(destination, speed);
+            var condition = new DirectMotionCondition(destination, speed, id);
             Owner.PlanAction(new ConditionChangingAction(condition, forceChange: false));
         }
 

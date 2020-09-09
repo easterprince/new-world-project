@@ -43,7 +43,7 @@ namespace NewWorld.Battle.Cores.Unit.Behaviours.Relocations {
 
             // Choose motion ability.
             var abilityCollection = owner.AbilityCollection;
-            MotionAbilityPresentation chosenAbility = null;
+            IMotionAbilityPresentation chosenAbility = null;
             foreach (var motionAbility in abilityCollection.Motions) {
                 if (chosenAbility == null || motionAbility.MovementPerSecond > chosenAbility.MovementPerSecond) {
                     chosenAbility = motionAbility;
@@ -51,7 +51,7 @@ namespace NewWorld.Battle.Cores.Unit.Behaviours.Relocations {
             }
 
             // Check if unit is in motion.
-            MotionConditionPresentation currentCondition = owner.Condition as MotionConditionPresentation;
+            IMotionConditionPresentation currentCondition = owner.Condition as IMotionConditionPresentation;
 
             // Check if destination node is reached.
             var currentNode = context.UnitSystem[owner];

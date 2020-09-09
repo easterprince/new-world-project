@@ -3,17 +3,23 @@ using System;
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Attacks {
 
-    public class AttackAbilityPresentation : AbilityPresentationBase<AttackAbility> {
+    public class AttackAbilityPresentation :
+        AbilityPresentationBase<IAttackAbilityPresentation>, IAttackAbilityPresentation {
         
         // Constructor.
         
-        public AttackAbilityPresentation(AttackAbility presented) : base(presented) {}
+        public AttackAbilityPresentation(IAttackAbilityPresentation presented) : base(presented) {}
 
 
         // Properties.
 
         public Damage DamagePerSecond => Presented.DamagePerSecond;
-        public float EffectiveRange => Presented.EffectiveRange;
+        public float AttackRange => Presented.AttackRange;
+
+        
+        // Methods.
+        
+        public bool CheckIfUsable(UnitPresentation target) => Presented.CheckIfUsable(target);
 
 
     }

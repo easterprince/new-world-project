@@ -32,11 +32,18 @@ namespace NewWorld.Battle.Cores.Generation.Units {
                     Durability = 250
                 }
             );
-            var attack = new DirectAttackAbility() {
-                SingleAttackDamage = new Damage(50)
-            };
+            var attack = new DirectAttackAbility(
+                singleAttackDamage: new Damage(50),
+                attackDuration: 1f,
+                attackMoment: 0.5f,
+                attackRange: 1f,
+                conditionId: NamedId.Get("DefaultAttack")
+            );
             template.AddAbility(attack);
-            var motion = new DirectMotionAbility();
+            var motion = new DirectMotionAbility(
+                id: NamedId.Get("DefaultMotion"),
+                speed: 1f
+            );
             template.AddAbility(motion);
 
             // Count free nodes.

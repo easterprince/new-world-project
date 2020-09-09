@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
     
-    public class MotionUsageAction : AbilityUsageActionBase<MotionAbilityPresentation> {
+    public class MotionUsageAction : AbilityUsageActionBase<IMotionAbilityPresentation> {
 
         // Fields.
 
@@ -11,7 +11,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
         // Constructor.
 
-        public MotionUsageAction(MotionAbilityPresentation ability, Vector3 destination) : base(ability) {
+        public MotionUsageAction(IMotionAbilityPresentation ability, Vector3 destination) : base(ability) {
             this.destination = destination;
         }
 

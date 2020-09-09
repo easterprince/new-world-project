@@ -5,7 +5,7 @@ namespace NewWorld.Battle.Cores.Unit.Abilities {
 
     public abstract class AbilityModuleBase<TSelf, TAbilityPresentation> :
         UnitModuleBase<TSelf, TAbilityPresentation, AbilityCollectionPresentation>, IAbilityModule
-        where TSelf : AbilityModuleBase<TSelf, TAbilityPresentation>
+        where TSelf : IAbilityModule
         where TAbilityPresentation : class, IAbilityPresentation {
 
         // Properties.

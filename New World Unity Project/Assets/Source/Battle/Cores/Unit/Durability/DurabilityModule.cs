@@ -1,5 +1,6 @@
 ﻿using NewWorld.Battle.Cores.Unit.Conditions;
 using NewWorld.Battle.Cores.Unit.Conditions.Others;
+using NewWorld.Utilities;
 using System;
 using UnityEngine;
 
@@ -14,6 +15,11 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
 
         // Fields.
 
+        // Meta.
+        private NamedId idleConditionId;
+        private NamedId collapseCondtionId;
+
+        // Durability properties.
         private float durabilityLimit = durabilityThreshold;
         private float durability = durabilityThreshold;
 
@@ -93,9 +99,8 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         }
 
         public IConditionModule CreateUsualCondition() {
-            ValidateContext();
             if (!Fallen) {
-                return new IdleCondition();
+                return new IdleCondition(idleConditionId);
             } else {
                 return CreateCollapseCondition();
             }
@@ -122,7 +127,7 @@ namespace NewWorld.Battle.Cores.Unit.Durability {
         // Internal methods.
 
         private CollapseCondition CreateCollapseCondition() {
-            return new CollapseCondition(timeUntilExtinction: 5f);
+            return new CollapseCondition(id: collapseCondtionId, timeUntilExtinction: 5f);
         }
 
 

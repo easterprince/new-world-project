@@ -1,10 +1,11 @@
 ﻿namespace NewWorld.Battle.Cores.Unit.Conditions.Others {
 
-    public class CollapseConditionPresentation : ConditionPresentationBase<CollapseCondition> {
+    public class CollapseConditionPresentation :
+        ConditionPresentationBase<ICollapseConditionPresentation> {
 
         // Constructor.
 
-        public CollapseConditionPresentation(CollapseCondition presented) : base(presented) {}
+        public CollapseConditionPresentation(ICollapseConditionPresentation presented) : base(presented) {}
 
 
         // Properties.

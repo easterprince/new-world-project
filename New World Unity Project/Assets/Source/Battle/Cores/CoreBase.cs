@@ -4,7 +4,6 @@ using System;
 namespace NewWorld.Battle.Cores {
 
     public abstract class CoreBase<TSelf, TPresentation> : ICore<TSelf, TPresentation>
-        where TSelf : CoreBase<TSelf, TPresentation>
         where TPresentation : class, IContextPointer {
 
         // Fields.
@@ -16,7 +15,7 @@ namespace NewWorld.Battle.Cores {
 
         public TPresentation Presentation {
             get {
-                if (presentation is null) {
+                if (presentation == null) {
                     presentation = BuildPresentation();
                     if (presentation is null) {
                         throw new System.NullReferenceException("Presentation building method returned null reference.");

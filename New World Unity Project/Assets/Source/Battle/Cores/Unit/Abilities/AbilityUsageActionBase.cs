@@ -2,7 +2,7 @@
 
 namespace NewWorld.Battle.Cores.Unit.Abilities {
     
-    public abstract class AbilityUsageActionBase<TAbilityPresentation> : UnitAction, IAbilityUsageAction
+    public abstract class AbilityUsageActionBase<TAbilityPresentation> : UnitAction
         where TAbilityPresentation : class, IAbilityPresentation {
 
         // Fields.
@@ -20,7 +20,6 @@ namespace NewWorld.Battle.Cores.Unit.Abilities {
         // Properties.
 
         public TAbilityPresentation Ability => ability;
-        IAbilityPresentation IAbilityUsageAction.Ability => ability;
 
 
     }

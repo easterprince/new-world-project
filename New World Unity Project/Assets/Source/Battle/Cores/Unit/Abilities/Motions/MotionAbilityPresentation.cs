@@ -1,17 +1,23 @@
 ﻿using System;
+using UnityEngine;
 
 namespace NewWorld.Battle.Cores.Unit.Abilities.Motions {
 
-    public class MotionAbilityPresentation : AbilityPresentationBase<MotionAbility> {
+    public class MotionAbilityPresentation : AbilityPresentationBase<IMotionAbility>, IMotionAbilityPresentation {
 
         // Constructor.
 
-        public MotionAbilityPresentation(MotionAbility presented) : base(presented) {}
+        public MotionAbilityPresentation(IMotionAbility presented) : base(presented) {}
 
 
         // Properties.
 
         public float MovementPerSecond => Presented.MovementPerSecond;
+
+
+        // Usage.
+
+        public bool CheckIfUsable(Vector3 destination) => Presented.CheckIfUsable(destination);
 
 
     }
