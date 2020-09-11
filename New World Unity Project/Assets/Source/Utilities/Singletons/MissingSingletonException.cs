@@ -1,7 +1,7 @@
 ﻿namespace NewWorld.Utilities.Singletons {
 
     public class MissingSingletonException<TSingleton> : System.Exception
-        where TSingleton : SceneSingleton<TSingleton> {
+        where TSingleton : ControllerSingletonBase<TSingleton> {
 
         // Constructor.
 

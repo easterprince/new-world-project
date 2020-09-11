@@ -1,12 +1,11 @@
 ﻿using NewWorld.Controllers.Battle.Map;
 using NewWorld.Controllers.Battle.UnitSystem;
 using NewWorld.Cores.Battle.Battlefield;
-using NewWorld.Cores.Battle.Generation.Map;
-using NewWorld.Cores.Battle.Generation.Units;
-using NewWorld.Cores.Battle.Layout;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
+using NewWorld.Utilities.Events;
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -15,10 +14,21 @@ namespace NewWorld.Controllers.Battle.Battlefield {
 
     public class BattlefieldController : BuildableController {
 
+        // Enumerator.
+
+        public enum BattleStatus {
+            Inactive,
+            Loading,
+            Ready,
+            Ongoing
+        }
+
+
         // Fields.
 
         private BattlefieldCore core = null;
         private bool paused = true;
+        private BattleStatus status = BattleStatus.Inactive;
         private string loadingStatus = "Waiting...";
 
         // Steady references.
@@ -27,18 +37,17 @@ namespace NewWorld.Controllers.Battle.Battlefield {
         [SerializeField]
         private UnitSystemController unitSystem;
 
+        // Events.
+        private readonly ControllerEvent<BattleStatus> battleStatusChangedEvent = new ControllerEvent<BattleStatus>();
+        private readonly ControllerEvent<string> loadingStatusChangedEvent = new ControllerEvent<string>();
+
         // Tasks.
-        private Task<BattlefieldCore> coreGenerationTask = null;
-        private object coreGenerationConditionLock = new object();
-        private string coreGenerationCondition = null;
-        private readonly CancellationTokenSource taskCancellation = new CancellationTokenSource();
+        private CancellationTokenSource taskCancellation = new CancellationTokenSource();
 
 
         // Properties.
 
         public BattlefieldPresentation Presentation => core?.Presentation;
-
-        public string LoadingStatus => loadingStatus;
 
         public MapController Map {
             get => map;
@@ -56,10 +65,40 @@ namespace NewWorld.Controllers.Battle.Battlefield {
             }
         }
 
+        public string LoadingStatus {
+            get => loadingStatus;
+            private set {
+                if (value == loadingStatus) {
+                    return;
+                }
+                loadingStatus = value;
+                loadingStatusChangedEvent.Invoke(loadingStatus);
+            }
+        }
+
         public bool Paused {
             get => paused;
-            set => paused = value;
+            set {
+                paused = value;
+                if (FinishedBuilding) {
+                    Status = (paused ? BattleStatus.Ready : BattleStatus.Ongoing);
+                }
+            }
         }
+
+        public BattleStatus Status {
+            get => status;
+            private set {
+                if (value == status) {
+                    return;
+                }
+                status = value;
+                battleStatusChangedEvent.Invoke(status);
+            }
+        }
+
+        public ControllerEvent<BattleStatus>.EventWrapper BattleStatusChangedEvent => battleStatusChangedEvent.Wrapper;
+        public ControllerEvent<string>.EventWrapper LoadingStatusChangedEvent => loadingStatusChangedEvent.Wrapper;
 
 
         // Life cycle.
@@ -69,47 +108,12 @@ namespace NewWorld.Controllers.Battle.Battlefield {
             GameObjects.ValidateReference(map, nameof(map));
             GameObjects.ValidateReference(unitSystem, nameof(unitSystem));
 
-            // Start generating core.
-            SetStartedBuilding();
-            coreGenerationCondition = "Generating game data...";
-            var progress = new Progress<string>(condition => {
-                lock (coreGenerationConditionLock) {
-                    coreGenerationCondition = condition;
-                }
-            });
-            coreGenerationTask = GenerateCoreAsync(progress, taskCancellation.Token);
+            // Start building.
+            StartCoroutine(Build());
 
         }
 
         private void Update() {
-
-            void updateOnBuilding() {
-                if (map.FinishedBuilding && unitSystem.FinishedBuilding) {
-                    loadingStatus = "Ready!";
-                    SetFinishedBuilding();
-                }
-            }
-
-            // Check core generation progress.
-            if (StartedBuilding && !FinishedBuilding && coreGenerationTask != null) {
-                lock (coreGenerationConditionLock) {
-                    loadingStatus = coreGenerationCondition;
-                }
-                if (coreGenerationTask.IsCompleted) {
-
-                    // Get task result.
-                    core = coreGenerationTask.Result;
-                    coreGenerationTask = null;
-
-                    // Start building dependent controllers.
-                    loadingStatus = "Drawing everything...";
-                    map.StartBuilding(core.Map);
-                    map.ExecuteWhenBuilt(this, updateOnBuilding);
-                    unitSystem.Build(core.UnitSystem);
-                    unitSystem.ExecuteWhenBuilt(this, updateOnBuilding);
-
-                }
-            }
 
             // Update core.
             if (FinishedBuilding && !paused) {
@@ -138,38 +142,65 @@ namespace NewWorld.Controllers.Battle.Battlefield {
         }
 
 
-        // Core generation.
+        // Building coroutine.
 
-        private static async Task<BattlefieldCore> GenerateCoreAsync(IProgress<string> progress, CancellationToken cancellationToken) {
-            cancellationToken.ThrowIfCancellationRequested();
+        private IEnumerator Build() {
+            SetStartedBuilding();
 
-            // Generate map.
-            progress.Report("Generating map...");
-            var mapGenerator = new FullOfHolesMapGenerator() {
-                HeightLimit = 10,
-                Size = new Vector2Int(100, 100)
-            };
-            var map = await mapGenerator.GenerateAsync(0, cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
+            // Start generating core.
+            string coreGenerationCondition = "Obtaining game data...";
+            object coreGenerationConditionLock = new object();
+            var progress = new Progress<string>(condition => {
+                lock (coreGenerationConditionLock) {
+                    coreGenerationCondition = condition;
+                }
+            });
+            var generateCoreAsync = GameManager.FinishBattleTransition();
+            Task<BattlefieldCore> coreGenerationTask = generateCoreAsync(progress, taskCancellation.Token);
 
-            // Generate layout.
-            progress.Report("Generating layout...");
-            var layout = await LayoutCore.CreateLayoutAsync(map.Presentation, 5, 0.3f, 0.1f, cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
+            // Check core generation progress.
+            Status = BattleStatus.Loading;
+            while (true) {
+                if (!coreGenerationTask.IsCompleted) {
 
-            // Generate unit system.
-            progress.Report("Generating units...");
-            var unitSystemGenerator = new UniformUnitSystemGenerator() {
-                Map = map.Presentation,
-                UnitCount = 60
-            };
-            var unitSystem = await unitSystemGenerator.GenerateAsync(0, cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
+                    // Update loading status.
+                    lock (coreGenerationConditionLock) {
+                        LoadingStatus = coreGenerationCondition;
+                    }
 
-            // Assemble core.
-            progress.Report("Finishing game data generation...");
-            var core = new BattlefieldCore(map, layout, unitSystem);
-            return core;
+                    yield return null;
+
+                } else {
+
+                    // Get task result.
+                    core = coreGenerationTask.Result;
+                    if (core == null) {
+                        LoadingStatus = "No core generated!";
+                        Status = BattleStatus.Inactive;
+                        break;
+                    }
+
+                    // Building finishing method.
+                    void updateOnBuilding() {
+                        if (map.FinishedBuilding && unitSystem.FinishedBuilding) {
+                            LoadingStatus = "Ready!";
+                            SetFinishedBuilding();
+                            Status = BattleStatus.Ready;
+                        }
+                    }
+
+                    // Start building dependent controllers.
+                    LoadingStatus = "Drawing everything...";
+                    map.StartBuilding(core.Map);
+                    map.ExecuteWhenBuilt(this, updateOnBuilding);
+                    unitSystem.Build(core.UnitSystem);
+                    unitSystem.ExecuteWhenBuilt(this, updateOnBuilding);
+
+                    break;
+
+                }
+            }
+
         }
 
 

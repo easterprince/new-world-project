@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NewWorld.Controllers.Battle {
 
-    public class PrefabSourceController : SceneSingleton<PrefabSourceController> {
+    public class PrefabSourceController : ControllerSingletonBase<PrefabSourceController> {
 
         // Fields.
 
