@@ -38,8 +38,8 @@ namespace NewWorld.Controllers.Battle.Battlefield {
         private UnitSystemController unitSystem;
 
         // Events.
-        private ControllerEvent<BattleStatus> battleStatusChangedEvent = new ControllerEvent<BattleStatus>();
-        private ControllerEvent<string> loadingStatusChangedEvent = new ControllerEvent<string>();
+        private readonly ControllerEvent<BattleStatus> battleStatusChangedEvent = new ControllerEvent<BattleStatus>();
+        private readonly ControllerEvent<string> loadingStatusChangedEvent = new ControllerEvent<string>();
 
         // Tasks.
         private CancellationTokenSource taskCancellation = new CancellationTokenSource();

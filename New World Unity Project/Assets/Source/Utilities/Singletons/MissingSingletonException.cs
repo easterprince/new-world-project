@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace NewWorld.Utilities.Singletons {
+﻿namespace NewWorld.Utilities.Singletons {
 
     public class MissingSingletonException<TSingleton> : System.Exception
         where TSingleton : ControllerSingletonBase<TSingleton> {

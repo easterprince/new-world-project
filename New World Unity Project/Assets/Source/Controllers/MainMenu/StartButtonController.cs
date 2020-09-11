@@ -5,15 +5,13 @@ using NewWorld.Cores.Battle.Layout;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
 using System;
-using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace NewWorld.Controllers.MainMenu {
-    
+
     public class StartButtonController : SteadyController {
 
         // Fields.

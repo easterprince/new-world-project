@@ -67,6 +67,8 @@ namespace NewWorld.Controllers.Battle.UI.Loading {
             battlefield.BattleStatusChangedEvent.AddAction(this, (status) => UpdateThings());
             battlefield.LoadingStatusChangedEvent.AddAction(this, (status) => UpdateThings());
 
+            UpdateThings();
+
         }
 
         private void LateUpdate() {
