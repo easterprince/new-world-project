@@ -1,7 +1,12 @@
 ﻿using NewWorld.Cores.Battle.Battlefield;
+using NewWorld.Cores.Battle.Generation.Map;
+using NewWorld.Cores.Battle.Generation.Units;
+using NewWorld.Cores.Battle.Layout;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
+using System;
 using System.Collections;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,7 +41,42 @@ namespace NewWorld.Controllers.MainMenu {
             if (GameManager.DoesTransit) {
                 return;
             }
-            GameManager.StartBattleTransition((progress, cancellation) => Task.Run(() => null as BattlefieldCore));
+            GameManager.StartBattleTransition(GenerateCoreAsync);
+        }
+
+
+        // Core generation.
+
+        private static async Task<BattlefieldCore> GenerateCoreAsync(IProgress<string> progress, CancellationToken cancellationToken) {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Generate map.
+            progress.Report("Generating map...");
+            var mapGenerator = new FullOfHolesMapGenerator() {
+                HeightLimit = 10,
+                Size = new Vector2Int(100, 100)
+            };
+            var map = await mapGenerator.GenerateAsync(0, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Generate layout.
+            progress.Report("Generating layout...");
+            var layout = await LayoutCore.CreateLayoutAsync(map.Presentation, 5, 0.3f, 0.1f, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Generate unit system.
+            progress.Report("Generating units...");
+            var unitSystemGenerator = new UniformUnitSystemGenerator() {
+                Map = map.Presentation,
+                UnitCount = 60
+            };
+            var unitSystem = await unitSystemGenerator.GenerateAsync(0, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Assemble core.
+            progress.Report("Finishing game data generation...");
+            var core = new BattlefieldCore(map, layout, unitSystem);
+            return core;
         }
 
 

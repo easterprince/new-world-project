@@ -1,10 +1,12 @@
 ﻿using NewWorld.Controllers.Battle.Battlefield;
+using NewWorld.Utilities;
+using NewWorld.Utilities.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace NewWorld.Controllers.Battle.UI.Loading {
 
-    public class LoadingScreenController : MonoBehaviour {
+    public class LoadingScreenController : SteadyController {
 
         // Fields.
 
@@ -26,6 +28,7 @@ namespace NewWorld.Controllers.Battle.UI.Loading {
         public BattlefieldController Battlefield {
             get => battlefield;
             set {
+                ValidateBeingNotStarted();
                 battlefield = value;
                 UpdateThings();
             }
@@ -34,6 +37,7 @@ namespace NewWorld.Controllers.Battle.UI.Loading {
         public GameObject ReadyTextPanel {
             get => readyTextPanel;
             set {
+                ValidateBeingNotStarted();
                 readyTextPanel = value;
                 UpdateThings();
             }
@@ -42,22 +46,31 @@ namespace NewWorld.Controllers.Battle.UI.Loading {
         public LoadingLogoController Logo {
             get => logo;
             set {
+                ValidateBeingNotStarted();
                 logo = value;
                 UpdateThings();
             }
         }
 
-        public Text LoadingProgress {
-            get => loadingProgress;
-            set => loadingProgress = value;
-        }
-
 
         // Life cycle.
 
+        private protected override void OnStart() {
+            base.OnStart();
+
+            // Validate references.
+            GameObjects.ValidateReference(battlefield, nameof(battlefield));
+            GameObjects.ValidateReference(readyTextPanel, nameof(readyTextPanel));
+            GameObjects.ValidateReference(logo, nameof(logo));
+
+            // Set up event handlers.
+            battlefield.BattleStatusChangedEvent.AddAction(this, (status) => UpdateThings());
+            battlefield.LoadingStatusChangedEvent.AddAction(this, (status) => UpdateThings());
+
+        }
+
         private void LateUpdate() {
-            UpdateThings();
-            if (battlefield != null && battlefield.FinishedBuilding && Input.anyKey) {
+            if (battlefield.Status == BattlefieldController.BattleStatus.Ready && Input.anyKey) {
                 battlefield.Paused = false;
                 gameObject.SetActive(false);
             }
@@ -67,36 +80,18 @@ namespace NewWorld.Controllers.Battle.UI.Loading {
         // Support method.
 
         private void UpdateThings() {
-            if (battlefield == null || !battlefield.StartedBuilding) {
-                if (readyTextPanel != null) {
-                    readyTextPanel.SetActive(false);
-                }
-                if (logo != null) {
-                    logo.CurrentCondition = LoadingLogoController.Condition.Waiting;
-                }
-                if (loadingProgress != null) {
-                    loadingProgress.text = "...";
-                }
-            } else if (battlefield.StartedBuilding && !battlefield.FinishedBuilding) {
-                if (readyTextPanel != null) {
-                    readyTextPanel.SetActive(false);
-                }
-                if (logo != null) {
-                    logo.CurrentCondition = LoadingLogoController.Condition.Loading;
-                }
-                if (loadingProgress != null) {
-                    loadingProgress.text = battlefield.LoadingStatus;
-                }
+            if (battlefield.Status == BattlefieldController.BattleStatus.Inactive) {
+                readyTextPanel.SetActive(false);
+                logo.CurrentCondition = LoadingLogoController.Condition.Waiting;
+                loadingProgress.text = "...";
+            } else if (battlefield.Status == BattlefieldController.BattleStatus.Loading) {
+                readyTextPanel.SetActive(false);
+                logo.CurrentCondition = LoadingLogoController.Condition.Loading;
+                loadingProgress.text = battlefield.LoadingStatus;
             } else {
-                if (readyTextPanel != null) {
-                    readyTextPanel.SetActive(true);
-                }
-                if (logo != null) {
-                    logo.CurrentCondition = LoadingLogoController.Condition.Ready;
-                }
-                if (loadingProgress != null) {
-                    loadingProgress.text = battlefield.LoadingStatus;
-                }
+                readyTextPanel.SetActive(true);
+                logo.CurrentCondition = LoadingLogoController.Condition.Ready;
+                loadingProgress.text = battlefield.LoadingStatus;
             }
         }
 
