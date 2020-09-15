@@ -75,7 +75,6 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Attacks {
 
         // Meta.
         public override NamedId Id => id;
-        public override string Description => $"Attacking target {target.Name}.";
 
         // Attack properties.
         public UnitPresentation Target => target;

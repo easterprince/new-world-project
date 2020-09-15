@@ -15,7 +15,6 @@ namespace NewWorld.Cores.Battle.Unit.Conditions {
         // Properties.
 
         public abstract bool Cancellable { get; }
-        public abstract string Description { get; }
         public abstract NamedId Id { get; }
         public abstract float ConditionSpeed { get; }
         public bool Finished => finished;

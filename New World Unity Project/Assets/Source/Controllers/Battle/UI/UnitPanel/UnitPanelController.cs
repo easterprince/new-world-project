@@ -1,6 +1,7 @@
 ﻿using NewWorld.Controllers.Battle.Cameras;
 using NewWorld.Controllers.Battle.UI.Selection;
 using NewWorld.Controllers.Battle.Unit;
+using NewWorld.Controllers.MetaData;
 using NewWorld.Cores.Battle.Unit;
 using NewWorld.Cores.Battle.Unit.Behaviours;
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
@@ -101,7 +102,8 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
                 var stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"Current goal: {presentation.Intelligence.CurrentGoal.Name}");
                 stringBuilder.AppendLine();
-                stringBuilder.AppendLine($"Current condition: {presentation.Condition.Description}");
+                var conditionDescriptor = Descriptors.ForConditions[presentation.Condition.Id];
+                stringBuilder.AppendLine($"Current condition: {conditionDescriptor.ComposeDescription(presentation.Condition)}");
                 stringBuilder.AppendLine();
                 var abilities = presentation.AbilityCollection.Abilities;
                 if (abilities.Count == 0) {
