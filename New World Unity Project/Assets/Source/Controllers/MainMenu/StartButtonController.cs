@@ -2,9 +2,15 @@
 using NewWorld.Cores.Battle.Generation.Map;
 using NewWorld.Cores.Battle.Generation.Units;
 using NewWorld.Cores.Battle.Layout;
+using NewWorld.Cores.Battle.Unit;
+using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
+using NewWorld.Cores.Battle.Unit.Abilities.Motions;
+using NewWorld.Cores.Battle.Unit.Body;
+using NewWorld.Cores.Battle.Unit.Durability;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -66,7 +72,8 @@ namespace NewWorld.Controllers.MainMenu {
             progress.Report("Generating units...");
             var unitSystemGenerator = new UniformUnitSystemGenerator() {
                 Map = map.Presentation,
-                UnitCount = 60
+                UnitCount = 60,
+                UnitTemplates = GenerateUnitTemplates()
             };
             var unitSystem = await unitSystemGenerator.GenerateAsync(0, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -75,6 +82,62 @@ namespace NewWorld.Controllers.MainMenu {
             progress.Report("Finishing game data generation...");
             var core = new BattlefieldCore(map, layout, unitSystem);
             return core;
+        }
+
+        private static UnitCore[] GenerateUnitTemplates() {
+            var templates = new List<UnitCore>();
+
+            {
+                var template = new UnitCore(
+                    body: new BodyModule() {
+                        CollidesWith = BodyModule.CollisionMode.Surface
+                    },
+                    durability: new DurabilityModule(
+                        idleConditionId: NamedId.Get("SimpleIdle"),
+                        collapseConditionId: NamedId.Get("SimpleCollapse"),
+                        durabilityLimit: 200
+                    )
+                );
+                template.AddAbility(new DirectAttackAbility(
+                    singleAttackDamage: new Damage(50),
+                    attackDuration: 1f,
+                    attackMoment: 0.5f,
+                    attackRange: 1f,
+                    conditionId: NamedId.Get("SimpleAttack")
+                ));
+                template.AddAbility(new DirectMotionAbility(
+                    id: NamedId.Get("SimpleMotion"),
+                    speed: 1f
+                ));
+                templates.Add(template);
+            }
+
+            {
+                var template = new UnitCore(
+                    body: new BodyModule() {
+                        CollidesWith = BodyModule.CollisionMode.Surface
+                    },
+                    durability: new DurabilityModule(
+                        idleConditionId: NamedId.Get("SimpleIdle"),
+                        collapseConditionId: NamedId.Get("SimpleCollapse"),
+                        durabilityLimit: 100
+                    )
+                );
+                template.AddAbility(new DirectAttackAbility(
+                    singleAttackDamage: new Damage(50),
+                    attackDuration: 1f,
+                    attackMoment: 0.5f,
+                    attackRange: 1f,
+                    conditionId: NamedId.Get("SimpleAttack")
+                ));
+                template.AddAbility(new DirectMotionAbility(
+                    id: NamedId.Get("SimpleMotion"),
+                    speed: 1f
+                ));
+                templates.Add(template);
+            }
+
+            return templates.ToArray();
         }
 
 

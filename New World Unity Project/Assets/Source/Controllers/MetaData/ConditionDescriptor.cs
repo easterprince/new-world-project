@@ -1,6 +1,7 @@
 ﻿using NewWorld.Cores.Battle.Unit.Conditions;
 using NewWorld.Cores.Battle.Unit.Conditions.Attacks;
 using NewWorld.Cores.Battle.Unit.Conditions.Motions;
+using NewWorld.Cores.Battle.Unit.Conditions.Others;
 using NewWorld.Cores.Battle.Unit.Durability;
 using NewWorld.Utilities;
 using System.Collections;
@@ -37,7 +38,9 @@ namespace NewWorld.Controllers.MetaData {
                 ["MOVEMENT_PER_SECOND"] =
                     (condition) => ((condition as IMotionConditionPresentation)?.MovementPerSecond ?? 0f).ToString(),
                 ["MOTION_DESTINATION"] =
-                    (condition) => ((condition as IMotionConditionPresentation)?.Destination)?.ToString() ?? "unknown"
+                    (condition) => ((condition as IMotionConditionPresentation)?.Destination)?.ToString() ?? "unknown",
+                ["EXTINCTION_TIME"] =
+                    (condition) => ((condition as ICollapseConditionPresentation)?.TimeUntilExtinction ?? float.PositiveInfinity).ToString()
             };
 
             // Set default descriptor.

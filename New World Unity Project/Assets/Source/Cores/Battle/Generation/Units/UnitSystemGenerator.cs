@@ -1,5 +1,7 @@
 ﻿using NewWorld.Cores.Battle.Map;
+using NewWorld.Cores.Battle.Unit;
 using NewWorld.Cores.Battle.UnitSystem;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -12,6 +14,7 @@ namespace NewWorld.Cores.Battle.Generation.Units {
 
         private MapPresentation map;
         private int unitCount;
+        private UnitCore[] unitTemplates;
 
 
         // Properties.
@@ -24,6 +27,11 @@ namespace NewWorld.Cores.Battle.Generation.Units {
         public int UnitCount {
             get => unitCount;
             set => unitCount = Mathf.Max(value, 0);
+        }
+
+        public UnitCore[] UnitTemplates {
+            get => unitTemplates;
+            set => unitTemplates = value;
         }
 
 
