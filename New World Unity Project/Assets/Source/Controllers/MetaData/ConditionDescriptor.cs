@@ -21,11 +21,14 @@ namespace NewWorld.Controllers.MetaData {
         private const char delimiter = '#';
 
 
-        // Static.
+        // Static fields and construction.
 
+        private readonly static ConditionDescriptor defaultDescriptor;
         private readonly static Dictionary<string, Extractor> tokensToExtractor;
 
         static ConditionDescriptor() {
+
+            // Initialize condition field extractors.
             tokensToExtractor = new Dictionary<string, Extractor> {
                 ["DAMAGE_PER_SECOND"] =
                     (condition) => ((condition as IAttackConditionPresentation)?.DamagePerSecond ?? Damage.Zero).ToString(),
@@ -36,7 +39,16 @@ namespace NewWorld.Controllers.MetaData {
                 ["MOTION_DESTINATION"] =
                     (condition) => ((condition as IMotionConditionPresentation)?.Destination)?.ToString() ?? "unknown"
             };
+
+            // Set default descriptor.
+            defaultDescriptor = new ConditionDescriptor(NamedId.Default, "Unknown condition", "Unknown condition");
+
         }
+
+
+        // Static properties.
+
+        public static ConditionDescriptor Default => defaultDescriptor;
 
 
         // Fields.
