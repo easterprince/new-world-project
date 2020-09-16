@@ -1,4 +1,5 @@
-﻿using NewWorld.Cores.Battle.Unit;
+﻿using NewWorld.Controllers.MetaData;
+using NewWorld.Cores.Battle.Unit;
 using NewWorld.Cores.Battle.Unit.Conditions;
 using NewWorld.Cores.Battle.Unit.Conditions.Attacks;
 using NewWorld.Cores.Battle.Unit.Conditions.Motions;
@@ -26,10 +27,7 @@ namespace NewWorld.Controllers.Battle.Unit {
 
         // Static fields.
 
-        private readonly static int attackSpeedHash = Animator.StringToHash("AttackSpeed");
-        private readonly static int motionSpeedHash = Animator.StringToHash("MotionSpeed");
-        private readonly static int collapseHash = Animator.StringToHash("Collapse");
-        private readonly static int riseHash = Animator.StringToHash("Rise");
+        private readonly static int speedHash = Animator.StringToHash("Speed");
 
 
         // Fields.
@@ -41,9 +39,6 @@ namespace NewWorld.Controllers.Battle.Unit {
         // Gameobject components.
         private Animator animator;
         private new Collider collider;
-
-        // Animation.
-
 
 
         // Properties.
@@ -74,7 +69,7 @@ namespace NewWorld.Controllers.Battle.Unit {
             // Build stuff.
             SetStartedBuilding();
             this.presentation = presentation;
-            currentCondition = presentation.Condition;
+            name = presentation.Name;
             SetFinishedBuilding();
 
         }
@@ -103,20 +98,20 @@ namespace NewWorld.Controllers.Battle.Unit {
                 if (currentCondition != presentation.Condition) {
 
                     // Clear previous animation.
-                    if (currentCondition is MotionConditionPresentation) {
-                        animator.SetFloat(motionSpeedHash, 0);
-                    } else if (currentCondition is AttackConditionPresentation) {
-                        animator.SetFloat(attackSpeedHash, 0);
+                    ConditionDescriptor conditionDescriptor;
+                    if (currentCondition != null) {
+                        conditionDescriptor = Descriptors.ForConditions[currentCondition.Id];
+                        if (conditionDescriptor.AnimationHash.HasValue) {
+                            animator.SetBool(conditionDescriptor.AnimationHash.Value, false);
+                        }
                     }
 
                     // Set current animation.
                     currentCondition = presentation.Condition;
-                    if (currentCondition is MotionConditionPresentation motion) {
-                        animator.SetFloat(motionSpeedHash, motion.MovementPerSecond);
-                    } else if (currentCondition is AttackConditionPresentation attack) {
-                        animator.SetFloat(attackSpeedHash, 1f);
-                    } else if (currentCondition is CollapseConditionPresentation collapse) {
-                        animator.SetTrigger(collapseHash);
+                    animator.SetFloat(speedHash, currentCondition.ConditionSpeed);
+                    conditionDescriptor = Descriptors.ForConditions[currentCondition.Id];
+                    if (conditionDescriptor.AnimationHash.HasValue) {
+                        animator.SetBool(conditionDescriptor.AnimationHash.Value, true);
                     }
 
                 }

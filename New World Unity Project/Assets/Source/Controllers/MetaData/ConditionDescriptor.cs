@@ -7,6 +7,7 @@ using NewWorld.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace NewWorld.Controllers.MetaData {
     
@@ -44,7 +45,7 @@ namespace NewWorld.Controllers.MetaData {
             };
 
             // Set default descriptor.
-            defaultDescriptor = new ConditionDescriptor(NamedId.Default, "Unknown condition", "Unknown condition");
+            defaultDescriptor = new ConditionDescriptor(NamedId.Default, "Unknown condition", "Unknown condition", null);
 
         }
 
@@ -58,16 +59,18 @@ namespace NewWorld.Controllers.MetaData {
 
         private readonly NamedId id;
         private readonly string name;
+        private readonly int? animationHash;
         private readonly List<Extractor> extractors;
 
 
         // Constructor.
 
-        public ConditionDescriptor(NamedId id, string name, string descriptionTemplate) {
+        public ConditionDescriptor(NamedId id, string name, string descriptionTemplate, string animation) {
             
             // Assign fields.
             this.id = id;
             this.name = name;
+            animationHash = (animation == null ? null : (int?) Animator.StringToHash(animation));
 
             // Compose composer.
             extractors = new List<Extractor>();
@@ -89,6 +92,7 @@ namespace NewWorld.Controllers.MetaData {
 
         public NamedId Id => id;
         public string Name => name;
+        public int? AnimationHash => animationHash;
 
 
         // Methods.
