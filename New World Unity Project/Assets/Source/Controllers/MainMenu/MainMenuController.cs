@@ -16,7 +16,9 @@ namespace NewWorld.Controllers.MainMenu {
         private void Start() {
 
             if (!initializedDescriptors) {
-                Descriptors.AddDescriptors(new ConditionDescriptor[] {
+
+                // Add condition descriptors.
+                Descriptors.ForConditions.Add(new ConditionDescriptor[] {
                     new ConditionDescriptor(
                         NamedId.Get("SimpleMotion"),
                         "Simple motion",
@@ -43,6 +45,21 @@ namespace NewWorld.Controllers.MainMenu {
                     )
                 });
                 initializedDescriptors = true;
+
+                // Add ability descriptors.
+                Descriptors.ForAbilities.Add(new AbilityDescriptor[] {
+                    new AbilityDescriptor(
+                        NamedId.Get("DirectMotion"),
+                        "Direct motion",
+                        "Directly move to specified position."
+                    ),
+                    new AbilityDescriptor(
+                        NamedId.Get("DirectAttack"),
+                        "Direct attack",
+                        "Directly attack specified target in range."
+                    )
+                });
+            
             }
 
         }

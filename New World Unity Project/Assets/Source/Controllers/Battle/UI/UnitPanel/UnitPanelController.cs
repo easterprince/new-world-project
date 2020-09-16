@@ -111,7 +111,8 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
                 } else {
                     stringBuilder.AppendLine($"Abilities ({abilities.Count}):");
                     foreach (var ability in abilities) {
-                        stringBuilder.AppendLine(ability.Name);
+                        var abilityDescriptor = Descriptors.ForAbilities[ability.Id];
+                        stringBuilder.AppendLine(abilityDescriptor.Name);
                     }
                 }
                 unitDescriptionText.text = stringBuilder.ToString();

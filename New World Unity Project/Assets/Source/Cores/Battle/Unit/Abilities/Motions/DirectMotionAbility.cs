@@ -10,7 +10,7 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Motions {
         // Fields.
 
         // Meta.
-        private readonly NamedId id;
+        private readonly NamedId conditionId;
 
         // Motion properties.
         private readonly float speed;
@@ -18,13 +18,13 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Motions {
 
         // Constructor.
 
-        public DirectMotionAbility(NamedId id, float speed) {
-            this.id = id;
+        public DirectMotionAbility(NamedId abilityId, NamedId conditionId, float speed) : base(abilityId) {
+            this.conditionId = conditionId;
             this.speed = Floats.SetPositive(speed);
         }
 
-        public DirectMotionAbility(DirectMotionAbility other) {
-            id = other.id;
+        private DirectMotionAbility(DirectMotionAbility other) : base(other) {
+            conditionId = other.conditionId;
             speed = other.speed;
         }
 
@@ -32,9 +32,6 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Motions {
         // Properties.
 
         public float MovementPerSecond => speed;
-
-        public override string Name => "Direct motion";
-        public override string Description => "Move to target position.";
 
 
         // Cloning.
@@ -60,7 +57,7 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Motions {
 
         public void Use(Vector3 destination) {
             ValidateContext();
-            var condition = new DirectMotionCondition(destination, speed, id);
+            var condition = new DirectMotionCondition(destination, speed, conditionId);
             Owner.PlanAction(new ConditionChangingAction(condition, forceChange: false));
         }
 

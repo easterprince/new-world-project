@@ -1,4 +1,6 @@
-﻿namespace NewWorld.Cores.Battle.Unit.Abilities {
+﻿using NewWorld.Utilities;
+
+namespace NewWorld.Cores.Battle.Unit.Abilities {
 
     public abstract class AbilityPresentationBase<TPresented> :
         UnitModulePresentationBase<TPresented>, IAbilityPresentation
@@ -11,8 +13,7 @@
 
         // Properties.
 
-        public string Name => Presented.Name;
-        public string Description => Presented.Description;
+        public NamedId Id => Presented.Id;
 
 
     }

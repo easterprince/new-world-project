@@ -99,14 +99,16 @@ namespace NewWorld.Controllers.MainMenu {
                     )
                 );
                 template.AddAbility(new DirectAttackAbility(
+                    abilityId: NamedId.Get("DirectAttack"),
+                    conditionId: NamedId.Get("SimpleAttack"),
                     singleAttackDamage: new Damage(50),
                     attackDuration: 1f,
                     attackMoment: 0.5f,
-                    attackRange: 1f,
-                    conditionId: NamedId.Get("SimpleAttack")
+                    attackRange: 1f
                 ));
                 template.AddAbility(new DirectMotionAbility(
-                    id: NamedId.Get("SimpleMotion"),
+                    abilityId: NamedId.Get("DirectMotion"),
+                    conditionId: NamedId.Get("SimpleMotion"),
                     speed: 1f
                 ));
                 templates.Add(template);
@@ -124,14 +126,16 @@ namespace NewWorld.Controllers.MainMenu {
                     )
                 );
                 template.AddAbility(new DirectAttackAbility(
+                    abilityId: NamedId.Get("DirectAttack"),
+                    conditionId: NamedId.Get("SimpleAttack"),
                     singleAttackDamage: new Damage(50),
                     attackDuration: 1f,
                     attackMoment: 0.5f,
-                    attackRange: 1f,
-                    conditionId: NamedId.Get("SimpleAttack")
+                    attackRange: 1f
                 ));
                 template.AddAbility(new DirectMotionAbility(
-                    id: NamedId.Get("SimpleMotion"),
+                    abilityId: NamedId.Get("DirectMotion"),
+                    conditionId: NamedId.Get("SimpleMotion"),
                     speed: 1f
                 ));
                 templates.Add(template);

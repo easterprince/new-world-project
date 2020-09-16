@@ -8,7 +8,8 @@ namespace NewWorld.Controllers.MetaData {
 
         // Dictionary wrapper class.
 
-        public class DescriptorDictionaryWrapper<TDescriptor> : ObjectWrapper<Dictionary<NamedId, TDescriptor>> {
+        public class DescriptorDictionaryWrapper<TDescriptor> : ObjectWrapper<Dictionary<NamedId, TDescriptor>>
+            where TDescriptor : DescriptorBase {
 
             // Constructor.
 
@@ -31,6 +32,18 @@ namespace NewWorld.Controllers.MetaData {
             }
 
 
+            // Methods.
+
+            public void Add(IEnumerable<TDescriptor> descriptors) {
+                foreach (var descriptor in descriptors) {
+                    if (descriptor is null) {
+                        continue;
+                    }
+                    Wrapped[descriptor.Id] = descriptor;
+                }
+            }
+
+
         }
 
 
@@ -38,9 +51,11 @@ namespace NewWorld.Controllers.MetaData {
 
         // Descriptors.
         private static readonly Dictionary<NamedId, ConditionDescriptor> conditions;
+        private static readonly Dictionary<NamedId, AbilityDescriptor> abilities;
 
         // Descriptor dictionary wrappers.
         private static readonly DescriptorDictionaryWrapper<ConditionDescriptor> forConditions;
+        private static readonly DescriptorDictionaryWrapper<AbilityDescriptor> forAbilities;
 
 
         // Constructor.
@@ -51,9 +66,13 @@ namespace NewWorld.Controllers.MetaData {
             conditions = new Dictionary<NamedId, ConditionDescriptor> {
                 [NamedId.Default] = ConditionDescriptor.Default
             };
+            abilities = new Dictionary<NamedId, AbilityDescriptor> {
+                [NamedId.Default] = AbilityDescriptor.Default
+            };
 
             // Initialize wrappers.
             forConditions = new DescriptorDictionaryWrapper<ConditionDescriptor>(conditions);
+            forAbilities = new DescriptorDictionaryWrapper<AbilityDescriptor>(abilities);
 
         }
 
@@ -61,18 +80,7 @@ namespace NewWorld.Controllers.MetaData {
         // Properties.
 
         public static DescriptorDictionaryWrapper<ConditionDescriptor> ForConditions => forConditions;
-
-
-        // Methods.
-
-        public static void AddDescriptors(IEnumerable<ConditionDescriptor> descriptors) {
-            foreach (var descriptor in descriptors) {
-                if (descriptor is null) {
-                    continue;
-                }
-                conditions[descriptor.Id] = descriptor;
-            }
-        }
+        public static DescriptorDictionaryWrapper<AbilityDescriptor> ForAbilities => forAbilities;
 
 
     }

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace NewWorld.Controllers.MetaData {
     
-    public class ConditionDescriptor {
+    public class ConditionDescriptor : DescriptorBase {
 
         // Delegate.
 
@@ -45,7 +45,7 @@ namespace NewWorld.Controllers.MetaData {
             };
 
             // Set default descriptor.
-            defaultDescriptor = new ConditionDescriptor(NamedId.Default, "Unknown condition", "Unknown condition", null);
+            defaultDescriptor = new ConditionDescriptor(NamedId.Default, null, null, null);
 
         }
 
@@ -57,7 +57,6 @@ namespace NewWorld.Controllers.MetaData {
 
         // Fields.
 
-        private readonly NamedId id;
         private readonly string name;
         private readonly int? animationHash;
         private readonly List<Extractor> extractors;
@@ -65,16 +64,16 @@ namespace NewWorld.Controllers.MetaData {
 
         // Constructor.
 
-        public ConditionDescriptor(NamedId id, string name, string descriptionTemplate, string animation) {
+        public ConditionDescriptor(NamedId id, string name, string descriptionTemplate, string animation) :
+            base(id) {
             
             // Assign fields.
-            this.id = id;
-            this.name = name;
+            this.name = name ?? "Unknown condition";
             animationHash = (animation == null ? null : (int?) Animator.StringToHash(animation));
 
             // Compose composer.
             extractors = new List<Extractor>();
-            var substrings = descriptionTemplate.Split(delimiter);
+            var substrings = (descriptionTemplate ?? "Unknown condition").Split(delimiter);
             foreach (var substring in substrings) {
                 if (substring == "") {
                     continue;
@@ -90,7 +89,6 @@ namespace NewWorld.Controllers.MetaData {
 
         // Properties.
 
-        public NamedId Id => id;
         public string Name => name;
         public int? AnimationHash => animationHash;
 

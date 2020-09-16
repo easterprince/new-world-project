@@ -1,11 +1,12 @@
-﻿namespace NewWorld.Cores.Battle.Unit.Abilities {
+﻿using NewWorld.Utilities;
+
+namespace NewWorld.Cores.Battle.Unit.Abilities {
 
     public interface IAbilityPresentation : IOwnerPointer {
 
         // Properties.
 
-        string Name { get; }
-        string Description { get; }
+        NamedId Id { get; }
 
 
     }
