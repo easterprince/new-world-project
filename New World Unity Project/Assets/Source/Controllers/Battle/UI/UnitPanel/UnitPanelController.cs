@@ -48,6 +48,7 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
             selectionSystem.UnitSelectedEvent.AddAction(this, ProcessSelectionChange);
             selectionSystem.UnitTargetedEvent.AddAction(this, ProcessTargetSet);
             selectionSystem.PositionTargetedEvent.AddAction(this, ProcessTargetSet);
+            selectionSystem.UntargetedEvent.AddAction(this, ProcessTargetUnset);
         }
 
         private void LateUpdate() {
@@ -79,6 +80,13 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
         private void ProcessTargetSet(UnitController target) {
             if (selectedUnit != null && selectedUnit.Presentation != null) {
                 var action = new GoalSettingAction<OffensiveGoal>(new OffensiveGoal(target.Presentation));
+                selectedUnit.Presentation.PlanAction(action);
+            }
+        }
+
+        private void ProcessTargetUnset() {
+            if (selectedUnit != null && selectedUnit.Presentation != null) {
+                var action = new GoalSettingAction<IdleGoal>(IdleGoal.Instance);
                 selectedUnit.Presentation.PlanAction(action);
             }
         }

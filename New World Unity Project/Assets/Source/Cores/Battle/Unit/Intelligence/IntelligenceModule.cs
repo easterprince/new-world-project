@@ -69,6 +69,11 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
             currentBehaviour.Connect(Presentation);
         }
 
+        public void SetGoal(IdleGoal goal) {
+            currentBehaviour?.Disconnect();
+            currentBehaviour = null;
+        }
+
 
     }
 

@@ -43,6 +43,7 @@ namespace NewWorld.Cores.Battle.Unit {
         public void PlanAction(MotionUsageAction action) => Presented.PlanAction(action);
         public void PlanAction(GoalSettingAction<RelocationGoal> action) => Presented.PlanAction(action);
         public void PlanAction(GoalSettingAction<OffensiveGoal> action) => Presented.PlanAction(action);
+        public void PlanAction(GoalSettingAction<IdleGoal> action) => Presented.PlanAction(action);
 
 
     }
