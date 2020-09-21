@@ -106,13 +106,20 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
 
             // Update description.
             if (presentation != null) {
-                unitDescriptionText.text = "There are some abilities... ?";
                 var stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine($"Current goal: {presentation.Intelligence.CurrentGoal.Name}");
+
+                // Describe goal.
+                var currentGoal = presentation.Intelligence.CurrentGoal;
+                var goalDescriptor = Descriptors.ForGoals[currentGoal.Id];
+                stringBuilder.AppendLine($"Current goal: {goalDescriptor.ComposeDescription(currentGoal)}");
                 stringBuilder.AppendLine();
+
+                // Describe condition.
                 var conditionDescriptor = Descriptors.ForConditions[presentation.Condition.Id];
                 stringBuilder.AppendLine($"Current condition: {conditionDescriptor.ComposeDescription(presentation.Condition)}");
                 stringBuilder.AppendLine();
+
+                // Describe abilities.
                 var abilities = presentation.AbilityCollection.Abilities;
                 if (abilities.Count == 0) {
                     stringBuilder.AppendLine("No abilities.");
@@ -123,6 +130,7 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
                         stringBuilder.AppendLine(abilityDescriptor.Name);
                     }
                 }
+
                 unitDescriptionText.text = stringBuilder.ToString();
             } else {
                 unitDescriptionText.text = "Click on unit to get its description.";

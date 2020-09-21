@@ -1,4 +1,6 @@
-﻿namespace NewWorld.Cores.Battle.Unit.Behaviours {
+﻿using NewWorld.Utilities;
+
+namespace NewWorld.Cores.Battle.Unit.Behaviours {
 
     public class IdleGoal : UnitGoal {
 
@@ -16,7 +18,7 @@
 
         // Properties.
 
-        public override string Name => "Idle";
+        public override NamedId Id => NamedId.Get("IdleGoal");
 
 
     }

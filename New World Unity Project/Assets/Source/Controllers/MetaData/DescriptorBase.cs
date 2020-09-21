@@ -4,6 +4,11 @@ namespace NewWorld.Controllers.MetaData {
     
     public abstract class DescriptorBase {
 
+        // Delegate.
+
+        public delegate string Extractor<TSource>(TSource condition);
+
+
         // Fields.
 
         private readonly NamedId id;

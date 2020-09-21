@@ -1,4 +1,6 @@
 ﻿using NewWorld.Controllers.MetaData;
+using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
+using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
 using NewWorld.Utilities;
 using UnityEngine;
 
@@ -57,6 +59,31 @@ namespace NewWorld.Controllers.MainMenu {
                         NamedId.Get("DirectAttack"),
                         "Direct attack",
                         "Directly attack specified target in range."
+                    )
+                });
+
+                // Add goals descriptors.
+                Descriptors.ForGoals.Add(new GoalDescriptor[] {
+                    new GoalDescriptor(
+                        NamedId.Get("OffensiveGoal"),
+                        (goal) => {
+                            string name = (goal as OffensiveGoal)?.Target?.Name ?? null;
+                            return $"Destroy {name ?? "unknown target"}";
+                        }
+                    ),
+                    new GoalDescriptor(
+                        NamedId.Get("RelocationGoal"),
+                        (goal) => {
+                            string destination = null;
+                            if (goal is RelocationGoal relocationGoal) {
+                                destination = relocationGoal.Destination.ToString();
+                            }
+                            return $"Relocate to {destination ?? "unknown position"}";
+                        }
+                    ),
+                    new GoalDescriptor(
+                        NamedId.Get("IdleGoal"),
+                        (goal) => "Do nothing"
                     )
                 });
             

@@ -52,10 +52,12 @@ namespace NewWorld.Controllers.MetaData {
         // Descriptors.
         private static readonly Dictionary<NamedId, ConditionDescriptor> conditions;
         private static readonly Dictionary<NamedId, AbilityDescriptor> abilities;
+        private static readonly Dictionary<NamedId, GoalDescriptor> goals;
 
         // Descriptor dictionary wrappers.
         private static readonly DescriptorDictionaryWrapper<ConditionDescriptor> forConditions;
         private static readonly DescriptorDictionaryWrapper<AbilityDescriptor> forAbilities;
+        private static readonly DescriptorDictionaryWrapper<GoalDescriptor> forGoals;
 
 
         // Constructor.
@@ -69,10 +71,14 @@ namespace NewWorld.Controllers.MetaData {
             abilities = new Dictionary<NamedId, AbilityDescriptor> {
                 [NamedId.Default] = AbilityDescriptor.Default
             };
+            goals = new Dictionary<NamedId, GoalDescriptor> {
+                [NamedId.Default] = GoalDescriptor.Default
+            };
 
             // Initialize wrappers.
             forConditions = new DescriptorDictionaryWrapper<ConditionDescriptor>(conditions);
             forAbilities = new DescriptorDictionaryWrapper<AbilityDescriptor>(abilities);
+            forGoals = new DescriptorDictionaryWrapper<GoalDescriptor>(goals);
 
         }
 
@@ -81,6 +87,7 @@ namespace NewWorld.Controllers.MetaData {
 
         public static DescriptorDictionaryWrapper<ConditionDescriptor> ForConditions => forConditions;
         public static DescriptorDictionaryWrapper<AbilityDescriptor> ForAbilities => forAbilities;
+        public static DescriptorDictionaryWrapper<GoalDescriptor> ForGoals => forGoals;
 
 
     }

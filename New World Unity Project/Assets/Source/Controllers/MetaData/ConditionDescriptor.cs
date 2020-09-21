@@ -13,11 +13,6 @@ namespace NewWorld.Controllers.MetaData {
     
     public class ConditionDescriptor : DescriptorBase {
 
-        // Delegate.
-
-        private delegate string Extractor(IConditionPresentation condition);
-
-
         // Constant.
 
         private const char delimiter = '#';
@@ -26,12 +21,12 @@ namespace NewWorld.Controllers.MetaData {
         // Static fields and construction.
 
         private readonly static ConditionDescriptor defaultDescriptor;
-        private readonly static Dictionary<string, Extractor> tokensToExtractor;
+        private readonly static Dictionary<string, Extractor<IConditionPresentation>> tokensToExtractor;
 
         static ConditionDescriptor() {
 
             // Initialize condition field extractors.
-            tokensToExtractor = new Dictionary<string, Extractor> {
+            tokensToExtractor = new Dictionary<string, Extractor<IConditionPresentation>> {
                 ["DAMAGE_PER_SECOND"] =
                     (condition) => ((condition as IAttackConditionPresentation)?.DamagePerSecond ?? Damage.Zero).ToString(),
                 ["ATTACK_TARGET"] =
@@ -59,7 +54,7 @@ namespace NewWorld.Controllers.MetaData {
 
         private readonly string name;
         private readonly int? animationHash;
-        private readonly List<Extractor> extractors;
+        private readonly Extractor<IConditionPresentation> descriptionExtractor;
 
 
         // Constructor.
@@ -72,7 +67,7 @@ namespace NewWorld.Controllers.MetaData {
             animationHash = (animation == null ? null : (int?) Animator.StringToHash(animation));
 
             // Compose composer.
-            extractors = new List<Extractor>();
+            var extractors = new List<Extractor<IConditionPresentation>>();
             var substrings = (descriptionTemplate ?? "Unknown condition").Split(delimiter);
             foreach (var substring in substrings) {
                 if (substring == "") {
@@ -84,6 +79,13 @@ namespace NewWorld.Controllers.MetaData {
                     extractors.Add((condition) => substring);
                 }
             }
+            descriptionExtractor = (condition) => {
+                var stringBuilder = new StringBuilder();
+                foreach (var extractor in extractors) {
+                    stringBuilder.Append(extractor.Invoke(condition));
+                }
+                return stringBuilder.ToString();
+            };
             
         }
 
@@ -95,13 +97,7 @@ namespace NewWorld.Controllers.MetaData {
 
         // Methods.
 
-        public string ComposeDescription(IConditionPresentation condition) {
-            var stringBuilder = new StringBuilder();
-            foreach (var extractor in extractors) {
-                stringBuilder.Append(extractor.Invoke(condition));
-            }
-            return stringBuilder.ToString();
-        }
+        public string ComposeDescription(IConditionPresentation condition) => descriptionExtractor.Invoke(condition);
 
 
     }
