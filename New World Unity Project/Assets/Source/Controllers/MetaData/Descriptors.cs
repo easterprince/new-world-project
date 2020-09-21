@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 namespace NewWorld.Controllers.MetaData {
-    
+
     public static class Descriptors {
 
         // Dictionary wrapper class.

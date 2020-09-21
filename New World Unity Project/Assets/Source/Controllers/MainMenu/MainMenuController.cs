@@ -5,7 +5,7 @@ using NewWorld.Utilities;
 using UnityEngine;
 
 namespace NewWorld.Controllers.MainMenu {
-    
+
     public class MainMenuController : MonoBehaviour {
 
         // Static.
@@ -86,7 +86,7 @@ namespace NewWorld.Controllers.MainMenu {
                         (goal) => "Do nothing"
                     )
                 });
-            
+
             }
 
         }

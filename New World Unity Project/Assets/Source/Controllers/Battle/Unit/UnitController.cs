@@ -1,9 +1,6 @@
 ﻿using NewWorld.Controllers.MetaData;
 using NewWorld.Cores.Battle.Unit;
 using NewWorld.Cores.Battle.Unit.Conditions;
-using NewWorld.Cores.Battle.Unit.Conditions.Attacks;
-using NewWorld.Cores.Battle.Unit.Conditions.Motions;
-using NewWorld.Cores.Battle.Unit.Conditions.Others;
 using NewWorld.Utilities;
 using NewWorld.Utilities.Controllers;
 using System;

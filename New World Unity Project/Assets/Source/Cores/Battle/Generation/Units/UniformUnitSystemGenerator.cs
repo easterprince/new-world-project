@@ -1,9 +1,6 @@
 ﻿using NewWorld.Cores.Battle.Map;
 using NewWorld.Cores.Battle.Unit;
-using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
-using NewWorld.Cores.Battle.Unit.Abilities.Motions;
 using NewWorld.Cores.Battle.Unit.Body;
-using NewWorld.Cores.Battle.Unit.Durability;
 using NewWorld.Cores.Battle.UnitSystem;
 using NewWorld.Utilities;
 using System.Threading;

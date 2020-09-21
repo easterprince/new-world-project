@@ -1,7 +1,7 @@
 ﻿using NewWorld.Utilities;
 
 namespace NewWorld.Controllers.MetaData {
-    
+
     public abstract class DescriptorBase {
 
         // Delegate.
@@ -25,7 +25,7 @@ namespace NewWorld.Controllers.MetaData {
 
         public NamedId Id => id;
 
-    
+
     }
 
 }

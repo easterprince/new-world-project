@@ -2,7 +2,7 @@
 using NewWorld.Utilities;
 
 namespace NewWorld.Controllers.MetaData {
-    
+
     public class GoalDescriptor : DescriptorBase {
 
         // Fields.
@@ -27,7 +27,7 @@ namespace NewWorld.Controllers.MetaData {
 
         // Methods.
 
-        public string ComposeDescription(UnitGoal goal) => descriptionExtractor.Invoke(goal); 
+        public string ComposeDescription(UnitGoal goal) => descriptionExtractor.Invoke(goal);
 
 
     }

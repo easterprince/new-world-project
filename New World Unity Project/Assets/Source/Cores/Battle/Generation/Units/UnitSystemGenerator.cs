@@ -1,7 +1,6 @@
 ﻿using NewWorld.Cores.Battle.Map;
 using NewWorld.Cores.Battle.Unit;
 using NewWorld.Cores.Battle.UnitSystem;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;

@@ -1,7 +1,7 @@
 ﻿using NewWorld.Utilities;
 
 namespace NewWorld.Controllers.MetaData {
-    
+
     public class AbilityDescriptor : DescriptorBase {
 
         // Static.
@@ -21,10 +21,10 @@ namespace NewWorld.Controllers.MetaData {
 
         public AbilityDescriptor(NamedId id, string name, string description) :
             base(id) {
-        
+
             this.name = name ?? "Unknown ability";
             this.description = description ?? "Effect is unknown.";
-        
+
         }
 
 

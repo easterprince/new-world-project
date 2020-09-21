@@ -4,13 +4,12 @@ using NewWorld.Cores.Battle.Unit.Conditions.Motions;
 using NewWorld.Cores.Battle.Unit.Conditions.Others;
 using NewWorld.Cores.Battle.Unit.Durability;
 using NewWorld.Utilities;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 namespace NewWorld.Controllers.MetaData {
-    
+
     public class ConditionDescriptor : DescriptorBase {
 
         // Constant.
@@ -61,7 +60,7 @@ namespace NewWorld.Controllers.MetaData {
 
         public ConditionDescriptor(NamedId id, string name, string descriptionTemplate, string animation) :
             base(id) {
-            
+
             // Assign fields.
             this.name = name ?? "Unknown condition";
             animationHash = (animation == null ? null : (int?) Animator.StringToHash(animation));
@@ -86,7 +85,7 @@ namespace NewWorld.Controllers.MetaData {
                 }
                 return stringBuilder.ToString();
             };
-            
+
         }
 
         // Properties.
