@@ -1,6 +1,7 @@
 ﻿using NewWorld.Controllers.Battle.Cameras;
 using NewWorld.Controllers.Battle.UI.Selection;
 using NewWorld.Controllers.Battle.Unit;
+using NewWorld.Controllers.MetaData;
 using NewWorld.Cores.Battle.Unit;
 using NewWorld.Cores.Battle.Unit.Behaviours;
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
@@ -47,6 +48,7 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
             selectionSystem.UnitSelectedEvent.AddAction(this, ProcessSelectionChange);
             selectionSystem.UnitTargetedEvent.AddAction(this, ProcessTargetSet);
             selectionSystem.PositionTargetedEvent.AddAction(this, ProcessTargetSet);
+            selectionSystem.UntargetedEvent.AddAction(this, ProcessTargetUnset);
         }
 
         private void LateUpdate() {
@@ -82,6 +84,13 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
             }
         }
 
+        private void ProcessTargetUnset() {
+            if (selectedUnit != null && selectedUnit.Presentation != null) {
+                var action = new GoalSettingAction<IdleGoal>(IdleGoal.Instance);
+                selectedUnit.Presentation.PlanAction(action);
+            }
+        }
+
 
         // Support.
 
@@ -97,21 +106,31 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
 
             // Update description.
             if (presentation != null) {
-                unitDescriptionText.text = "There are some abilities... ?";
                 var stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine($"Current goal: {presentation.Intelligence.CurrentGoal.Name}");
+
+                // Describe goal.
+                var currentGoal = presentation.Intelligence.CurrentGoal;
+                var goalDescriptor = Descriptors.ForGoals[currentGoal.Id];
+                stringBuilder.AppendLine($"Current goal: {goalDescriptor.ComposeDescription(currentGoal)}");
                 stringBuilder.AppendLine();
-                stringBuilder.AppendLine($"Current condition: {presentation.Condition.Description}");
+
+                // Describe condition.
+                var conditionDescriptor = Descriptors.ForConditions[presentation.Condition.Id];
+                stringBuilder.AppendLine($"Current condition: {conditionDescriptor.ComposeDescription(presentation.Condition)}");
                 stringBuilder.AppendLine();
+
+                // Describe abilities.
                 var abilities = presentation.AbilityCollection.Abilities;
                 if (abilities.Count == 0) {
                     stringBuilder.AppendLine("No abilities.");
                 } else {
                     stringBuilder.AppendLine($"Abilities ({abilities.Count}):");
                     foreach (var ability in abilities) {
-                        stringBuilder.AppendLine(ability.Name);
+                        var abilityDescriptor = Descriptors.ForAbilities[ability.Id];
+                        stringBuilder.AppendLine(abilityDescriptor.Name);
                     }
                 }
+
                 unitDescriptionText.text = stringBuilder.ToString();
             } else {
                 unitDescriptionText.text = "Click on unit to get its description.";

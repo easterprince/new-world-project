@@ -41,7 +41,6 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Motions {
 
         public Vector3 Destination => destination;
         public float MovementPerSecond => speed;
-        public override string Description => $"Moving to position {destination}.";
         public override float ConditionSpeed => speed;
         public override NamedId Id => id;
         public override bool Cancellable => true;

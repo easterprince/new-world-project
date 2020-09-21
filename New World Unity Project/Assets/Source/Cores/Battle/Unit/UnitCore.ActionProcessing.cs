@@ -14,7 +14,8 @@ namespace NewWorld.Cores.Battle.Unit {
         IResponsive<ConditionChangingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction>,
         IResponsive<AttackUsageAction>, IResponsive<MotionUsageAction>,
-        IResponsive<GoalSettingAction<RelocationGoal>>, IResponsive<GoalSettingAction<OffensiveGoal>> {
+        IResponsive<GoalSettingAction<RelocationGoal>>, IResponsive<GoalSettingAction<OffensiveGoal>>,
+        IResponsive<GoalSettingAction<IdleGoal>> {
 
         // Action processing.
 
@@ -98,6 +99,16 @@ namespace NewWorld.Cores.Battle.Unit {
             SetGoal(action.Goal);
         }
 
+        public void ProcessAction(GoalSettingAction<IdleGoal> action) {
+            if (action is null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (Context is null) {
+                return;
+            }
+            SetGoal(action.Goal);
+        }
+
 
         // Action planning.
 
@@ -109,6 +120,7 @@ namespace NewWorld.Cores.Battle.Unit {
         public void PlanAction(MotionUsageAction action) => PlanAction(this, action);
         public void PlanAction(GoalSettingAction<RelocationGoal> action) => PlanAction(this, action);
         public void PlanAction(GoalSettingAction<OffensiveGoal> action) => PlanAction(this, action);
+        public void PlanAction(GoalSettingAction<IdleGoal> action) => PlanAction(this, action);
 
 
     }

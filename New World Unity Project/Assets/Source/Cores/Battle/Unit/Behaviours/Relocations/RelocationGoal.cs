@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NewWorld.Utilities;
+using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
 
@@ -23,7 +24,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
         public Vector3 Destination => destination;
         public float AdmissibleDistance => admissibleDistance;
 
-        public override string Name => $"Relocate to {destination}";
+        public override NamedId Id => NamedId.Get("RelocationGoal");
 
 
     }

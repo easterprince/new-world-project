@@ -10,7 +10,6 @@ namespace NewWorld.Cores.Battle.Unit.Conditions {
         bool Finished { get; }
         float ConditionSpeed { get; }
         NamedId Id { get; }
-        string Description { get; }
 
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewWorld.Utilities;
+using System;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
 
@@ -20,10 +21,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
 
         public UnitPresentation Target => target;
 
-
-        // Public.
-
-        public override string Name => $"Destroy {target.Name}";
+        public override NamedId Id => NamedId.Get("OffensiveGoal");
 
 
     }

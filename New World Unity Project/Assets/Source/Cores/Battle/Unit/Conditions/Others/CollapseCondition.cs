@@ -34,7 +34,6 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Others {
         public override bool Cancellable => false;
         public override float ConditionSpeed => 1;
         public override NamedId Id => id;
-        public override string Description => $"Collapsing. Until extinction: {timeUntilExtinction}s.";
 
 
         // Cloning.

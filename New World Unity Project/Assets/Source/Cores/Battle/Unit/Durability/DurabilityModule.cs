@@ -17,7 +17,7 @@ namespace NewWorld.Cores.Battle.Unit.Durability {
 
         // Meta.
         private NamedId idleConditionId;
-        private NamedId collapseCondtionId;
+        private NamedId collapseConditionId;
 
         // Durability properties.
         private float durabilityLimit = durabilityThreshold;
@@ -26,18 +26,35 @@ namespace NewWorld.Cores.Battle.Unit.Durability {
 
         // Constructors.
 
-        public DurabilityModule(float durabilityLimit = durabilityThreshold) {
-            DurabilityLimit = durabilityLimit;
+        public DurabilityModule() {
+            idleConditionId = NamedId.Default;
+            collapseConditionId = NamedId.Default;
         }
 
-        public DurabilityModule(float durabilityLimit, float durability) : this(durabilityLimit) {
+        public DurabilityModule(
+            NamedId idleConditionId, NamedId collapseConditionId, float durabilityLimit = durabilityThreshold) {
+
+            this.idleConditionId = idleConditionId;
+            this.collapseConditionId = collapseConditionId;
+            DurabilityLimit = durabilityLimit;
+            Durability = DurabilityLimit;
+
+        }
+
+        public DurabilityModule(
+            NamedId idleConditionId, NamedId collapseConditionId, float durabilityLimit, float durability) :
+            this(idleConditionId, collapseConditionId, durabilityLimit) {
+
             Durability = durability;
+
         }
 
         public DurabilityModule(DurabilityModule other) {
             if (other is null) {
                 throw new ArgumentNullException(nameof(other));
             }
+            idleConditionId = other.idleConditionId;
+            collapseConditionId = other.collapseConditionId;
             durabilityLimit = other.durabilityLimit;
             durability = other.durability;
         }
@@ -127,7 +144,7 @@ namespace NewWorld.Cores.Battle.Unit.Durability {
         // Internal methods.
 
         private CollapseCondition CreateCollapseCondition() {
-            return new CollapseCondition(id: collapseCondtionId, timeUntilExtinction: 5f);
+            return new CollapseCondition(id: collapseConditionId, timeUntilExtinction: 5f);
         }
 
 

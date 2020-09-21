@@ -27,7 +27,6 @@ namespace NewWorld.Cores.Battle.Unit.Conditions.Others {
 
         public override bool Cancellable => true;
         public override float ConditionSpeed => 1;
-        public override string Description => "Idle.";
         public override NamedId Id => id;
 
 

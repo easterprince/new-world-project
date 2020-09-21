@@ -1,4 +1,5 @@
 ﻿using NewWorld.Cores.Battle.Unit.AbilityCollection;
+using NewWorld.Utilities;
 
 namespace NewWorld.Cores.Battle.Unit.Abilities {
 
@@ -7,11 +8,25 @@ namespace NewWorld.Cores.Battle.Unit.Abilities {
         where TSelf : IAbilityModule
         where TAbilityPresentation : class, IAbilityPresentation {
 
+        // Fields.
+
+        private NamedId id;
+
+
+        // Constructor.
+
+        protected AbilityModuleBase(NamedId id) {
+            this.id = id;
+        }
+
+        protected AbilityModuleBase(AbilityModuleBase<TSelf, TAbilityPresentation> other) {
+            id = other.id;
+        }
+
+
         // Properties.
 
-        public abstract string Name { get; }
-        public abstract string Description { get; }
-
+        public NamedId Id => id;
         IAbilityPresentation ICore<IAbilityModule, IAbilityPresentation>.Presentation => Presentation;
 
 

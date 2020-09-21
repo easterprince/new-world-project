@@ -2,6 +2,7 @@
 using NewWorld.Cores.Battle.Unit.Abilities.Attacks;
 using NewWorld.Cores.Battle.Unit.Abilities.Motions;
 using NewWorld.Cores.Battle.Unit.AbilityCollection;
+using NewWorld.Cores.Battle.Unit.Behaviours;
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
 using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
 using NewWorld.Cores.Battle.Unit.Body;
@@ -178,6 +179,13 @@ namespace NewWorld.Cores.Battle.Unit {
         }
 
         public void SetGoal(OffensiveGoal goal) {
+            if (goal is null) {
+                throw new ArgumentNullException();
+            }
+            intelligence.SetGoal(goal);
+        }
+
+        public void SetGoal(IdleGoal goal) {
             if (goal is null) {
                 throw new ArgumentNullException();
             }

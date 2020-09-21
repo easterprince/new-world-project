@@ -25,6 +25,7 @@ namespace NewWorld.Controllers.Battle.UI.Selection {
         private readonly UnitEvent unitSelectedEvent = new UnitEvent();
         private readonly UnitEvent unitTargetedEvent = new UnitEvent();
         private readonly PositionEvent positionTargetedEvent = new PositionEvent();
+        private readonly ControllerEvent untargetedEvent = new ControllerEvent();
 
         // Steady references.
         [SerializeField]
@@ -40,6 +41,7 @@ namespace NewWorld.Controllers.Battle.UI.Selection {
         public UnitEvent.EventWrapper UnitSelectedEvent => unitSelectedEvent.Wrapper;
         public UnitEvent.EventWrapper UnitTargetedEvent => unitTargetedEvent.Wrapper;
         public PositionEvent.EventWrapper PositionTargetedEvent => positionTargetedEvent.Wrapper;
+        public ControllerEvent.EventWrapper UntargetedEvent => untargetedEvent.Wrapper;
 
         public SelectionController MainSelection {
             get => mainSelection;
@@ -100,15 +102,21 @@ namespace NewWorld.Controllers.Battle.UI.Selection {
                     }
                 }
             } else if (pointerEventData.button == PointerEventData.InputButton.Right) {
+                bool targetedAnything = false;
                 if (hit != null) {
                     var unit = hit.GetComponent<UnitController>();
                     if (unit != null) {
                         SetTarget(unit);
+                        targetedAnything = true;
                     }
                     var cluster = hit.GetComponent<ClusterController>();
                     if (cluster != null) {
                         SetTarget(raycastHit.point);
+                        targetedAnything = true;
                     }
+                }
+                if (!targetedAnything) {
+                    UnsetTarget();
                 }
             }
 
@@ -129,6 +137,10 @@ namespace NewWorld.Controllers.Battle.UI.Selection {
 
         private void SetTarget(Vector3 position) {
             positionTargetedEvent.Invoke(position);
+        }
+
+        private void UnsetTarget() {
+            untargetedEvent.Invoke();
         }
 
 

@@ -24,9 +24,9 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
         // Constructors.
 
         public DirectAttackAbility(
-            Damage singleAttackDamage,
-            float attackDuration, float attackMoment, float attackRange,
-            NamedId conditionId) {
+            NamedId abilityId, NamedId conditionId,
+            Damage singleAttackDamage, float attackDuration, float attackMoment, float attackRange) :
+            base(abilityId) {
 
             // Meta.
             this.conditionId = conditionId;
@@ -39,7 +39,7 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
 
         }
 
-        public DirectAttackAbility(DirectAttackAbility other) {
+        private DirectAttackAbility(DirectAttackAbility other) : base(other) {
 
             // Meta.
             conditionId = other.conditionId;
@@ -71,9 +71,6 @@ namespace NewWorld.Cores.Battle.Unit.Abilities.Attacks {
                 return singleAttackDamage / attackDuration;
             }
         }
-
-        public override string Name => "Direct attack";
-        public override string Description => "Directly attack target.";
 
 
         // Cloning.
