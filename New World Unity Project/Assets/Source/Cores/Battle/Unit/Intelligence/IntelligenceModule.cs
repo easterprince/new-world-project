@@ -1,6 +1,7 @@
 ﻿using NewWorld.Cores.Battle.Unit.Behaviours;
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
 using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
+using System;
 
 namespace NewWorld.Cores.Battle.Unit.Intelligence {
 
@@ -8,7 +9,7 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
 
         // Fields.
 
-        private IBehaviourModule currentBehaviour = null;
+        private IBehaviour currentBehaviour = null;
 
 
         // Constructors.
@@ -16,10 +17,20 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
         public IntelligenceModule() {}
 
         public IntelligenceModule(IntelligenceModule other) {
-            if (other.currentBehaviour != null) {
-                currentBehaviour = other.currentBehaviour.Clone();
-                currentBehaviour.Connect(Presentation);
+            if (other is null) {
+                throw new ArgumentNullException(nameof(other));
             }
+
+            // Set behaviour.
+            var otherGoal = other?.currentBehaviour?.Goal;
+            if (otherGoal is OffensiveGoal offensiveGoal) {
+                SetGoal(offensiveGoal);
+            } else if (otherGoal is RelocationGoal relocationGoal) {
+                SetGoal(relocationGoal);
+            } else {
+                SetGoal(IdleGoal.Instance);
+            }
+
         }
 
 
@@ -54,23 +65,14 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
         }
 
         public void SetGoal(RelocationGoal goal) {
-            currentBehaviour?.Disconnect();
-            currentBehaviour = new RelocationBehaviour {
-                Goal = goal
-            };
-            currentBehaviour.Connect(Presentation);
+            currentBehaviour = new RelocationBehaviour(goal, this);
         }
 
         public void SetGoal(OffensiveGoal goal) {
-            currentBehaviour?.Disconnect();
-            currentBehaviour = new OffensiveBehaviour {
-                Goal = goal
-            };
-            currentBehaviour.Connect(Presentation);
+            currentBehaviour = new OffensiveBehaviour(goal, this);
         }
 
         public void SetGoal(IdleGoal goal) {
-            currentBehaviour?.Disconnect();
             currentBehaviour = null;
         }
 

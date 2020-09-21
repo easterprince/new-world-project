@@ -6,33 +6,27 @@ using UnityEngine;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
 
-    public class RelocationBehaviour : BehaviourModuleBase<RelocationBehaviour, RelocationPresentation, RelocationGoal> {
+    public class RelocationBehaviour : BehaviourBase<RelocationGoal> {
 
         // Fields.
 
         private Stack<Vector2Int> plannedPath;
 
 
-        // Cloning.
+        // Constructor.
 
-        private protected override RelocationBehaviour ClonePartially() {
-            return new RelocationBehaviour();
-        }
-
-
-        // Presentation generation.
-
-        private protected override RelocationPresentation BuildPresentation() {
-            return new RelocationPresentation(this);
-        }
+        public RelocationBehaviour(RelocationGoal goal, IOwnerPointer ownerPointer) : base(goal, ownerPointer) {}
 
 
         // Acting.
 
         private protected override void OnAct(out GoalStatus goalStatus) {
-            ValidateContext();
             var owner = Owner;
             var context = Context;
+            if (owner is null || context is null) {
+                goalStatus = GoalStatus.Active;
+                return;
+            }
 
             // Check if destination is reached.
             var currentPosition = owner.Body.Position;
