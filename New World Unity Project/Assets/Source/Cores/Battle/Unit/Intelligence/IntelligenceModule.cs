@@ -2,34 +2,44 @@
 using NewWorld.Cores.Battle.Unit.Behaviours.Offensives;
 using NewWorld.Cores.Battle.Unit.Behaviours.Relocations;
 using System;
+using System.Collections.Generic;
 
 namespace NewWorld.Cores.Battle.Unit.Intelligence {
 
     public class IntelligenceModule : UnitModuleBase<IntelligenceModule, IntelligencePresentation, UnitPresentation> {
 
+        // Delegate.
+
+        private delegate IBehaviour BehaviourGenerator(UnitGoal goal, IOwnerPointer ownerPointer);
+
+
         // Fields.
 
-        private IBehaviour currentBehaviour = null;
+        private readonly Dictionary<Type, BehaviourGenerator> behaviourGenerators;
+        private IBehaviour currentBehaviour;
 
 
         // Constructors.
 
-        public IntelligenceModule() {}
+        public IntelligenceModule() {
+            
+            // Set fields.
+            behaviourGenerators = new Dictionary<Type, BehaviourGenerator>() {
+                [typeof(RelocationGoal)] = (goal, ownerPointer) => new RelocationBehaviour(goal as RelocationGoal, ownerPointer),
+                [typeof(OffensiveGoal)] = (goal, ownerPointer) => new OffensiveBehaviour(goal as OffensiveGoal, ownerPointer)
+            };
+            currentBehaviour = null;
+
+        }
 
         public IntelligenceModule(IntelligenceModule other) {
             if (other is null) {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            // Set behaviour.
-            var otherGoal = other?.currentBehaviour?.Goal;
-            if (otherGoal is OffensiveGoal offensiveGoal) {
-                SetGoal(offensiveGoal);
-            } else if (otherGoal is RelocationGoal relocationGoal) {
-                SetGoal(relocationGoal);
-            } else {
-                SetGoal(IdleGoal.Instance);
-            }
+            // Set fields.
+            behaviourGenerators = new Dictionary<Type, BehaviourGenerator>(other.behaviourGenerators);
+            SetGoal(other.CurrentGoal);
 
         }
 
@@ -53,7 +63,7 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
         }
 
 
-        // Methods.
+        // Public methods.
 
         public void Act() {
             if (currentBehaviour != null) {
@@ -64,16 +74,12 @@ namespace NewWorld.Cores.Battle.Unit.Intelligence {
             }
         }
 
-        public void SetGoal(RelocationGoal goal) {
-            currentBehaviour = new RelocationBehaviour(goal, this);
-        }
-
-        public void SetGoal(OffensiveGoal goal) {
-            currentBehaviour = new OffensiveBehaviour(goal, this);
-        }
-
-        public void SetGoal(IdleGoal goal) {
-            currentBehaviour = null;
+        public void SetGoal(UnitGoal goal) {
+            if (behaviourGenerators.TryGetValue(goal.GetType(), out var generator)) {
+                currentBehaviour = generator.Invoke(goal, this);
+            } else {
+                currentBehaviour = null;
+            }
         }
 
 
