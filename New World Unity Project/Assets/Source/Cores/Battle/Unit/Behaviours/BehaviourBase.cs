@@ -38,6 +38,9 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours {
             OnAct(out goalStatus);
             if (goalStatus != GoalStatus.Active) {
                 goal = null;
+                if (goalStatus != GoalStatus.Achieved && goalStatus != GoalStatus.Failed) {
+                    goalStatus = GoalStatus.Failed;
+                }
             }
         }
 

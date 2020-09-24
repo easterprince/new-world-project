@@ -46,7 +46,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
                 }
             }
             if (chosenAttack == null) {
-                goalStatus = GoalStatus.Impossible;
+                goalStatus = GoalStatus.Failed;
                 return;
             }
 
@@ -66,8 +66,8 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
                 relocation = new RelocationBehaviour(goal, this);
             }
             relocation.Act(out GoalStatus relocationStatus);
-            if (relocationStatus == GoalStatus.Impossible) {
-                goalStatus = GoalStatus.Impossible;
+            if (relocationStatus == GoalStatus.Failed) {
+                goalStatus = GoalStatus.Failed;
                 return;
             }
             if (relocationStatus == GoalStatus.Achieved) {

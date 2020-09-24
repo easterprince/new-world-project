@@ -3,7 +3,7 @@
     public enum GoalStatus {
         Active,
         Achieved,
-        Impossible
+        Failed
     }
 
 }

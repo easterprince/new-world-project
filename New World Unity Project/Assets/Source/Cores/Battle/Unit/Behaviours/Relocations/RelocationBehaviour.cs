@@ -58,7 +58,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
                     return;
                 }
                 if (chosenAbility == null) {
-                    goalStatus = GoalStatus.Impossible;
+                    goalStatus = GoalStatus.Failed;
                     return;
                 }
                 var abilityUsage = new MotionUsageAction(chosenAbility, Goal.Destination);
@@ -72,7 +72,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
                 if (plannedPath == null) {
                     var path = context.Layout.TryFindShortestPath(currentNode, destinationNode);
                     if (path == null) {
-                        goalStatus = GoalStatus.Impossible;
+                        goalStatus = GoalStatus.Failed;
                         return;
                     }
                     plannedPath = new Stack<Vector2Int>(path);
@@ -92,7 +92,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Relocations {
                     return;
                 }
                 if (chosenAbility == null) {
-                    goalStatus = GoalStatus.Impossible;
+                    goalStatus = GoalStatus.Failed;
                     return;
                 }
                 var abilityUsage = new MotionUsageAction(chosenAbility, nextPosition);
