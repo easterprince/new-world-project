@@ -40,6 +40,10 @@ namespace NewWorld.Utilities {
             }
         }
 
+        public void Reset() {
+            accumulated = 0;
+        }
+
     
     }
 
