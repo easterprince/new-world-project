@@ -171,21 +171,7 @@ namespace NewWorld.Cores.Battle.Unit {
             abilityCollection.UseAbility(motionUsage.Ability, motionUsage.Destination);
         }
 
-        public void SetGoal(RelocationGoal goal) {
-            if (goal is null) {
-                throw new ArgumentNullException();
-            }
-            intelligence.SetGoal(goal);
-        }
-
-        public void SetGoal(OffensiveGoal goal) {
-            if (goal is null) {
-                throw new ArgumentNullException();
-            }
-            intelligence.SetGoal(goal);
-        }
-
-        public void SetGoal(IdleGoal goal) {
+        public void SetGoal(UnitGoal goal) {
             if (goal is null) {
                 throw new ArgumentNullException();
             }

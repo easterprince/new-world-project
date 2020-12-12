@@ -72,21 +72,21 @@ namespace NewWorld.Controllers.Battle.UI.UnitPanel {
         private void ProcessTargetSet(Vector3 target) {
             if (selectedUnit != null && selectedUnit.Presentation != null) {
                 var destination = target;
-                var action = new GoalSettingAction<RelocationGoal>(new RelocationGoal(destination));
+                var action = new GoalSettingAction(new RelocationGoal(destination));
                 selectedUnit.Presentation.PlanAction(action);
             }
         }
 
         private void ProcessTargetSet(UnitController target) {
             if (selectedUnit != null && selectedUnit.Presentation != null) {
-                var action = new GoalSettingAction<OffensiveGoal>(new OffensiveGoal(target.Presentation));
+                var action = new GoalSettingAction(new OffensiveGoal(target.Presentation));
                 selectedUnit.Presentation.PlanAction(action);
             }
         }
 
         private void ProcessTargetUnset() {
             if (selectedUnit != null && selectedUnit.Presentation != null) {
-                var action = new GoalSettingAction<IdleGoal>(IdleGoal.Instance);
+                var action = new GoalSettingAction(IdleGoal.Instance);
                 selectedUnit.Presentation.PlanAction(action);
             }
         }

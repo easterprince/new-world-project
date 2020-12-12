@@ -4,33 +4,27 @@ using NewWorld.Cores.Battle.Unit.Conditions.Attacks;
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
 
-    public class OffensiveBehaviour : BehaviourModuleBase<OffensiveBehaviour, OffensivePresentation, OffensiveGoal> {
+    public class OffensiveBehaviour : BehaviourBase<OffensiveGoal> {
 
         // Fields.
 
         private RelocationBehaviour relocation = null;
 
 
-        // Presentation generation.
+        // Constructor.
 
-        private protected override OffensivePresentation BuildPresentation() {
-            return new OffensivePresentation(this);
-        }
-
-
-        // Cloning.
-
-        private protected override OffensiveBehaviour ClonePartially() {
-            return new OffensiveBehaviour();
-        }
+        public OffensiveBehaviour(OffensiveGoal goal, IOwnerPointer ownerPointer) : base(goal, ownerPointer) {}
 
 
         // Acting.
 
         private protected override void OnAct(out GoalStatus goalStatus) {
-            ValidateContext();
             var owner = Owner;
             var context = Context;
+            if (owner is null || context is null) {
+                goalStatus = GoalStatus.Active;
+                return;
+            }
 
             // Check if target is down.
             if (Goal.Target.Durability.Fallen) {
@@ -52,7 +46,7 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
                 }
             }
             if (chosenAttack == null) {
-                goalStatus = GoalStatus.Impossible;
+                goalStatus = GoalStatus.Failed;
                 return;
             }
 
@@ -68,13 +62,12 @@ namespace NewWorld.Cores.Battle.Unit.Behaviours.Offensives {
 
             // Reach target.
             if (relocation == null) {
-                relocation = new RelocationBehaviour();
-                relocation.Connect(Presentation);
-                relocation.Goal = new RelocationGoal(targetPosition);
+                var goal = new RelocationGoal(targetPosition);
+                relocation = new RelocationBehaviour(goal, this);
             }
             relocation.Act(out GoalStatus relocationStatus);
-            if (relocationStatus == GoalStatus.Impossible) {
-                goalStatus = GoalStatus.Impossible;
+            if (relocationStatus == GoalStatus.Failed) {
+                goalStatus = GoalStatus.Failed;
                 return;
             }
             if (relocationStatus == GoalStatus.Achieved) {

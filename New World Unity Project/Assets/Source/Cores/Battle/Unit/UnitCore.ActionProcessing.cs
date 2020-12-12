@@ -14,8 +14,7 @@ namespace NewWorld.Cores.Battle.Unit {
         IResponsive<ConditionChangingAction>, IResponsive<DamageCausingAction>,
         IResponsive<MovementAction>, IResponsive<RotationAction>,
         IResponsive<AttackUsageAction>, IResponsive<MotionUsageAction>,
-        IResponsive<GoalSettingAction<RelocationGoal>>, IResponsive<GoalSettingAction<OffensiveGoal>>,
-        IResponsive<GoalSettingAction<IdleGoal>> {
+        IResponsive<GoalSettingAction> {
 
         // Action processing.
 
@@ -79,27 +78,7 @@ namespace NewWorld.Cores.Battle.Unit {
             UseAbility(action);
         }
 
-        public void ProcessAction(GoalSettingAction<RelocationGoal> action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
-            }
-            if (Context is null) {
-                return;
-            }
-            SetGoal(action.Goal);
-        }
-
-        public void ProcessAction(GoalSettingAction<OffensiveGoal> action) {
-            if (action is null) {
-                throw new ArgumentNullException(nameof(action));
-            }
-            if (Context is null) {
-                return;
-            }
-            SetGoal(action.Goal);
-        }
-
-        public void ProcessAction(GoalSettingAction<IdleGoal> action) {
+        public void ProcessAction(GoalSettingAction action) {
             if (action is null) {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -118,9 +97,7 @@ namespace NewWorld.Cores.Battle.Unit {
         public void PlanAction(RotationAction action) => PlanAction(this, action);
         public void PlanAction(AttackUsageAction action) => PlanAction(this, action);
         public void PlanAction(MotionUsageAction action) => PlanAction(this, action);
-        public void PlanAction(GoalSettingAction<RelocationGoal> action) => PlanAction(this, action);
-        public void PlanAction(GoalSettingAction<OffensiveGoal> action) => PlanAction(this, action);
-        public void PlanAction(GoalSettingAction<IdleGoal> action) => PlanAction(this, action);
+        public void PlanAction(GoalSettingAction action) => PlanAction(this, action);
 
 
     }

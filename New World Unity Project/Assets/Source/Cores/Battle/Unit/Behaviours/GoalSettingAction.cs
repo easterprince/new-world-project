@@ -2,24 +2,23 @@
 
 namespace NewWorld.Cores.Battle.Unit.Behaviours {
 
-    public class GoalSettingAction<TGoal> : UnitAction
-        where TGoal : UnitGoal {
+    public class GoalSettingAction : UnitAction {
 
         // Fields.
 
-        private readonly TGoal goal;
+        private readonly UnitGoal goal;
 
 
         // Constructor.
 
-        public GoalSettingAction(TGoal goal) {
+        public GoalSettingAction(UnitGoal goal) {
             this.goal = goal ?? throw new ArgumentNullException(nameof(goal));
         }
 
 
         // Properties.
 
-        public TGoal Goal => goal;
+        public UnitGoal Goal => goal;
 
 
     }
